@@ -5,5 +5,5 @@
   Author: Raghav Dua
 */
 
-console.log (utils.argmax ([1,2,1.5,1.7,2.1], function (i) { return ( i*Math.random()); })); //==> Could be any value
-console.log (utils.argmin (['hello', 'world', '!'], function (i) { return (i.length); })); //==> '!'
+console.log (utils.argmax ([1,2,1.5,1.7,2.1], function (i) { return ( i*Math.random()); }));
+console.log (utils.argmin (['hello', 'world', '!'], function (i) { return (i.length); }));
