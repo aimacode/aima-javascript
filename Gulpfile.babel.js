@@ -1,6 +1,9 @@
 import gulp from 'gulp';
 import ghPages from 'gulp-gh-pages';
 import jspm from 'jspm';
+
+//var watch = require('gulp-watch');
+
 const dist = 'build';
 
 gulp.task('bundle', (done) => {
@@ -21,3 +24,20 @@ gulp.task('deploy', () => {
   return gulp.src(dist + '/**/*')
       .pipe(ghPages());
 });
+
+gulp.task('copy', function() {
+    return gulp.src(['*-*/*.html','*-*/*.js'])		
+        .pipe(gulp.dest('build'));
+});
+
+
+//gulp.task('callback', function (cb) {
+//    watch('*-*/*.(html|js)', function () {
+//      gulp.src('*-*/*.(html|js)')
+//            .pipe(watch('*-*/*.(html|js)'))
+//            .pipe(gulp.dest('build'));
+//    });
+//});
+
+gulp.task('default', ['copy']);
+

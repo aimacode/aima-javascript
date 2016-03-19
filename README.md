@@ -1,8 +1,7 @@
 # aima-javascript
 Javascript implementation of algorithms (and visualizations) from Russell And Norvig's "Artificial Intelligence - A Modern Approach"
 
-There's nothing here yet, but I wanted to initialize the repository so that contributors can work on it. Some Javascript visualizations that I admire, and would like to see similar kinds of things here:
-
+Some Javascript visualizations that I admire, and would like to see similar kinds of things here:
 - [Red Blob Games: A* Tutorial](http://www.redblobgames.com/pathfinding/a-star/introduction.html)
 - [Qiao Search Demo](https://qiao.github.io/PathFinding.js/visual/)
 - [Nicky Case: Simulating the World](http://ncase.me/simulating/)
@@ -36,7 +35,7 @@ Start a local server, e.g. `python -m SimpleHTTPServer`.
 
 To bundle the web app
 
-1. run `gulp bundle`, to bundle the app into build folder
+1. run `gulp bundle` followed by `gulp copy` to bundle the app into build folder
 2. Either serve `build` folder locally.
 3. Or deploy it to gh-pages by running `gulp deploy`.
 
@@ -44,7 +43,6 @@ To bundle the web app
 
 This directory contains the minified source code for production deployment.
 
-npm install -g gulp
 The repository has the following structure:
 
     There is a directory for each chapter
