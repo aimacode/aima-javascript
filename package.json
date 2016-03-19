@@ -25,6 +25,7 @@
     "babel-register": "^6.7.2",
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",
+    "gulp-watch": "^4.3.5",
     "jspm": "^0.16.31"
   },
   "jspm": {
