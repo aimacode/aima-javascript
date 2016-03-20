@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
   <title>Artificial Intelligence: A Modern Approach</title>
-  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="jspm_packages/system.js"></script>
+  <script type="text/javascript" src="config.js"></script>
+  <script>
+    System.import("src/index").catch(console.error.bind(console))
+  </script>
 </head>
-
 <body>
-
 <div class="jumbotron">
   <div class="container text-center">
     <h1>Artificial Intelligence</h1>
 	<h2>A Modern Approach</h2>
-    <p>Stuart Russel and Peter Norvig</p>
+    <p>Stuart Russell and Peter Norvig</p>
   </div>
 </div>
-
 <div class="container">
   <h2>Chapter Select</h2>
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#chapter1">Chapter 1</a></li>
-    <li><a data-toggle="tab" href="#chapter2">Chapter 2</a></li>
-    <li><a data-toggle="tab" href="#chapter3">Chapter 3</a></li>
-    <li><a data-toggle="tab" href="#chapter4">Chapter 4</a></li>
-    <li><a data-toggle="tab" href="#chapter5">Chapter 5</a></li>
-    <li><a data-toggle="tab" href="#chapter6">Chapter 6</a></li>
-    <li><a data-toggle="tab" href="#chapter7">Chapter 7</a></li>
+    <li class="active"><a data-toggle="tab" href="#chapter1">Part I</a></li>
+    <li><a data-toggle="tab" href="#chapter2">Part II</a></li>
+    <li><a data-toggle="tab" href="#chapter3">Part III</a></li>
+    <li><a data-toggle="tab" href="#chapter4">Part IV</a></li>
+    <li><a data-toggle="tab" href="#chapter5">Part V</a></li>
+    <li><a data-toggle="tab" href="#chapter6">Part VI</a></li>
+    <li><a data-toggle="tab" href="#chapter7">Part VII</a></li>
   </ul>
-
   <div class="tab-content">
     <div id="chapter1" class="tab-pane fade in active">
       <h3>Artificial Intelligence</h3>
@@ -58,7 +58,6 @@
 			of problem structure and complexity.</dd>
       </dl>
     </div>
-
 	<div id="chapter3" class="tab-pane fade">
       <h3>Knowledge Reasoning and Planning</h3>
       <dl class="dl-horizontal">
@@ -144,10 +143,9 @@
     </div>
   </div>
 </div>
-
 <footer class="container-fluid text-center">
-	<img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
-	<p>Copyright 2010, 2003, 1995 by Pearson Education, Inc.</p>
+	<img src="http://aima.cs.berkeley.edu/aima_logo.png"></img>
+	
 </footer>
 </body>
 </html>
