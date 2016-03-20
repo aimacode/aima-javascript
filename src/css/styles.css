@@ -18,3 +18,8 @@ h3{
     padding:10px;
     white-space: normal;
 }
+
+pre{
+	margin-top:20px;
+	margin-bottom:20px;
+}

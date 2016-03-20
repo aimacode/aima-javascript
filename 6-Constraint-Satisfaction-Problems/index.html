@@ -1,9 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Title</title>
+  <title>6 Constraint Satisfaction Problems</title>
+  <script type="text/javascript" src="../main.js"></script>
+  <script type="text/javascript" src="./AC3.js"></script>
+  <script type="text/javascript" src="./backtracking.js"></script>
+  <script type="text/javascript" src="./minConflicts.js"></script>
+  <script type="text/javascript" src="./treeCSP.js"></script>
+
+  <script type="text/javascript" src="./c_AC3.js"></script>
+  <script type="text/javascript" src="./c_backtracking.js"></script>
+  <script type="text/javascript" src="./c_minConflicts.js"></script>
+  <script type="text/javascript" src="./c_treeCSP.js"></script>
 </head>
 <body>
-TODO
+
+  <div class="jumbotron">
+    <div class="container text-center">
+      <h1>Artificial Intelligence</h1>
+      <h2>A Modern Approach</h2>
+      <p>Stuart Russel and Peter Norvig</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6 col-md-offset-3" id="content">
+      <h1>Constraint Satisfaction Problems</h1>
+
+      <h2>Arc consistency</h2>
+      <p>
+        <ul>
+          <li>Y = X + 1</li>
+          <li>Z >= Y + 1</li>
+          <li>W != Y</li>
+          <li>W != Z</li>
+        </ul>
+      </p>
+      <p>Step by step visualization of the procedure. Click to restart the simulation.</p>
+      <div class = "canvas" id="ac3Canvas" height="300px">
+      </div>
+      <pre id="AC3Code"></pre>
+
+      <h2>Backtracking</h2>
+      <p>Map colouring using backtracking. Click to restart the simulation.</p>
+      <div class = "canvas" id="backtrackCanvas" height="300px">
+      </div>
+      <pre id="backtrackingCode"></pre>
+      <h2>Min Conflicts</h2>
+      <p>Min conflicts stuff</p>
+      <div class = "canvas" id="minConflictsCanvas" height="300px">
+      </div>
+      <pre id="minConflictsCode"></pre>
+
+      <h2>Tree CSP</h2>
+      <p>Tree CSP Stuff</p>
+      <div class = "canvas" id="treeCspCanvas" height="300px">
+      </div>
+      <pre id="treeCSPCode"></pre>
+
+    </div>
+  </div>
+
+  <footer class="container-fluid text-center">
+    <img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
+  </footer>
+
+</div>
 </body>
 </html>

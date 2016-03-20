@@ -1,49 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>1-Introduction</title>
+  <title>4 Beyond Classical Search</title>
   <script type="text/javascript" src="../main.js"></script>
+  <script type="text/javascript" src="./geneticAlgorithm.js"></script>
+  <script type="text/javascript" src="./simulatedAnnealing.js"></script>
+  <script type="text/javascript" src="./hillClimbing.js"></script>
+  <script type="text/javascript" src="./andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./LrtaAgent.js"></script>
+  <script type="text/javascript" src="./onlineDfsAgent.js"></script>
+
+  <script type="text/javascript" src="./c_geneticAlgorithm.js"></script>
+  <script type="text/javascript" src="./c_simulatedAnnealing.js"></script>
+  <script type="text/javascript" src="./c_hillClimbing.js"></script>
+  <script type="text/javascript" src="./c_andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./c_LrtaAgent.js"></script>
+  <script type="text/javascript" src="./c_onlineDfsAgent.js"></script>
 </head>
 <body>
 
-<div class="jumbotron">
-  <div class="container text-center">
-    <h1>Artificial Intelligence</h1>
-	<h2>A Modern Approach</h2>
-    <p>Stuart Russel and Peter Norvig</p>
+  <div class="jumbotron">
+    <div class="container text-center">
+      <h1>Artificial Intelligence</h1>
+      <h2>A Modern Approach</h2>
+      <p>Stuart Russel and Peter Norvig</p>
+    </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-sm-6 col-md-offset-3" id="content">
-	<h1>Beyond classical search</h1>
-	<h2>Hill Climbing</h2>
-	<p>A small robot tries to get to the top.</p>	
-	<div class = "canvas" id="robotCanvas" height="300px">
-	<p>Drag the robot around and drop it.</p> 
-	</div>	
-<pre class="brush: js">
-CODE FOR HILL CLIMBING
-</pre>
-	<script type="text/javascript">
-		SyntaxHighlighter.all()
-	</script>
+  <div class="row">
+    <div class="col-sm-6 col-md-offset-3" id="content">
+      <h1>Beyond classical search</h1>
+
+      <h2>Hill Climbing</h2>
+      <p>Click on the canvas to move the robot to that position</p>
+      <p>A small robot tries to get to the top.</p>
+      <div class = "canvas" id="hillCanvas" height="300px" style="background: rgb(154, 255, 255);">
+      </div>
+
+      <pre id="hillCode"></pre>
+
+      <h2>Simulated Annealing</h2>
+      <p>Click on the screen to restart the simulation.</p>
+      <p>The orange line represents the current position.</p>
+      <div class = "canvas" id="annealingCanvas" height="300px"></div>
+
+      <pre id="simulatedAnnealingCode"></pre>
+
+      <h2>Genetic Algorithm</h2>
+      <p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>
+      <p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
+      <p>Note: Single point crossover might not be suitable for all applications</p>
+      <div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
+      </div>
+
+      <pre id="geneticAlgorithmCode"></pre>
+
+      <h2>And-Or-Graph-Search</h2>
+      <div class = "canvas" id="andOrGraphCanvas" height="300px">
+      </div>
+
+      <pre id="andOrGraphSearchCode"></pre>
+
+      <h2>Online DFS Agent</h2>
+      <p>Click to reset. Green tile is destination.</p>
+      <div class = "canvas" id="onlineDfsCanvas" height="300px">
+      </div>
+
+      <pre id="onlineDfsCode"></pre>
+
+      <h2>LRTA*-Agent</h2>
+      <p></p>
+      <div class = "canvas" id="lrtaCanvas" height="300px">
+        <p></p>
+      </div>
+
+      <pre id="lrtaCode"></pre>
+    </div>
   </div>
-</div>
 
-<footer class="container-fluid text-center">
-	<img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
-	<p>Copyright 2010, 2003, 1995 by Pearson Education, Inc.</p>
-</footer>
-
-
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="../src/js/two.js";></script>
-<script src="./hillClimbing.js"></script>
-<script src="./canvasController.js"></script>
-<link rel="stylesheet" href="../src/css/styles.css">
+  <footer class="container-fluid text-center">
+    <img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
+  </footer>
 
 </div>
 </body>

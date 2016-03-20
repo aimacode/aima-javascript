@@ -30,14 +30,10 @@ gulp.task('copy', function() {
         .pipe(gulp.dest('build'));
 });
 
+gulp.task('copyback', function() {
+    return gulp.src(['./build/*-*/*.html','./build/*-*/*.js'])		
+        .pipe(gulp.dest('./'));
+});
 
-//gulp.task('callback', function (cb) {
-//    watch('*-*/*.(html|js)', function () {
-//      gulp.src('*-*/*.(html|js)')
-//            .pipe(watch('*-*/*.(html|js)'))
-//            .pipe(gulp.dest('build'));
-//    });
-//});
-
-gulp.task('default', ['copy']);
+gulp.task('default', ['copy','deploy']);
 
