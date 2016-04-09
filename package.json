@@ -21,7 +21,7 @@
   "homepage": "https://github.com/aimacode/aima-Javascript#readme",
   "devDependencies": {
     "babel": "^6.5.2",
-    "babel-core": "^6.7.2",
+    "babel-core": "^6.7.6",
     "babel-register": "^6.7.2",
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",

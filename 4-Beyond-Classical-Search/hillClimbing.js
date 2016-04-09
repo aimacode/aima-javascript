@@ -16,9 +16,9 @@ var HillClimber = function(){
 		if(left == right && left > current){
 			this.currentDecision = Math.random() > .5 ?
 				this.DECISIONS.LEFT: this.DECISIONS.RIGHT;
-		} else if(left > right){
+		} else if(right == null || left > right){
 			this.currentDecision = this.DECISIONS.LEFT;
-		} else if (right > left) {
+		} else if (left == null || right > left) {
 			this.currentDecision = this.DECISIONS.RIGHT;
 		} else {
 			this.currentDecision = this.DECISIONS.STAY;
@@ -75,20 +75,20 @@ $(document).ready(function(){
 	
 	init();		
 		
-	var frame = DELAY;
+	var m_frame = DELAY;
 	var direction;
 	two.bind('update', function(frameCount) {	
-		if(frame == DELAY){		
+		if(m_frame == DELAY){		
 			direction = hillClimber.decide(terrain[positionX-1],
 											terrain[positionX],
 											terrain[positionX+1]);
 			//console.log("Direction = " + direction);
 			//console.log(terrain[positionX-1] + " " + terrain[positionX+1]);
 			positionX += direction;
-			frame = 0;
+			m_frame = 0;
 		} else {
-			frame++;
-			var t = frame/DELAY; // Interpolation factor
+			m_frame++;
+			var t = m_frame/DELAY; // Interpolation factor
 			animateClimber(t,direction);						
 		}
 		
@@ -147,12 +147,12 @@ $(document).ready(function(){
 		return terrain;*/
 		
 		// Handcrafted terrain
-		return [2,2,3,4,5,4,3,2,3,4,5,6,7,6,5,4,3,2,3,4,5,6,5,4,3,2,3,4,5,6,7,6,5,4,3];
+		return [2,3,4,5,4,3,2,3,4,5,6,7,6,5,4,3,2,3,4,5,6,5,4,3,2,3,4,5,6,7,6,5,4,3,2,1];
 	}
 		
 	var offset = $('#hillCanvas').offset();
 	function handleClick(evt){
-		frame = DELAY;
+		m_frame = DELAY;
 		var x = (evt.pageX - offset.left);
 		//var y = (evt.pageY - offset.top);
 		

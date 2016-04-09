@@ -91,6 +91,7 @@ $(document).ready(function(){
 	var POPULATION_SIZE = 10; // Number of criters per generation
 	var RADIUS = 20; // Radius of circle
 	var MAX_GEN = 6; // Maximum number of generations before the simulation starts over
+	var SKIP_GEN = 2; // Number of gens to skip drawing each time canvas is clicked
 	
 	function init(){
 		geneticCanvas = document.getElementById('geneticCanvas');
@@ -106,7 +107,8 @@ $(document).ready(function(){
 	
 	function handleClick(){
 		if(genIndex < MAX_GEN) { 
-			gen = ga.getNextGeneration(gen);
+			for(var i = 0; i < SKIP_GEN; i++)
+				gen = ga.getNextGeneration(gen);
 			drawGen(gen,genIndex++);
 		} else {
 			// Clear the screen and start afresh

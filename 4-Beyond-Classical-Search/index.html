@@ -6,6 +6,9 @@
   <script type="text/javascript" src="./geneticAlgorithm.js"></script>
   <script type="text/javascript" src="./simulatedAnnealing.js"></script>
   <script type="text/javascript" src="./hillClimbing.js"></script>
+  <script type="text/javascript" src="./andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./LrtaAgent.js"></script>
+  <script type="text/javascript" src="./onlineDfsAgent.js"></script>
 </head>
 <body>
 
@@ -92,7 +95,7 @@ var SimulatedAnnealing = function(x,k,T){
 	
 	<h2>Genetic Algorithm</h2>
 	<p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>	
-	<p>Click on the canvas to generate next generation</p>
+	<p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
 	<p>Note: Single point crossover might not be suitable for all applications</p>
 	<div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">	
 	</div>	
@@ -174,33 +177,70 @@ var GeneticAlgorithm = function(fitnessFunction,mutationChance){
 </pre>
 
 	<h2>And-Or-Graph-Search</h2>
-	<p></p>	
 	<div class = "canvas" id="andOrGraphCanvas" height="300px">
-	<p></p> 
 	</div>	
 	
 <pre class="brush: js">
 CODE FOR AND OR GRAPH SEARCH
 </pre>
 
-<h2>Online search</h2>
-	<p></p>	
-	<div class = "canvas" id="onlineSearchCanvas" height="300px">
-	<p></p> 
-	</div>	
-	
-<pre class="brush: js">
-CODE FOR ONLINE SEARCH
-</pre>
-
 <h2>Online DFS Agent</h2>
-	<p></p>	
+	<p>Click to reset. Green tile is destination.</p>	
 	<div class = "canvas" id="onlineDfsCanvas" height="300px">
-	<p></p> 
 	</div>	
 	
 <pre class="brush: js">
-CODE FOR ONLINE DFS AGENT
+var OnlineDfsAgent = function(problem){
+	this.problem = problem;
+	this.state = problem.INITIAL;
+	this.result = new Array(this.problem.TOTAL_STATES);
+	for(var i = 0; i < this.problem.TOTAL_STATES; i++)
+		this.result[i] = [];
+	this.untried = [];
+	this.unbacktracked = [];
+	this.s = -1;
+	this.a = -1;
+	
+	this.iterate = function(newState){
+		// If already at target, do nothing
+		if(this.problem.goal_test(newState))
+			return this.problem.NO_ACTION;
+		
+		// If not already tried then try it
+		if(this.untried[newState] == null)
+			this.untried[newState] = this.problem.actions(newState);
+		
+		// Mark this state as backtrackable
+		if(this.s != -1){
+			if(newState != this.result[this.s][this.a]){
+				this.result[this.s][this.a] = newState;
+				if(this.unbacktracked[newState] == null)
+					this.unbacktracked[newState] = [];
+				this.unbacktracked[newState].push(this.s);
+			}
+		}
+		
+		// NO_ACTION is considered to be empty
+		if(this.untried[newState].length <= 1){
+			if(this.unbacktracked[newState].length == 0) { // No states to backtrack
+				return this.problem.NO_ACTION;
+			} else { // Get the action which results in backtracking							
+				var popped = this.unbacktracked[newState].pop();
+				for(var j = 0; j < this.result[newState].length; j++){
+					if(this.result[newState][j] == popped){
+						this.a = j;
+						break;
+					}
+				}				
+			}
+		} else {
+			// Try taking a different action
+			this.a = this.untried[newState].pop();
+		}
+		this.s = newState;
+		return this.a;
+	}
+}
 </pre>
 
 <h2>LRTA*-Agent</h2>
@@ -222,6 +262,7 @@ CODE FOR LRTA*-AGENT
 <footer class="container-fluid text-center">
 	<img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
 </footer>
+
 </div>
 </body>
 </html>

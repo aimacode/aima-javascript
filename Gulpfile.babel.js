@@ -35,5 +35,5 @@ gulp.task('copyback', function() {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('default', ['copy']);
+gulp.task('default', ['copy','deploy']);
 
