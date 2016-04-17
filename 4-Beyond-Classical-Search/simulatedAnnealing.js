@@ -7,11 +7,9 @@ var SimulatedAnnealing = function(x,k,T){
 	this.x = x; // Starting state
 	this.k = k; // Boltzmann constant
 	this.T = T; // Initial temperature
-
 	this.anneal = function(f){
 		if(this.T == 0) return x;
 		var new_x = this.getRandomInt(0,f.length);
-
 		if(f[new_x] > f[x]){
 			// If the new chosen value is better
 			// then just move to new state

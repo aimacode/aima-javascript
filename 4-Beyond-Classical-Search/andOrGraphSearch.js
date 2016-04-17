@@ -12,8 +12,6 @@ var AndOrGraphSearch = function(){
 		for(var i = 0; i < path.length; i++)
 		if(path[i] == state)
 		return null;
-
-
 		var actions = problem.actions(state);
 		for (var i = 0; i < actions.length; i++){
 			var action = actions[i];
@@ -30,7 +28,7 @@ var AndOrGraphSearch = function(){
 		for (var i = 0; i < states.length; i++){
 			plans[i] = this.orSearch(states[i],problem,path);
 			if(plans[i] == null)
-			return null;
+				return null;
 		}
 		return plans;
 	}

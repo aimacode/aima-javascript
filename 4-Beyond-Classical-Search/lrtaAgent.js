@@ -30,11 +30,11 @@ var LrtaAgent = function(problem){
 				var cost = this.lrtaCost(this.s,a,this.result[this.s][a]);
 				if(cost < min) min = cost;
 
-				console.log(this.problem.getIJ(this.result[this.s][a])+" "+cost);
+				//console.log(this.problem.getIJ(this.result[this.s][a])+" "+cost);
 			}
 			this.H[this.s] = min;
 		}
-		console.log("\n");
+		//console.log("\n");
 		var min = Number.MAX_VALUE;
 		var a = this.problem.NO_ACTION;
 		var actions = this.problem.actions(newState);
@@ -47,12 +47,11 @@ var LrtaAgent = function(problem){
 				min = cost;
 				a = b;
 			}
-			console.log(this.problem.getIJ(this.result[newState][b])+" "+cost);
+			//console.log(this.problem.getIJ(this.result[newState][b])+" "+cost);
 		}
 
 		var coord = this.problem.getIJ(newState);
-		console.log("(%d,%d)",coord[0],coord[1]);
-
+		//console.log("(%d,%d)",coord[0],coord[1]);
 		this.s = newState;
 		this.a = a;
 		return a;
