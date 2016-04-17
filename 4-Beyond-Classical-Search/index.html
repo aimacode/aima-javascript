@@ -1,227 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>4 Beyond Classical Search</title>
+  <title>4 Beyond Classical Search</title>
   <script type="text/javascript" src="../main.js"></script>
   <script type="text/javascript" src="./geneticAlgorithm.js"></script>
   <script type="text/javascript" src="./simulatedAnnealing.js"></script>
   <script type="text/javascript" src="./hillClimbing.js"></script>
+  <script type="text/javascript" src="./andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./LrtaAgent.js"></script>
+  <script type="text/javascript" src="./onlineDfsAgent.js"></script>
+
+  <script type="text/javascript" src="./c_geneticAlgorithm.js"></script>
+  <script type="text/javascript" src="./c_simulatedAnnealing.js"></script>
+  <script type="text/javascript" src="./c_hillClimbing.js"></script>
+  <script type="text/javascript" src="./c_andOrGraphSearch.js"></script>
+  <script type="text/javascript" src="./c_LrtaAgent.js"></script>
+  <script type="text/javascript" src="./c_onlineDfsAgent.js"></script>
 </head>
 <body>
 
-<div class="jumbotron">
-  <div class="container text-center">
-    <h1>Artificial Intelligence</h1>
-	<h2>A Modern Approach</h2>
-    <p>Stuart Russel and Peter Norvig</p>
+  <div class="jumbotron">
+    <div class="container text-center">
+      <h1>Artificial Intelligence</h1>
+      <h2>A Modern Approach</h2>
+      <p>Stuart Russel and Peter Norvig</p>
+    </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-sm-6 col-md-offset-3" id="content">
-	<h1>Beyond classical search</h1>
-	
-	<h2>Hill Climbing</h2>
-	<p>Click on the canvas to move the robot to that position</p> 
-	<p>A small robot tries to get to the top.</p>	
-	<div class = "canvas" id="hillCanvas" height="300px" style="background: rgb(154, 255, 255);">
-	</div>			
-	
-<pre class="brush: js">
-var HillClimber = function(){
-	// Should the robot go left, right or stay where it is
-	this.DECISIONS = {
-		LEFT:-1,
-		RIGHT:1,
-		STAY:0
-	};
-	
-	// Decide where to go based on height
-	this.decide = function(left,current,right){
-		if(left == right && left > current){
-			this.currentDecision = Math.random() > .5 ?
-				this.DECISIONS.LEFT: this.DECISIONS.RIGHT;
-		} else if(left > right){
-			this.currentDecision = this.DECISIONS.LEFT;
-		} else if (right > left) {
-			this.currentDecision = this.DECISIONS.RIGHT;
-		} else {
-			this.currentDecision = this.DECISIONS.STAY;
-		}
-		return this.currentDecision;
-	}	
-}
-</pre>
-	
-	<h2>Simulated Annealing</h2>		
-	<p>Click on the screen to restart the simulation.</p>
-	<p>The orange line represents the current position.</p> 	
-	<div class = "canvas" id="annealingCanvas" height="300px"></div>
-	
-<pre class="brush: js">
-var SimulatedAnnealing = function(x,k,T){
-	this.x = x; // Starting state
-	this.k = k; // Boltzmann constant
-	this.T = T; // Initial temperature
-	
-	this.anneal = function(f){
-		if(this.T == 0) return x;
-		var new_x = this.getRandomInt(0,f.length);	 
-		
-		if(f[new_x] > f[x]){
-			// If the new chosen value is better
-			// then just move to new state
-			x = new_x;
-		} else {
-			// Calculate probability of transfer
-			var p = Math.exp((f[new_x] - f[x])/(k * T));
-			// If a randomly chosen value is within p
-			// then move to the new state
-			if(Math.random() < p)
-				x = new_x;		
-		}
-		this.T--;
-		return x;
-	}
-	
-	this.getRandomInt = function(min, max) {
-		return Math.floor(Math.random() * (max - min)) + min;
-	}	
-}
-</pre>
-	
-	<h2>Genetic Algorithm</h2>
-	<p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>	
-	<p>Click on the canvas to generate next generation</p>
-	<p>Note: Single point crossover might not be suitable for all applications</p>
-	<div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">	
-	</div>	
-	
-<pre class="brush: js">
-var GeneticAlgorithm = function(fitnessFunction,mutationChance){
-	this.f = fitnessFunction;
-	this.mutationChance = mutationChance;
-	this.fitness = [];
-	this.fitnessSum = 0;
-	this.alphaIndex = 0;
-	
-	this.getNextGeneration = function(currentgen){
-		nextGen = new Array(currentgen.length);
-		// Precalculate fitness to save time
-		this.calculateFitness(currentgen,this.f);
-		for(var i = 0; i < currentgen.length; i++){
-			// Randomly choose both parents
-			// Fitter individuals get priority
-			parent1 = this.randomSelection(currentgen);
-			parent2 = this.randomSelection(currentgen);
-			child = this.reproduce(parent1,parent2);
-			// There is a small chance of mutation
-			if(Math.random() < this.mutationChance)
-				child = this.mutate(child);
-			nextGen[i] = child;
-		}
-		return nextGen;
-	}
-	
-	this.calculateFitness = function(gen,f){
-		this.fitness = new Array(gen.length);
-		this.fitnessSum = 0;
-		var max = 0;
-		// Calculate fitness of each individual
-		// the sum of fitness and index of alpha
-		for(var i = 0; i < gen.length; i++){
-			this.fitness[i] = f(gen[i]);	
-			this.fitnessSum += this.fitness[i];
-			if(this.fitness[i] > max){
-				max = this.fitness[i];
-				this.alphaIndex = i;
-			}
-		}
-	}
-	
-	this.randomSelection = function(gen){		
-		// Randomly choose an individual
-		var value = Math.random() * this.fitnessSum;
-		for(var i = 0; i < this.fitness.length; i++){
-			value -= this.fitness[i];        
-			if (value <= 0.0)
-				return gen[i];	
-		}			
-	}
-	
-	this.reproduce = function(parent1,parent2){
-		child = new Array(parent1.length);
-		// Randomly choose the point of crossover
-		var point = parseInt(Math.random() * child.length);
-		for(var i = 0; i < point; i++)
-			child[i] = parent1[i];
-		for(var i = point; i < child.length; i++)
-			child[i] = parent2[i];
-		return child;
-	}
-	
-	this.mutate = function(child){
-		var point = parseInt(Math.random() * child.length);
-		var value = parseInt(Math.random() * 15);
-		child[point] = value.toString(16);
-		return child;		
-	}
-	
-	this.getAlpha = function(gen){
-		return gen[this.alphaIndex];
-	}
-}
-</pre>
+  <div class="row">
+    <div class="col-sm-6 col-md-offset-3" id="content">
+      <h1>Beyond classical search</h1>
 
-	<h2>And-Or-Graph-Search</h2>
-	<p></p>	
-	<div class = "canvas" id="andOrGraphCanvas" height="300px">
-	<p></p> 
-	</div>	
-	
-<pre class="brush: js">
-CODE FOR AND OR GRAPH SEARCH
-</pre>
+      <h2>Hill Climbing</h2>
+      <p>Click on the canvas to move the robot to that position</p>
+      <p>A small robot tries to get to the top.</p>
+      <div class = "canvas" id="hillCanvas" height="300px" style="background: rgb(154, 255, 255);">
+      </div>
 
-<h2>Online search</h2>
-	<p></p>	
-	<div class = "canvas" id="onlineSearchCanvas" height="300px">
-	<p></p> 
-	</div>	
-	
-<pre class="brush: js">
-CODE FOR ONLINE SEARCH
-</pre>
+      <pre id="hillCode"></pre>
 
-<h2>Online DFS Agent</h2>
-	<p></p>	
-	<div class = "canvas" id="onlineDfsCanvas" height="300px">
-	<p></p> 
-	</div>	
-	
-<pre class="brush: js">
-CODE FOR ONLINE DFS AGENT
-</pre>
+      <h2>Simulated Annealing</h2>
+      <p>Click on the screen to restart the simulation.</p>
+      <p>The orange line represents the current position.</p>
+      <div class = "canvas" id="annealingCanvas" height="300px"></div>
 
-<h2>LRTA*-Agent</h2>
-	<p></p>	
-	<div class = "canvas" id="lrtaCanvas" height="300px">
-	<p></p> 
-	</div>	
-	
-<pre class="brush: js">
-CODE FOR LRTA*-AGENT
-</pre>
+      <pre id="simulatedAnnealingCode"></pre>
 
-	<script type="text/javascript">
-		SyntaxHighlighter.all()
-	</script>
+      <h2>Genetic Algorithm</h2>
+      <p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>
+      <p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
+      <p>Note: Single point crossover might not be suitable for all applications</p>
+      <div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
+      </div>
+
+      <pre id="geneticAlgorithmCode"></pre>
+
+      <h2>And-Or-Graph-Search</h2>
+      <div class = "canvas" id="andOrGraphCanvas" height="300px">
+      </div>
+
+      <pre id="andOrGraphSearchCode"></pre>
+
+      <h2>Online DFS Agent</h2>
+      <p>Click to reset. Green tile is destination.</p>
+      <div class = "canvas" id="onlineDfsCanvas" height="300px">
+      </div>
+
+      <pre id="onlineDfsCode"></pre>
+
+      <h2>LRTA*-Agent</h2>
+      <p></p>
+      <div class = "canvas" id="lrtaCanvas" height="300px">
+        <p></p>
+      </div>
+
+      <pre id="lrtaCode"></pre>
+    </div>
   </div>
-</div>
 
-<footer class="container-fluid text-center">
-	<img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
-</footer>
+  <footer class="container-fluid text-center">
+    <img src="https://avatars0.githubusercontent.com/u/17015933?v=3&s=200"></img>
+  </footer>
 </div>
 </body>
 </html>
