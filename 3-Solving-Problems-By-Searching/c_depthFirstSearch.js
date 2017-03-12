@@ -85,8 +85,40 @@ $(document).ready(function(){
 	var state,lastState;
 	var m_frame = DELAY;
 	var tiles = [];
+  var isBinded = false;
+	
+	function clickHandler(){
+		two.unbind('update');
+		tiles = [];
+		m_frame = DELAY;
+		//Block-Unblock the clicked cell
+		//Index attribute of the tag will contain its index in the graph
+		index = this.getAttribute('index');
+		if(index != start && index != end){
+			[x,y] = problem.getIJ(index);
+			if(graph[x][y] == 1){
+				graph[x][y] = 0;
+			}else{
+				graph[x][y] = 1;
+			}
+		}
+		isBinded = false;
+		init();
+	};
 
 	function updateHandler(frameCount){
+		//We need to check if two has already rendered the tags before attempting
+		//to bind the click event.
+		if(!isBinded && document.getElementById(tiles[0].id)){
+			for(var i=0;i<tiles.length;i++){
+					var elem = document.getElementById(tiles[i].id);
+					//Each path tag will now have index attribute containing its index
+					//in the graph array
+					elem.setAttribute('index',i)
+					elem.addEventListener('click',clickHandler)
+				}
+			isBinded = true;
+		}
 		--m_frame;
 		lastState = state;
 		if(m_frame == 0){
@@ -96,12 +128,7 @@ $(document).ready(function(){
 			interpolate();
 		}
 	};
-	function clickHandler(){
-		two.unbind('update');
-		tiles = [];
-		m_frame = DELAY;
-		init();
-	}
+
 	function init(){
 		canvas = document.getElementById('depthFirstSearchCanvas');
 		// canvas.addEventListener('click',clickHandler,false);
@@ -134,7 +161,6 @@ $(document).ready(function(){
 		for(var i = 0; i < problem.ROWS; i++){
 			for(var j = 0; j < problem.COLS; j++){
 				var temp = two.makeRectangle(SIZE/2+j*SIZE,SIZE/2+i*SIZE,SIZE,SIZE);
-				console.log(temp._renderer.elem);
 				if(problem.graph[i][j])
 				temp.fill = BLOCKING;
 				else

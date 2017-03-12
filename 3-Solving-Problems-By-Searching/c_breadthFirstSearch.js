@@ -85,8 +85,39 @@ $(document).ready(function(){
 	var state,lastState;
 	var m_frame = DELAY;
 	var tiles = [];
+	var isBinded = false;
 
+	function clickHandler(){
+		two.unbind('update');
+		tiles = [];
+		m_frame = DELAY;
+		//Block-Unblock the clicked cell
+		//Index attribute of the tag will contain its index in the graph
+		index = this.getAttribute('index');
+		if(index != start && index != end){
+			[x,y] = problem.getIJ(index);
+			if(graph[x][y] == 1){
+				graph[x][y] = 0;
+			}else{
+				graph[x][y] = 1;
+			}
+		}
+		isBinded = false;
+		init();
+	}
 	function updateHandler(frameCount){
+		//We need to check if two has already rendered the tags before attempting
+		//to bind the click event.
+		if(!isBinded && document.getElementById(tiles[0].id)){
+			for(var i=0;i<tiles.length;i++){
+					var elem = document.getElementById(tiles[i].id);
+					//Each path tag will now have index attribute containing its index
+					//in the graph array
+					elem.setAttribute('index',i)
+					elem.addEventListener('click',clickHandler)
+				}
+			isBinded = true;
+		}
 		--m_frame;
 		lastState = state;
 		if(m_frame == 0){
@@ -96,15 +127,9 @@ $(document).ready(function(){
 			interpolate();
 		}
 	};
-	function clickHandler(){
-		two.unbind('update');
-		tiles = [];
-		m_frame = DELAY;
-		init();
-	}
+	
 	function init(){
 		canvas = document.getElementById('breadthFirstSearchCanvas');
-		canvas.addEventListener('click',clickHandler,false);
 		canvas.innerHTML = "";
 		w = canvas.offsetWidth, h = 300;
 		two = new Two({width:w , height:h}).appendTo(canvas);
@@ -118,6 +143,7 @@ $(document).ready(function(){
 		two.bind('update',updateHandler).play();
 
 		drawBackground();
+
 	};
 
 	function step(){
@@ -125,6 +151,7 @@ $(document).ready(function(){
 		[isNewState,newState] = bfs.iterate();
 		if(isNewState){
 			state = newState;
+
 		}
 	};
 
@@ -140,9 +167,9 @@ $(document).ready(function(){
 				temp.fill = NONBLOCKING;
 				temp.noStroke();
 				tiles.push(temp);
-
 			}
 		}
+
 		tiles[problem.INITIAL].fill = STARTCOLOR;
 		tiles[problem.END].fill = ENDCOLOR;
 		var backgroundGroup = two.makeGroup(tiles);
@@ -155,8 +182,9 @@ $(document).ready(function(){
 		}
 		if(state == problem.END){
 			tiles[state].fill = FINISHCOLOR;
+
 		}
 	}
-	
+
 	init();
 });

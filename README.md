@@ -1,5 +1,5 @@
 # aima-javascript
-Javascript implementation of algorithms (and visualizations) from Russell And Norvig's "Artificial Intelligence - A Modern Approach"
+Visualization of concepts from Russell And Norvig's "Artificial Intelligence - A Modern Approach", and Javascript code for algorithms. Unlike aima-python, aima-java, and other sibling projects, this project is primarily about the visualizations and secondarily about the code.
 
 [Click here to go to the static hosted page](http://aimacode.github.io/aima-javascript/)
 
@@ -55,11 +55,7 @@ To bundle the web app :
 
 ### Running
 
-Start a local server, e.g. `python -m SimpleHTTPServer 80` for Python 2.x or `python -m http.server 80` for Python 3.x
-
-Then visit `http://localhost` using your browser.
-
-**Note : Run local server on ` build` directory after deploying locally.**
+Start a local server, e.g. `cd build; python -m SimpleHTTPServer 80` for Python 2.x or `cd build; python -m http.server 80` for Python 3.x. Then visit `http://localhost` using your browser. On some systems you may need to use a different port, e.g. 8000.
 
 ## Build
 
@@ -67,7 +63,7 @@ This directory contains the minified source code for production deployment.
 
 ## Structure
 
-The repository has the following structure:
+The repository has the following structure for each algorithm:
 
 - There is a directory for each chapter
 - Each algorithm will have a `algorithm.js` where the main logic is to be implemented.
@@ -76,6 +72,12 @@ The repository has the following structure:
 - The `c_algorithm.js` will use AJAX to load `algorithm.js` into `index.html` as plain text for side-by-side reference of the reader.  
 - The `index.html` will also include `main.js` which contains minified version of global scripts like jQuery, angular etc
 - See the [`index.html`](https://github.com/aimacode/aima-javascript/blob/master/2-Intelligent-Agents/index.html) of [chapter 2](http://ghost---shadow.github.io/aima-javascript/2-Intelligent-Agents/) for reference.
+
+However, there will also be visualizations that do not fit into that structure:
+
+- There may be concepts without pseudocode in the book.
+- There may be multiple concepts for an algorithm.
+- There may be concepts that do not correspond to a single algorithm.
 
 # Contribution
 
