@@ -11,6 +11,7 @@
   <script type="text/javascript" src="./depthLimitedSearch.js"></script>
   <script type="text/javascript" src="./iterativeDeepening.js"></script>
   <script type="text/javascript" src="./uniformCostSearch.js"></script>
+  <script type="text/javascript" src="./nodeExpansion.js"></script>
 
   <script type="text/javascript" src="./c_aStarSearch.js"></script>
   <script type="text/javascript" src="./c_bestFirstSearch.js"></script>
@@ -19,6 +20,7 @@
   <script type="text/javascript" src="./c_depthLimitedSearch.js"></script>
   <script type="text/javascript" src="./c_iterativeDeepening.js"></script>
   <script type="text/javascript" src="./c_uniformCostSearch.js"></script>
+  <script type="text/javascript" src="./c_nodeExpansion.js"></script>
   <script>
    $(function(){
       $('header').load("../header.html");
@@ -31,51 +33,81 @@
   </header>
 
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Solving Problems By Searching</h1>
+    <div class="col-sm-6 col-md-10 col-md-offset-1" id="content">
 
-      <h2>Breadth First Search</h2>
-      <p>Click on the cells to block/unblock the cells and restart the simulation.</p>
-      <div class = "canvas" id="breadthFirstSearchCanvas" height="300px">
+        <h1>Solving Problems By Searching</h1>
+
+        <h2>Node Expansion</h2>
+        <p>Initial State is 'A'</p>
+        <p>
+          Click on a frontier node to see how it expands.
+        </p>
+        <div class="row">
+          <div class="col-sm-6 col-md-6">
+            <div class='btn btn-primary' id='nodeRestartButton'>Restart</div>
+            <div class="canvas" id='nodeExpansionCanvas' height="400px">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6">
+            <div class="notes">
+              <ul type="none" id='nodeLegend'>
+                <li>Expanded Nodes : <div id='legendExpanded' style="width:15px;height:15px;display: inline-block;"></div></li>
+                <li>Frontier Nodes : <div id='legendFrontier' style="width:15px;height:15px;display: inline-block;"></div></li>
+                <li>Unexplored/Unknown nodes : <div id='legendUnexplored' style="width:15px;height:15px;display: inline-block;"></div></li>
+              </ul>
+            </div>
+            <div id="frontierNodesWrapper" style="border-style:solid; width:50%;height:200px;margin-top:40px">
+              <center>
+                <h4>Frontier Nodes</h4>
+                <div id='frontierCanvas'>
+
+                </div>
+              </center>
+            </div>
+          </div>
+        </div>
+        <h2>Breadth First Search</h2>
+        <p>Click on the cells to block/unblock the cells and restart the simulation.</p>
+        <div class = "canvas" id="breadthFirstSearchCanvas" height="300px">
+        </div>
+
+        <pre id="breadthFirstSearchCode"></pre>
+
+        <h2>Uniform Cost Search</h2>
+        <p>Click on the canvas to restart the simulation</p>
+        <div class = "canvas" id="uniformCostSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
+        </div>
+
+        <pre id="uniformCostSearchCode"></pre>
+
+        <h2>Depth First Search</h2>
+        <p>Click on the cells to block/unblock the cells and restart the simulation.</p>
+        <div class = "canvas" id="depthFirstSearchCanvas" height="300px">
+        </div>
+
+        <pre id="depthFirstSearchCode"></pre>
+
+        <h2>Depth Limited Search</h2>
+        <p>Click on the canvas to restart the simulation</p>
+        <div class = "canvas" id="depthLimitedSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
+        </div>
+
+        <pre id="depthLimitedSearchCode"></pre>
+
+        <h2>Iterative Deepening Search</h2>
+        <p>Click on the canvas to restart the simulation</p>
+        <div class = "canvas" id="iterativeDeepeningCanvas" height="300px" style="background: rgb(154, 255, 255);">
+        </div>
+
+        <pre id="iterativeDeepeningCode"></pre>
+
+        <h2>A Star Search</h2>
+        <p>Click on the canvas to restart the simulation</p>
+        <div class = "canvas" id="aStarSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
+        </div>
+
+        <pre id="aStarSearchCode"></pre>
       </div>
-
-      <pre id="breadthFirstSearchCode"></pre>
-
-      <h2>Uniform Cost Search</h2>
-      <p>Click on the canvas to restart the simulation</p>
-      <div class = "canvas" id="uniformCostSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
-      <pre id="uniformCostSearchCode"></pre>
-
-      <h2>Depth First Search</h2>
-      <p>Click on the cells to block/unblock the cells and restart the simulation.</p>
-      <div class = "canvas" id="depthFirstSearchCanvas" height="300px">
-      </div>
-
-      <pre id="depthFirstSearchCode"></pre>
-
-      <h2>Depth Limited Search</h2>
-      <p>Click on the canvas to restart the simulation</p>
-      <div class = "canvas" id="depthLimitedSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
-      <pre id="depthLimitedSearchCode"></pre>
-
-      <h2>Iterative Deepening Search</h2>
-      <p>Click on the canvas to restart the simulation</p>
-      <div class = "canvas" id="iterativeDeepeningCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
-      <pre id="iterativeDeepeningCode"></pre>
-
-      <h2>A Star Search</h2>
-      <p>Click on the canvas to restart the simulation</p>
-      <div class = "canvas" id="aStarSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
-      <pre id="aStarSearchCode"></pre>
-
     </div>
   </div>
 
