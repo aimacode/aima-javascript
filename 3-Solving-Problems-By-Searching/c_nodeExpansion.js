@@ -43,7 +43,7 @@ $(document).ready(function(){
     [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
   ];
 
-  var f_nodes = [];
+  var nodeGroups = [];
 
   function getColor(state){
     if(state == 0){
@@ -56,7 +56,34 @@ $(document).ready(function(){
   }
 
   function iterateGraph(){
-
+    for(var i = 0; i < nodeGroups.length; i++){
+      f_node = nodeGroups[i];
+      node = nodes[i];
+      state = problem.getState(i);
+      f_node._collection[0].fill = getColor(state);
+      if(state == 1){
+        $(f_node._renderer.elem).css('cursor','pointer');
+        f_node._renderer.elem.onclick = function(){
+          index = $(this).attr('nodeIndex');
+          problem.expand(index);
+          iterateGraph();
+        }
+      }else{
+        f_node._renderer.elem.onclick = null;
+      }
+    }
+    frontierTwo.clear();
+    var frontierNodes = problem.getExpandables();
+    for(var i=0;i<frontierNodes.length;i++){
+      node = nodes[frontierNodes[i]];
+      var x = (i%4)*50+40;
+      var y = (Math.floor(i/4))*50 + 20;
+      var circle = frontierTwo.makeCircle(x,y,nodeRadius);
+      var text = frontierTwo.makeText(node.text,x,y);
+      circle.fill = frontierColor;
+    }
+    frontierTwo.update();
+    two.update();
   }
   function drawGraph(){
     //Draw Edges
@@ -76,7 +103,7 @@ $(document).ready(function(){
       circle.fill = getColor(problem.getState(i));
       var text = two.makeText(node.text,node.x,node.y);
       var group = two.makeGroup(circle,text);
-      f_nodes.push(group);
+      nodeGroups.push(group);
       two.update();
       $(group._renderer.elem).attr('nodeIndex',i);
       if(problem.getState(i) == 1){
@@ -100,13 +127,14 @@ $(document).ready(function(){
       var circle = frontierTwo.makeCircle(x,y,nodeRadius);
       var text = frontierTwo.makeText(node.text,x,y);
       circle.fill = frontierColor;
-      frontierTwo.update();
     }
+    frontierTwo.update();
   }
 
   function init(){
     canvas = document.getElementById('nodeExpansionCanvas');
     canvas.innerHTML = '';
+    nodeGroups = [];
     two = new Two({height:h,width:w}).appendTo(canvas);
     problem = new nodeExpansionProblem(adjMatrix,0);
     $('#legendExpanded').css('background-color',expandedColor);
