@@ -3,9 +3,9 @@ $(document).ready(function(){
   var w = 600, h = 350;
   var initial = 0;
 
-  var unvisitedColor = '#c4c2c2';
-  var frontierColor = '#59acff';
-  var expandedColor = '#c64f4f';
+  var unvisitedColor = 'hsl(0, 2%, 76%)';
+  var frontierColor = 'hsl(200,50%,70%)';
+  var expandedColor = 'hsl(0,50%,75%)';
   var nodeRadius = 15;
   var nodes = [
     {x:50,y:100,text:"A"},
@@ -55,6 +55,9 @@ $(document).ready(function(){
     return expandedColor;
   }
 
+  function iterateGraph(){
+
+  }
   function drawGraph(){
     //Draw Edges
     for(var i=0; i < adjMatrix.length; i++){
@@ -81,7 +84,7 @@ $(document).ready(function(){
         group._renderer.elem.onclick = function(){
           index = $(this).attr('nodeIndex');
           problem.expand(index);
-          drawGraph();
+          iterateGraph();
         }
       }
     }
