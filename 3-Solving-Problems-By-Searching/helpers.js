@@ -82,6 +82,7 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
   this.agent = agent;
   this.nodeRadius = 15;
   this.nodeGroups = [];
+  this.edges = [];
   this.nodes = nodes;
   this.adjMatrix = adjMatrix;
   this.unvisitedColor = 'hsl(0, 2%, 76%)';
@@ -92,16 +93,13 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
 
   this.drawCode = {
     0:{
-      color:this.unvisitedColor,
-      opacity:1
+      color:this.unvisitedColor
     },
     1:{
-      color:this.frontierColor,
-      opacity:1
+      color:this.frontierColor
     },
     2:{
-      color:this.expandedColor,
-      opacity:1
+      color:this.expandedColor
     }
   };
 
@@ -114,8 +112,10 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
       for(var j=0; j< this.adjMatrix[i].length; j++){
         if(this.adjMatrix[i][j]){
           var line = this.two.makeLine(this.nodes[i].x,this.nodes[i].y,this.nodes[j].x , this.nodes[j].y);
-          $(line._renderer.elem).attr('nodesIndices',i+"_"+j)
           line.linewidth = 2;
+          this.edges.push(line);
+          this.two.update();
+          $(line._renderer.elem).attr('nodesIndices',i+"_"+j)
         }
       }
     }
@@ -125,7 +125,6 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
       node = this.nodes[i];
       var circle = this.two.makeCircle(node.x,node.y,this.nodeRadius);
       circle.fill = this.drawCode[this.agent.getState(i)].color;
-      circle.opacity = this.drawCode[this.agent.getState(i)].opacity;
       var text = this.two.makeText(node.text,node.x,node.y);
       var group = this.two.makeGroup(circle,text);
       this.nodeGroups.push(group);
@@ -143,7 +142,7 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
     if(this.extraDraw){
       this.extraDraw();
     }
-    this.two.update():
+    this.two.update();
   };
 
   this.iterate = function(callback){
@@ -154,7 +153,6 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
       node = this.nodes[i];
       state = this.agent.getState(i);
       f_node._collection[0].fill = this.drawCode[state].color;
-      f_node._collection[0].opacity = this.drawCode[state].opacity;
       if(state == 1){
         $(f_node._renderer.elem).css('cursor','pointer');
         f_node._renderer.elem.onclick = function(){

@@ -35,14 +35,27 @@
 
   <div class="row">
     <div class="col-sm-6 col-md-10 col-md-offset-1" id="content">
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h1>Solving Problems By Searching</h1>
 
-        <h1>Solving Problems By Searching</h1>
+          <h2>Node Expansion</h2>
+          <p>
+            To search through a graph, a Search Agent needs to <b>expand</b>
+            nodes.
+            The nodes which can be expanded by the Agent together forms the
+            <b>frontier</b>.
+            Expanding a node refers to marking the node as 'expanded' or
+            'visited' and adding its immediate neighbors to the frontier.
+          </p>
+          <p>
+            In the following diagram, 'A' is the initial node and belongs to
+            the frontier. Click on the frontier nodes to see how they are
+            expanded.
+          </p>
+        </div>
+      </div>
 
-        <h2>Node Expansion</h2>
-        <p>Initial State is 'A'</p>
-        <p>
-          Click on a frontier node to see how it expands.
-        </p>
         <div class="row">
           <div class="col-sm-6 col-md-6">
             <div class='btn btn-primary' id='nodeRestartButton'>Restart</div>
@@ -61,12 +74,31 @@
               <center>
                 <h4>Frontier Nodes</h4>
                 <div id='frontierCanvas'>
-
                 </div>
               </center>
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-6 col-sm-6">
+            <h2>Getting in the shoes of a Search Agent</h2>
+            <p>
+              Let's see the prespective of a Search Agent as it searches through the graph.<br>
+              Remember, the Agent can only see the nodes which are either expanded or currently present in
+              the frontier.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 col-md-6">
+            <div class='btn btn-primary' id='agentViewRestartButton'>Restart</div>
+            <div class="canvas" id='agentViewCanvas' height="400px">
+            </div>
+          </div>
+        </div>
+
+
         <h2>Breadth First Search</h2>
         <p>Click on the cells to block/unblock the cells and restart the simulation.</p>
         <div class = "canvas" id="breadthFirstSearchCanvas" height="300px">
