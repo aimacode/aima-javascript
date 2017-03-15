@@ -1,4 +1,4 @@
-var nodeExpansionProblem = function(adjMatrix,initial){
+var nodeExpansionAgent= function(adjMatrix,initial){
   this.adjMatrix = adjMatrix;
 
   this.UNEXPLORED = 0;
