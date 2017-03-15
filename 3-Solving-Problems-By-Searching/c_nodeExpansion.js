@@ -37,13 +37,100 @@ $(document).ready(function(){
     [0,0,0,0,0,0,0,0,0,1,1,0,0,0,1],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
   ];
+  function iterateGraph(){
+    for(var i = 0; i < nodeGroups.length; i++){
+      f_node = nodeGroups[i];
+      node = nodes[i];
+      state = problem.getState(i);
+      f_node._collection[0].fill = getColor(state);
+      if(state == 1){
+        $(f_node._renderer.elem).css('cursor','pointer');
+        f_node._renderer.elem.onclick = function(){
+          index = $(this).attr('nodeIndex');
+          problem.expand(index);
+          iterateGraph();
+        }
+      }else{
+        f_node._renderer.elem.onclick = null;
+      }
+    }
+    frontierTwo.clear();
+    var frontierNodes = problem.getExpandables();
+    for(var i=0;i<frontierNodes.length;i++){
+      node = nodes[frontierNodes[i]];
+      var x = (i%4)*50+40;
+      var y = (Math.floor(i/4))*50 + 20;
+      var circle = frontierTwo.makeCircle(x,y,nodeRadius);
+      var text = frontierTwo.makeText(node.text,x,y);
+      circle.fill = frontierColor;
+    }
+    frontierTwo.update();
+    two.update();
+  }
+  function drawGraph(){
+    //Draw Edges
+    for(var i=0; i < adjMatrix.length; i++){
+      for(var j=0; j< adjMatrix[i].length; j++){
+        if(adjMatrix[i][j]){
+          var line = two.makeLine(nodes[i].x,nodes[i].y,nodes[j].x , nodes[j].y);
+          $(line._renderer.elem).attr('nodesIndices',i+"_"+j)
+          line.linewidth = 2;
+        }
+      }
+    }
+    //Draw Nodes
+    for(var i = 0; i < nodes.length; i++){
+      node = nodes[i];
+      var circle = two.makeCircle(node.x,node.y,nodeRadius);
+      circle.fill = getColor(problem.getState(i));
+      var text = two.makeText(node.text,node.x,node.y);
+      var group = two.makeGroup(circle,text);
+      nodeGroups.push(group);
+      two.update();
+      $(group._renderer.elem).attr('nodeIndex',i);
+      if(problem.getState(i) == 1){
+        $(group._renderer.elem).css('cursor','pointer');
+        group._renderer.elem.onclick = function(){
+          index = $(this).attr('nodeIndex');
+          problem.expand(index);
+          iterateGraph();
+        }
+      }
+    }
+    //Draw nodes in frontier block
+    frontierCanvas = document.getElementById('frontierCanvas');
+    frontierCanvas.innerHTML = '';
+    frontierTwo = new Two().appendTo(frontierCanvas);
+    var frontierNodes = problem.getExpandables();
+    for(var i=0;i<frontierNodes.length;i++){
+      node = nodes[frontierNodes[i]];
+      var x = (i%4)*50+40;
+      var y = (Math.floor(i/4))*50 + 20;
+      var circle = frontierTwo.makeCircle(x,y,nodeRadius);
+      var text = frontierTwo.makeText(node.text,x,y);
+      circle.fill = frontierColor;
+    }
+    frontierTwo.update();
+  }
 
   function init(){
     canvas = document.getElementById('nodeExpansionCanvas');
     agent = new nodeExpansionAgent(adjMatrix,0);
     visGraph = new visualGraph(canvas,h,w,agent,nodes,adjMatrix);
     visGraph.extraDraw = function(){
-      
+      this.frontierCanvas = document.getElementById('frontierCanvas');
+      this.frontierCanvas.innerHTML = '';
+      this.frontierTwo = new Two().appendTo(frontierCanvas);
+      this.rontierNodes = this.agent.getExpandables();
+      for(var i=0;i<this.frontierNodes.length;i++){
+        node = this.nodes[this.frontierNodes[i]];
+        var x = (i%4)*50+40;
+        var y = (Math.floor(i/4))*50 + 20;
+        var circle = this.frontierTwo.makeCircle(x,y,this.nodeRadius);
+        var text = this.frontierTwo.makeText(node.text,x,y);
+        circle.fill = this.drawCode[1].color;
+      }
+      this.frontierTwo.update();
     }
     visGraph.init();
     $('#legendExpanded').css('background-color',visGraph.expandedColor);
