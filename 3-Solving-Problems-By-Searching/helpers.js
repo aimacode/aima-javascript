@@ -1,77 +1,5 @@
 
 
-// Returns a random graph. Might be useful for later visualizations.
-var randomGraphGenerator = function(size,h,w,nodeRadius){
-  function distance(node1,node2){
-    return Math.sqrt(Math.pow((node1.x - node2.x),2)+Math.pow((node1.y-node2.y),2));
-  }
-
-  function getDegree(){
-    let x = Math.random();
-    if(x < 0.05){
-      return 0;
-    }
-    if(x < 0.1){
-      return 1;
-    }
-    if(x < 0.75){
-      return 2;
-    }
-    return 3;
-  }
-  var gap = 40;
-  var nodes = [];
-  //Creating Random Nodes
-  for(var i=0;i<size;i++){
-    var node = {};
-    node.x = Math.floor(Math.random()*(w-nodeRadius))+nodeRadius;
-    node.y = Math.floor(Math.random()*(h-nodeRadius))+nodeRadius;
-    node.text = i;
-    node.degree = getDegree();
-    var acceptable = true;
-    for(var j=0;j<nodes.length;j++){
-      snode = nodes[j];
-      if(distance(snode,node) < (nodeRadius+gap)){
-        acceptable = false;
-        break;
-      }
-    }
-    if(acceptable){
-      nodes.push(node);
-    }else{
-      i--;
-    }
-  }
-  //Create empty adjacency Matrix
-  var adjMatrix = [];
-  for(var i=0;i<nodes.length;i++){
-    x = [];
-    for(var j=0;j<nodes.length;j++){
-      x.push(0);
-    }
-    adjMatrix.push(x);
-  }
-  //Fill adjacency matrix according to degree of the nodes
-  for(var i=0;i<nodes.length;i++){
-    var currNode = nodes[i];
-    var distances = [];
-    for(var j=0;j<nodes.length;j++){
-      if(i != j){
-        distances.push({index:j,distance:distance(currNode,nodes[j])});
-      }
-    }
-    distances = distances.sort(function(a,b){
-      return a.distance - b.distance;
-    });
-
-    for(var j=0; j<currNode.degree;j++){
-      adjMatrix[i][distances[j].index] = 1;
-      adjMatrix[distances[j].index][i] = 1;
-    }
-  }
-
-  return {nodes:nodes,matrix:adjMatrix};
-}
 
 // Class for drawing graphs on the page
 var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
@@ -145,7 +73,7 @@ var visualGraph = function(canvas,h,w,agent,nodes,adjMatrix) {
     this.two.update();
   };
 
-  this.iterate = function(callback){
+  this.iterate = function(){
     var self = this;
 
     for(var i = 0; i < this.nodeGroups.length; i++){
