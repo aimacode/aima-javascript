@@ -1,3 +1,3 @@
-var breadthFirstSearch = function(frontier){
+var breadthFirstSearch = function(frontier) {
   return frontier[0];
 }
