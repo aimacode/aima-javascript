@@ -186,6 +186,9 @@
             Below is a side by side comparison of both 'Lowest Cost Path' and the 'Breadth First Search Path' from the same initial node 'A'.
             <br> Note how <b>BFS fails</b> to derive the lowest cost path for many nodes. BFS successfully finds the paths with the <b>minimum number of nodes</b> from the initial node, but it doesn't take into account the costs of the steps.
           </p>
+          <p>
+            Hover your mouse over any node to see the paths.
+          </p>
         </div>
       </div>
 
@@ -201,18 +204,20 @@
       </div>
       <div class='row'>
         <div class="col-sm-6 col-md-6">
-          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:150px;margin-top:40px">
+          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
             <center>
               <h4>Lowest Cost Path</h4>
+              <h5>Uniform Cost Search (Extension of BFS)</h5>
               <div id='lowestCostDetailCanvas'>
               </div>
             </center>
           </div>
         </div>
         <div class="col-sm-6 col-md-6">
-          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:150px;margin-top:40px">
+          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
             <center>
               <h4>BFS Shortest Path</h4>
+              <h5>Breadth First Search</h5>
               <div id='bfsCostDetailCanvas'>
               </div>
             </center>

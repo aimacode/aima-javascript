@@ -38,10 +38,8 @@ $(document).ready(function() {
 
     costVisGraph.init();
     noCostVisGraph.init();
-    costVisGraph.nodeGroups[initial].children[0].fill = markNodeColor;
-    costVisGraph.two.update();
-    noCostVisGraph.nodeGroups[initial].children[0].fill = markNodeColor;
-    noCostVisGraph.two.update();
+    costVisGraph.iterate();
+    noCostVisGraph.iterate();
     var findPath = function(final) {
       //Cost graph
       ucs = true;
