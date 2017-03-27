@@ -22,7 +22,15 @@ function nodeExpansionAgent(adjMatrix, initial) {
   this.getState = function(node) {
     return this.nodes[node].state;
   };
-
+  this.getExpanded = function() {
+    var expanded = [];
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].state == this.EXPLORED) {
+        expanded.push(i);
+      }
+    }
+    return expanded;
+  }
   this.getNeighbors = function(node) {
     var neighbors = []
     for (var i = 0; i < this.adjMatrix[node].length; i++) {

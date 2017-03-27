@@ -234,7 +234,7 @@
             frontier for expansion.
           </p>
           <p>
-            The graph below has some costs associated with the steps. It is explored using Uniform Cost Search with 'A' as the initial node.
+            At any point of time in the process of a Uniform Cost Search, the costs of the explroed nodes are always less than or equal to the costs of the frontier nodes (and also unexplored nodes as a matter of fact).
           </p>
         </div>
       </div>
@@ -252,15 +252,34 @@
                 <div id='ucsWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
               <li>
                 <div id='ucsNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
+              <li>
+                <div id='ucsExploredNode' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes</li>
+
             </ul>
           </div>
-          <div id="priorityQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:70%;height:130px;margin-top:40px">
-            <center>
-              <h4>Priority Queue</h4>
-              <div id='priorityQueueCanvas'>
+          <div class="row">
+            <div class="col-md-6 col-xs-12 col-lg-6">
+              <div id="priorityQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:300px;margin-top:40px">
+                <center>
+                  <h4>Priority Queue</h4>
+                  <h4> costs >= <span class = 'ucsSeparation' style="font-size:150%;color:green">0</span></h4>
+                  <div id='priorityQueueCanvas'>
+                  </div>
+                </center>
               </div>
-            </center>
+            </div>
+            <div class="col-md-6 col-xs-12 col-lg-6">
+              <div id="ExploredPriorityQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:300px;margin-top:40px">
+                <center>
+                  <h4>Explored Nodes</h4>
+                  <h4> costs <= <span class = 'ucsSeparation' style="font-size:150%;color:green">0</span></h4>
+                  <div id='exploredPriorityQueueCanvas'>
+                  </div>
+                </center>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
 

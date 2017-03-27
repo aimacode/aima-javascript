@@ -105,6 +105,7 @@ function drawQueue(canvas, h, w, agent, nodes, showCost) {
   this.agent = agent;
   this.nodeRadius = 25;
   this.waitingColor = 'hsl(200,50%,70%)';
+  this.expandedColor = 'hsl(0,50%,75%)';
   this.nodes = nodes;
   this.indexOfLastElement = 0;
   this.rectangles = [];
