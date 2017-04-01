@@ -1,158 +1,118 @@
 $(document).ready(function() {
   var w = 600,
     h = 350;
-  var costVisGraph = null;
-  var noCostVisGraph = null;
-  var agent = null;
-  var initial = 0;
-  var costCanvas = null;
-  var costDetailCanvas = null;
-  var noCostCanvas = null;
-  var noCostDetailCanvas = null;
-  var costDetailListTwo = null;
-  var noCostDetailListTwo = null;
-
   var DELAY = 2000;
-  var markNodeColor = 'hsl(108, 96%, 80%)';
-  var markEdgeColor = 'hsla(179, 100%, 38%, 1)';
-  var detailColor = 'hsla(179, 100%, 38%, 1)';
+  var bfsPathCanvas = null,
+    ucsPathCanvas = null;
+  var bfsTwo = null,
+    ucsTwo = null;
+  var colorPathInGraph = function(graphDrawAgent, path) {
+    let nodeGroups = graphDrawAgent.nodeGroups;
+    for (var i = 0; i < path.path.length; i++) {
+      nodeKey = path.path[i].node;;
+      for (var j = 0; j < nodeGroups.length; j++) {
+        if ($(nodeGroups[j]._renderer.elem).attr('nodeKey') == nodeKey) {
+          nodeGroups[j]._collection[0].fill = 'hsl(108, 96%, 80%)';
+          break;
+        }
+      }
+    }
+    let edges = graphDrawAgent.edges;
+    for (var i = 0; i < path.path.length - 1; i++) {
+      nodeKey1 = path.path[i].node;
+      nodeKey2 = path.path[i + 1].node;
+      for (var j = 0; j < edges.length; j++) {
+        let edge = edges[j];
+        let fnode1 = $(edge._renderer.elem).attr("node1");
+        let fnode2 = $(edge._renderer.elem).attr("node2");
+        if ((fnode1 == nodeKey1 && fnode2 == nodeKey2) || (fnode2 == nodeKey1 && fnode1 == nodeKey2)) {
+          edge.stroke = 'hsla(202, 100%, 56%, 1)';
+          edge.linewidth = 5;
+        }
+      }
+    }
+    graphDrawAgent.two.update();
 
+  }
+
+  var drawCostPath = function(two, path) {
+    two.clear();
+    path.path = path.path.reverse();
+    let runningCost = 0;
+    var i, x1, x2, y;
+    for (i = 0; i < path.path.length - 1; i++) {
+      x1 = i * 65 + 20;
+      x2 = (i + 1) * 65 + 20;
+      y = 20;
+      line = two.makeLine(x1, y, x2, y);
+      line.stroke = 'hsla(202, 100%, 56%, 1)';
+      line.linewidth = 5;
+      edgeText = two.makeText(path.path[i + 1].cost, (x1 + x2) / 2, 10);
+      rect = two.makeRectangle(x1, y, 30, 30);
+      rect.fill = 'hsl(108, 96%, 80%)';
+      nodeText = two.makeText(path.path[i].node, x1, y);
+      nodeCost = two.makeText(runningCost, x1, y + 40);
+      nodeCost.size = 17;
+      runningCost += path.path[i + 1].cost;
+    }
+    x1 = i * 65 + 20;
+    rect = two.makeRectangle(x1, y, 40, 40);
+    rect.fill = 'hsl(108, 96%, 80%)';
+    nodeText = two.makeText(path.path[i].node, x1, y);
+    nodeText.size = 22;
+    nodeText.stroke = 'hsla(202, 100%, 56%, 1)';
+    nodeCost = two.makeText(runningCost, x1, y + 40);
+    nodeCost.size = 22;
+    nodeCost.stroke = 'hsla(202, 100%, 56%, 1)';
+    two.update();
+  }
 
   function init() {
-    costCanvas = document.getElementById('costGraphCanvas');
-    noCostCanvas = document.getElementById('no-costGraphCanvas');
-    costDetailCanvas = document.getElementById('lowestCostDetailCanvas');
-    noCostDetailCanvas = document.getElementById('bfsCostDetailCanvas');
-    graph = new makeDefaultGraph();
-    agent = new nodeExpansionAgent(graph.adjMatrix, initial);
-    costVisGraph = new drawGraph(costCanvas, h, w, agent, graph.nodes, graph.adjMatrix, true);
-    noCostVisGraph = new drawGraph(noCostCanvas, h, w, agent, graph.nodes, graph.adjMatrix, true);
-    costDetailListTwo = new Two({
+    var graph = new DefaultGraph();
+    var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', null);
+    var options = new DefaultOptions();
+    var bfsGraphDrawAgent, ucsGraphDrawAgent;
+    ucsPathCanvas = document.getElementById('lowestCostDetailCanvas');
+    bfsPathCanvas = document.getElementById('bfsCostDetailCanvas');
+    bfsTwo = new Two({
       height: h,
       width: w
-    }).appendTo(costDetailCanvas);
-    noCostDetailListTwo = new Two({
+    }).appendTo(bfsPathCanvas);
+    ucsTwo = new Two({
       height: h,
       width: w
-    }).appendTo(noCostDetailCanvas);
+    }).appendTo(ucsPathCanvas);
 
-    costVisGraph.init();
-    noCostVisGraph.init();
-    costVisGraph.iterate();
-    noCostVisGraph.iterate();
-    var findPath = function(final) {
-      //Cost graph
-      ucs = true;
-      pathObj = findShortestPath(graph.adjMatrix, final, initial, ucs);
-      for (var i = 0; i < pathObj.path.length; i++) {
-        costVisGraph.nodeGroups[pathObj.path[i].node].children[0].fill = markNodeColor;
-      }
-      for (var i = 0; i < pathObj.path.length - 1; i++) {
-        var line = costVisGraph.edgeMap[pathObj.path[i].node + '_' + pathObj.path[i + 1].node];
-        line.stroke = markEdgeColor;
-        line.linewidth = 6;
-      }
-      costVisGraph.two.update();
-      //Cost path Detail
-      costDetailListTwo.clear();
-      for (var i = 0; i < pathObj.path.length - 1; i++) {
-        var node1 = graph.nodes[pathObj.path[i].node];
-        var node2 = graph.nodes[pathObj.path[i + 1].node];
-        var cost = graph.adjMatrix[pathObj.path[i].node][pathObj.path[i + 1].node];
-        var x1 = i * 70 + 20;
-        var x2 = (i + 1) * 70 + 20;
-        var y = 35;
-        var line = costDetailListTwo.makeLine(x1, y, x2, y);
-        line.linewidth = 2;
-        var midx = (x1 + x2) / 2;
-        costDetailListTwo.makeText(cost, midx, y - 10);
-      }
-      var lastText = null;
-      for (var i = 0; i < pathObj.path.length; i++) {
-        node = graph.nodes[pathObj.path[i].node];
-        cost = pathObj.path[i].cost;
-        var x = (i) * 70 + 20;
-        var y = 35;
-        var rectangle = costDetailListTwo.makeRectangle(x, y, 25, 25);
-        rectangle.fill = markNodeColor;
-        costDetailListTwo.makeText(node.text, x, y);
-        lastText = costDetailListTwo.makeText(cost, x, y + 30);
-      }
-      lastText.size = 25;
-      lastText.stroke = 'hsla(210, 100%, 51%, 1)';
-      costDetailListTwo.update();
-
-      //Bfs Graph
-      ucs = false
-      pathObj = findShortestPath(graph.adjMatrix, final, initial, ucs);
-      for (var i = 0; i < pathObj.path.length; i++) {
-        noCostVisGraph.nodeGroups[pathObj.path[i].node].children[0].fill = markNodeColor;
-      }
-      for (var i = 0; i < pathObj.path.length - 1; i++) {
-        var line = noCostVisGraph.edgeMap[pathObj.path[i].node + '_' + pathObj.path[i + 1].node];
-        line.stroke = markEdgeColor;
-        line.linewidth = 6;
-      }
-      noCostVisGraph.two.update();
-
-      //bfs path detail
-      noCostDetailListTwo.clear();
-      for (var i = 0; i < pathObj.path.length - 1; i++) {
-        var node1 = graph.nodes[pathObj.path[i].node];
-        var node2 = graph.nodes[pathObj.path[i + 1].node];
-        var cost = graph.adjMatrix[pathObj.path[i].node][pathObj.path[i + 1].node];
-        var x1 = i * 70 + 20;
-        var x2 = (i + 1) * 70 + 20;
-        var y = 35;
-        var line = noCostDetailListTwo.makeLine(x1, y, x2, y);
-        line.linewidth = 2;
-        var midx = (x1 + x2) / 2;
-        noCostDetailListTwo.makeText(cost, midx, y - 10);
-      }
-      var lastText = null;
-      for (var i = 0; i < pathObj.path.length; i++) {
-        node = graph.nodes[pathObj.path[i].node];
-        cost = pathObj.path[i].cost;
-        var x = (i) * 70 + 20;
-        var y = 35;
-        var rectangle = noCostDetailListTwo.makeRectangle(x, y, 25, 25);
-        rectangle.fill = markNodeColor;
-        noCostDetailListTwo.makeText(node.text, x, y);
-        lastText = noCostDetailListTwo.makeText(cost, x, y + 30);
-      }
-      lastText.size = 25;
-      lastText.stroke = 'hsla(210, 100%, 51%, 1)';
-      noCostDetailListTwo.update();
-
+    var onMouseEnter = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      bfsShortestPath = findShortestPath(breadthFirstSearch, nodeKey);
+      ucsShortestPath = findShortestPath(uniformCostSearch, nodeKey);
+      colorPathInGraph(bfsGraphDrawAgent, bfsShortestPath);
+      colorPathInGraph(ucsGraphDrawAgent, ucsShortestPath);
+      drawCostPath(bfsTwo, bfsShortestPath);
+      drawCostPath(ucsTwo, ucsShortestPath);
     };
-
-
-
-    var onMouseEnterHandler = function() {
-      findPath(parseInt($(this).attr('nodeIndex')));
+    var onMouseLeave = function() {
+      bfsGraphDrawAgent.iterate();
+      ucsGraphDrawAgent.iterate();
+      bfsTwo.clear();
+      ucsTwo.clear();
+      bfsTwo.update();
+      ucsTwo.update();
     };
-    var onMouseLeaveHandler = function() {
-      costVisGraph.iterate();
-      costDetailListTwo.clear();
-      costDetailListTwo.update();
-      noCostVisGraph.iterate();
-      noCostDetailListTwo.clear();
-      noCostDetailListTwo.update();
-    };
-
-    for (var i = 0; i < costVisGraph.nodeGroups.length; i++) {
-      var edgeElement1 = costVisGraph.nodeGroups[i]._renderer.elem;
-      var edgeElement2 = noCostVisGraph.nodeGroups[i]._renderer.elem;
-
-      $(edgeElement1).css('cursor', 'pointer');
-      $(edgeElement2).css('cursor', 'pointer');
-      edgeElement1.onmouseenter = onMouseEnterHandler;
-      edgeElement1.onmouseleave = onMouseLeaveHandler;
-      edgeElement2.onmouseenter = onMouseEnterHandler;
-      edgeElement2.onmouseleave = onMouseLeaveHandler;
-    }
-    costVisGraph.two.update();
+    options.nodes.unexplored.onMouseEnter = onMouseEnter;
+    options.nodes.explored.onMouseEnter = onMouseEnter;
+    options.nodes.frontier.onMouseEnter = onMouseEnter;
+    options.nodes.next.onMouseEnter = onMouseEnter;
+    options.nodes.unexplored.onMouseLeave = onMouseLeave;
+    options.nodes.explored.onMouseLeave = onMouseLeave;
+    options.nodes.frontier.onMouseLeave = onMouseLeave;
+    options.nodes.next.onMouseLeave = onMouseLeave;
+    options.edges.showCost = true;
+    options.nodes.unexplored.clickHandler = function() {};
+    bfsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'no-costGraphCanvas', options, h, w);
+    ucsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'costGraphCanvas', options, h, w);
   };
-
+  $('#ucsRestartButton').click(init);
   init();
 });

@@ -1,11 +1,12 @@
 // Code for Uniform Cost Search
-var uniformCostSearch = function(frontier, costs) {
-  var minCost = costs[0];
-  var minNode = 0;
+var uniformCostSearch = function(problem) {
+  var frontier = problem.frontier;
+  var minNode = frontier[0];
+  var minCost = Number.POSITIVE_INFINITY;
   for (var i = 0; i < frontier.length; i++) {
-    if (costs[i] < minCost) {
-      minCost = costs[i];
-      minNode = i;
+    if (problem.nodes[frontier[i]].cost < minCost) {
+      minCost = problem.nodes[frontier[i]].cost;
+      minNode = frontier[i];
     }
   }
   return minNode;
@@ -34,4 +35,19 @@ var getUcsCosts = function(adjMatrix, initial) {
     costs.push(agent.nodes[i].cost)
   }
   return costs;
+}
+var precomputedCosts = function() {
+  var graph = new DefaultGraph();
+  var problem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
+  var agent = new GraphAgent(problem);
+  while (problem.frontier.length > 0) {
+    let next = uniformCostSearch(problem);
+    agent.expand(next);
+  }
+  var costMap = {};
+  for (key in problem.nodes) {
+    let node = problem.nodes[key];
+    costMap[key] = node.cost;
+  }
+  return costMap;
 }
