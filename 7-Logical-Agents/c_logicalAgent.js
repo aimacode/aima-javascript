@@ -107,7 +107,7 @@ $(document).ready(function(){
         return
     }
     
-    new_position = {x: world_status.player.x + offset[0], y: world_status.player.y + offset[1]}
+    new_position = {x: world_status.player.x + offset[0], y: world_status.player.y + offset[1]};
 
     // invalid move
     if (new_position.x < 1 || new_position.x > WUMPUS_WORLD_SIZE || new_position.y < 1 || new_position.y > WUMPUS_WORLD_SIZE) {
@@ -116,7 +116,13 @@ $(document).ready(function(){
     }
 
     movePlayer(new_position.x, new_position.y);
-  }
+  };
+
+  // keyboard binding
+  Mousetrap.bind('right', function () { gameController.playerMove('right'); return false; });
+  Mousetrap.bind('left', function () { gameController.playerMove('left'); return false; });
+  Mousetrap.bind('up', function () { gameController.playerMove('up'); return false; });
+  Mousetrap.bind('down', function () { gameController.playerMove('down'); return false; });
 
   // enter point
   initWorldStatus();
