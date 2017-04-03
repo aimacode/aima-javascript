@@ -35,10 +35,34 @@ $(document).ready(function(){
               .attr('width', WUMPUS_WORLD_UI_WIDTH)
               .attr('height', WUMPUS_WORLD_UI_WIDTH);
 
-    var background = world.append('rect')
-                          .classed('background', true)
-                          .attr('width', WUMPUS_WORLD_UI_WIDTH)
-                          .attr('height', WUMPUS_WORLD_UI_WIDTH);
+    info_g = world.append('g')
+                    .classed('info', true)
+                    .attr('width', WUMPUS_WORLD_UI_WIDTH)
+                    .attr('height', WUMPUS_WORLD_UI_WIDTH)
+                    .attr('id', 'info');
+
+    info_g.append('rect')
+          .attr('width', WUMPUS_WORLD_UI_WIDTH)
+          .attr('height', WUMPUS_WORLD_UI_WIDTH)
+
+    info_g.append('text')
+          .classed('msg', true)
+          .attr('x', WUMPUS_WORLD_UI_WIDTH / 2)
+          .attr('y', WUMPUS_WORLD_UI_WIDTH / 2)
+          .attr('dy', -10)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 30);
+    
+    info_g.append('text')
+          // .classed('helping')
+          .attr('x', WUMPUS_WORLD_UI_WIDTH / 2)
+          .attr('y', WUMPUS_WORLD_UI_WIDTH / 2)
+          .attr('dy', 20)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 20)
+          .attr('fill', 'black')
+          .text('press "Enter" to restart');
+
     
     squares = world.selectAll('g.square').data(world_status.squares)
                    .enter()
@@ -59,7 +83,7 @@ $(document).ready(function(){
   // initilize wumpus position
   function initWumpus() {
     // init wumpus location
-    wumpus = randomChoice(squares.slice(1));
+    wumpus = randomChoice(world_status.squares.slice(1));
     world_status.wumpus = wumpus;
 
     wumpus = world.selectAll('g.wumpus').data([world_status.wumpus])
@@ -75,7 +99,24 @@ $(document).ready(function(){
           .classed('wumpus', true)
   }
 
+  // initilize gold position
+  function initGold() {
+    // init gold location
+    gold = randomChoice(world_status.squares.slice(1).filter(pos => !samePosition(pos, world_status.wumpus)));
+    world_status.gold = gold;
 
+    gold = world.selectAll('g.gold').data([world_status.gold])
+                  .enter()
+                  .append('g')
+                  .classed('gold', true)
+                  .attr('transform', d => 'translate(' + (d.x-1) * SQUARE_SIZE + ',' + (4-d.y) * SQUARE_SIZE + ')');
+
+    gold.append('circle')
+          .attr('cx', SQUARE_SIZE / 2)
+          .attr('cy', SQUARE_SIZE / 2)
+          .attr('r', 15)
+          .classed('gold', true)
+  }
 
   // initialize game player position
   function initPlayer(){
@@ -107,7 +148,27 @@ $(document).ready(function(){
          .attr('transform', d => 'translate(' + (d.x-1) * SQUARE_SIZE + ',' + (4-d.y) * SQUARE_SIZE + ')');
   }
 
+  function showInfo(info) {
+    // re-append the info g to bring it to the front on the page
+    world.append(function(){return world.select('g#info').remove().node()});
+
+    switch (info) {
+      case 'Win':
+        info_g.select('text.msg').text('You Win!').attr("fill", "black");
+        info_g.select('rect').attr('fill', '#ddd').style("opacity", 0.5);
+        info_g.transition().style('opacity', 1)
+        break
+      case 'Lose':
+        info_g.select('text.msg').text('You Lose!').attr("fill", "black");
+        info_g.select('rect').attr('fill', '#000').style("opacity", 0.1);
+        info_g.transition().style('opacity', 1)
+      default:
+    }
+    
+  }
+
   // global functions (interfact of game)
+  gameController.status = 'Playing'
   gameController.playerMove = function (direction) {
     switch (direction) {
       case 'up':
@@ -137,17 +198,55 @@ $(document).ready(function(){
     }
 
     movePlayer(new_position.x, new_position.y);
+
+    // check game status
+    if (samePosition(world_status.player, world_status.wumpus)) {
+      gameController.gameStatusChange('Lose');
+    }
+    else if (samePosition(world_status.player, world_status.gold)) {
+      gameController.gameStatusChange('Win'); 
+    }
   };
 
+  gameController.gameStatusChange = function (status) {
+    switch (status) {
+      case 'Lose':
+        gameController.status = 'Lose';
+        showInfo('Lose');
+        break
+      case 'Win':
+        gameController.status = 'Win';
+        showInfo('Win');
+        break
+      default:
+    }
+  }
+
+  gameController.gameRestart = function () {
+    // remove previous game 
+    d3.select('g.wumpus').remove();
+    d3.select('g.gold').remove();
+    d3.select('g.player').remove();
+
+    gameController.status = 'Playing';
+    info_g.style('opacity', 0);
+    initWumpus();
+    initGold();
+    initPlayer();
+  }
+
   // keyboard binding
-  Mousetrap.bind('right', function () { gameController.playerMove('right'); return false; });
-  Mousetrap.bind('left', function () { gameController.playerMove('left'); return false; });
-  Mousetrap.bind('up', function () { gameController.playerMove('up'); return false; });
-  Mousetrap.bind('down', function () { gameController.playerMove('down'); return false; });
+  Mousetrap.bind('right', function () {if(gameController.status === 'Playing'){gameController.playerMove('right');} return false;}); // return false to prevent default events
+  Mousetrap.bind('left', function () {if(gameController.status === 'Playing'){gameController.playerMove('left');} return false;}); // return false to prevent default events
+  Mousetrap.bind('up', function () {if(gameController.status === 'Playing'){gameController.playerMove('up');} return false;}); // return false to prevent default events
+  Mousetrap.bind('down', function () {if(gameController.status === 'Playing'){gameController.playerMove('down');} return false;}); // return false to prevent default events
+  Mousetrap.bind('enter', function () {gameController.gameRestart(); return false;})
 
   // enter point
   initWorldStatus();
   initWumpusWorld();
+  initWumpus();
+  initGold();
   initPlayer();
 
 });
@@ -157,4 +256,9 @@ $(document).ready(function(){
 // return a random element from the array
 function randomChoice (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// return true if x and y attributes are equal
+function samePosition(o1, o2) {
+  return o1.x == o2.x && o1.y == o2.y;
 }
