@@ -18,6 +18,17 @@ $(document).ready(function(){
   const WUMPUS_WORLD_UI_WIDTH = 300;
   const SQUARE_SIZE = WUMPUS_WORLD_UI_WIDTH / WUMPUS_WORLD_SIZE;
 
+  // initialize locations of wumpus, squares, etc
+  function initWorldStatus(){
+    var squares = []
+    for (var i = 1; i <= WUMPUS_WORLD_SIZE; i++) {
+      for (var j = 1; j <= WUMPUS_WORLD_SIZE; j++) {
+        squares.push({x: i, y: j});
+      }
+    };
+    world_status.squares = squares;
+  }
+
   // initialize UI of wumpus world
   function initWumpusWorld(){
     world = d3.select('#wumpus_world').append('svg')
@@ -45,16 +56,26 @@ $(document).ready(function(){
                           .attr('y', 15)
   }
 
-  // initialize locations of wumpus, squares, etc
-  function initWorldStatus(){
-    var squares = []
-    for (var i = 1; i <= WUMPUS_WORLD_SIZE; i++) {
-      for (var j = 1; j <= WUMPUS_WORLD_SIZE; j++) {
-        squares.push({x: i, y: j});
-      }
-    };
-    world_status.squares = squares;
+  // initilize wumpus position
+  function initWumpus() {
+    // init wumpus location
+    wumpus = randomChoice(squares.slice(1));
+    world_status.wumpus = wumpus;
+
+    wumpus = world.selectAll('g.wumpus').data([world_status.wumpus])
+                  .enter()
+                  .append('g')
+                  .classed('wumpus', true)
+                  .attr('transform', d => 'translate(' + (d.x-1) * SQUARE_SIZE + ',' + (4-d.y) * SQUARE_SIZE + ')');
+
+    wumpus.append('circle')
+          .attr('cx', SQUARE_SIZE / 2)
+          .attr('cy', SQUARE_SIZE / 2)
+          .attr('r', 15)
+          .classed('wumpus', true)
   }
+
+
 
   // initialize game player position
   function initPlayer(){
@@ -130,3 +151,10 @@ $(document).ready(function(){
   initPlayer();
 
 });
+
+///////// util functions
+
+// return a random element from the array
+function randomChoice (arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
