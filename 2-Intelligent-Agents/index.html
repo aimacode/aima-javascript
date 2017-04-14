@@ -1,36 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>2 Intelligent Agents</title>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <script>
-    d3.html("../header.html", (html) => { d3.select('header').node().appendChild(html); });
-  </script>
-  <style>
-    .floor:hover { cursor: pointer; }
-  </style>
-</head>
-<body>
+  <head>
+    <title>2 Intelligent Agents</title>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+      $(function() {
+          $('header').load("../header.html");
+      });
+    </script>
+    <style>
+        .floor:hover { cursor: pointer; }
+        .agent-actions { margin-left: auto; margin-right: auto; border-collapse: collapse; }
+        .agent-actions th { padding: 0.5ex; border: 1px solid hsl(240,10%,90%); background: hsl(240,10%,85%); text-align: center; }
+        .agent-actions td { padding: 0.25ex; border: 1px solid hsl(240,20%,80%); text-align: center; }
+    </style>
+  </head>
+  <body>
 
-  <header>
-  </header>
+    <header>
+    </header>
 
-  <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Intelligent Agents</h1>
-      <h2>Simple cleaning robot</h2>
-      <p>Demonstration of a simple reflex agent. The robot patrols between two positions and when the floor is dirty, the robot cleans it.</p>
-      <p>Click on a box to make it dirty. </p>
-      <svg id="robotCanvas" width="600" height="300"></svg>
+    <div class="row">
+      <div class="col-sm-6 col-md-offset-3" id="content">
+        <h1>Intelligent Agents</h1>
+
+        <h2>Vacuum cleaner problem</h2>
+
+        <p>
+          Evaluate the world and choose an action for the robot:
+        </p>
+
+        <div id="reader-controlled-diagram">
+          <div class="buttons" style="position:relative"></div>
+          <svg width="600" height="300"></svg>
+        </div>
+        
+        <h2>Simple cleaning robot</h2>
+
+        <div id="agent-controlled-diagram">
+          
+          <p>
+            The robot will choose its own actions based on simple rules. Click on a box to make it dirty.
+          </p>
+
+          <table class="agent-actions"
+            <thead>
+              <tr>
+                <th rowspan="2" valign="bottom">Percept</th>
+                <th colspan="2">Position</th>
+              </tr>
+              <tr>
+                <th data-input="left">Left</th>
+                <th data-input="right">Right</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th data-input="clean">Clean</th>
+                <td data-action="left-clean">RIGHT</td>
+                <td data-action="right-clean">LEFT</td>
+              </tr>
+              <tr>
+                <th data-input="dirty">Dirty</th>
+                <td data-action="left-dirty">SUCK</td>
+                <td data-action="right-dirty">SUCK</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <svg width="600" height="300"></svg>
+
+        </div>
+        
+      </div>
     </div>
-  </div>
 
-  <script type="text/javascript" src="./cleaningRobot.js"></script>
-  <script type="text/javascript" src="./c_cleaningRobot.js"></script>
-  
-  <footer class="container-fluid text-center">
-    <img src="http://aima.cs.berkeley.edu/aima_logo.png">
-  </footer>
-</body>
+    <script type="text/javascript" src="./cleaningRobot.js"></script>
+    <script type="text/javascript" src="./c_cleaningRobot.js"></script>
+    
+    <footer class="container-fluid text-center">
+      <img src="http://aima.cs.berkeley.edu/aima_logo.png">
+    </footer>
+  </body>
 </html>

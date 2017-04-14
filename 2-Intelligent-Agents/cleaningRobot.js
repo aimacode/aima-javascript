@@ -13,11 +13,7 @@ class World {
         this.floors[floorNumber].dirty = true;
     }
 
-    simulate() {
-        // TODO: this should be a parameter so that there can be
-        // different sets of rules for how the agent makes decisions
-        let action = reflexVacuumAgent(this);
-        
+    simulate(action) {
         switch(action) {
         case 'SUCK':
             this.floors[this.location].dirty = false;
