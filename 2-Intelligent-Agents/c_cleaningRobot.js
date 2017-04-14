@@ -103,35 +103,7 @@ function makeAgentControlledDiagram() {
         let action = reflexVacuumAgent(diagram.world);
         diagram.world.simulate(action);
         animate(diagram, percept, action);
-        show_percept_and_action(location, percept, action);
     }
-
-    /* Bonus: show the agent's percept and action using animated colors */
-    function show_percept_and_action(location, percept, action) {
-        let locationMarker = location? 'right' : 'left';
-        let perceptMarker = percept? 'dirty' : 'clean';
-        
-        d3.selectAll('#agent-controlled-diagram th')
-            .filter(function() {
-                let marker = d3.select(this).attr('data-input');
-                return marker == perceptMarker || marker == locationMarker;
-            })
-            .transition().duration(0.1 * STEP_TIME_MS)
-            .style('background-color', colors.perceptHighlight)
-            .transition().delay(0.3 * STEP_TIME_MS).duration(0.3 * STEP_TIME_MS)
-            .style('background-color', colors.perceptBackground);
-        
-        d3.selectAll('#agent-controlled-diagram td')
-            .filter(function() {
-                let marker = d3.select(this).attr('data-action');
-                return marker == locationMarker + '-' + perceptMarker;
-            })
-            .transition().delay(0.2 * STEP_TIME_MS)
-            .style('background-color', colors.actionHighlight)
-            .transition().duration(0.9 * STEP_TIME_MS)
-            .style('background-color', colors.actionBackground);
-    }
-
     update();
     setInterval(update, STEP_TIME_MS);
 }
@@ -206,6 +178,54 @@ function makeReaderControlledDiagram() {
 }
 
 
+/* Control the diagram by letting the reader choose the rules that
+   the AI agent should follow. The animation flow is similar to the
+   first agent controlled diagram but there is an additional table
+   UI that lets the reader view the percepts and actions being followed
+   as well as change the rules followed by the agent. */
+function makeTableControlledDiagram() {
+    let diagram = makeDiagram('#table-controlled-diagram svg');
+
+    function update() {
+        let location = diagram.world.location;
+        let percept = diagram.world.floors[location].dirty;
+        let action = reflexVacuumAgent(diagram.world);
+        diagram.world.simulate(action);
+        animate(diagram, percept, action);
+        show_percept_and_action(location, percept, action);
+    }
+    update();
+    setInterval(update, STEP_TIME_MS);
+    
+    // TODO: click on this table to change it
+    
+    function show_percept_and_action(location, percept, action) {
+        let locationMarker = location? 'right' : 'left';
+        let perceptMarker = percept? 'dirty' : 'clean';
+        
+        d3.selectAll('#table-controlled-diagram th')
+            .filter(function() {
+                let marker = d3.select(this).attr('data-input');
+                return marker == perceptMarker || marker == locationMarker;
+            })
+            .transition().duration(0.1 * STEP_TIME_MS)
+            .style('background-color', colors.perceptHighlight)
+            .transition().delay(0.3 * STEP_TIME_MS).duration(0.3 * STEP_TIME_MS)
+            .style('background-color', colors.perceptBackground);
+        
+        d3.selectAll('#table-controlled-diagram td')
+            .filter(function() {
+                let marker = d3.select(this).attr('data-action');
+                return marker == locationMarker + '-' + perceptMarker;
+            })
+            .transition().delay(0.2 * STEP_TIME_MS)
+            .style('background-color', colors.actionHighlight)
+            .transition().duration(0.9 * STEP_TIME_MS)
+            .style('background-color', colors.actionBackground);
+    }
+}
+
 
 makeAgentControlledDiagram();
 makeReaderControlledDiagram();
+makeTableControlledDiagram();

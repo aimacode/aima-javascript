@@ -46,6 +46,18 @@
             The robot will choose its own actions based on simple rules. Click on a box to make it dirty.
           </p>
 
+          <svg width="600" height="300"></svg>
+
+        </div>
+
+        <h2>Rules for the agent to follow</h2>
+
+        <div id="table-controlled-diagram">
+
+          <p>
+            The robot will follow the rules you choose. Click on a rule in the table to change it.
+          </p>
+
           <table class="agent-actions"
             <thead>
               <tr>
@@ -73,8 +85,26 @@
           
           <svg width="600" height="300"></svg>
 
-        </div>
-        
+
+          <h2>Performance measures</h2>
+
+          <p>
+            We can choose a metric that evaluates how well the agent
+            performs on the given problem.
+          </p>
+
+          TODO: dirty/clean should be controlled automatically,
+          reproducibly (seeded RNG), and then display a line chart
+          with the performance measure
+
+          <h3>Evaluating multiple agents</h3>
+
+          TODO: many different agents on the same data sequence
+
+          <h3>Evaluating many data sets</h3>
+
+          TODO: one agent on many different data sequences (avoid overfitting)
+          
       </div>
     </div>
 
