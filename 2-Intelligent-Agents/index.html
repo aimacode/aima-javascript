@@ -2,36 +2,35 @@
 <html lang="en">
 <head>
   <title>2 Intelligent Agents</title>
-  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
-  <script type="text/javascript" src="../main.js"></script>
-  <script type="text/javascript" src="./cleaningRobot.js"></script>
-  <script type="text/javascript" src="./c_cleaningRobot.js"></script>
-  <script> 
-   $(function(){
-      $('header').load("../header.html"); 
-   });
-   </script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script>
+    d3.html("../header.html", (html) => { d3.select('header').node().appendChild(html); });
+  </script>
+  <style>
+    .floor:hover { cursor: pointer; }
+  </style>
 </head>
 <body>
 
-<header>
-
-</header>
+  <header>
+  </header>
 
   <div class="row">
     <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Artificial Intelligence</h1>
-      <h2>Intelligent Agents</h2>
-      <h4>Simple cleaning robot</h4>
+      <h1>Intelligent Agents</h1>
+      <h2>Simple cleaning robot</h2>
       <p>Demonstration of a simple reflex agent. The robot patrols between two positions and when the floor is dirty, the robot cleans it.</p>
       <p>Click on a box to make it dirty. </p>
-      <div class = "canvas" id="robotCanvas" height="300px"></div>
-      <pre id="cleaningRobotCode"></pre>
+      <svg id="robotCanvas" width="600" height="300"></svg>
     </div>
   </div>
+
+  <script type="text/javascript" src="./cleaningRobot.js"></script>
+  <script type="text/javascript" src="./c_cleaningRobot.js"></script>
+  
   <footer class="container-fluid text-center">
-	<img src="http://aima.cs.berkeley.edu/aima_logo.png">
+    <img src="http://aima.cs.berkeley.edu/aima_logo.png">
   </footer>
 </body>
 </html>

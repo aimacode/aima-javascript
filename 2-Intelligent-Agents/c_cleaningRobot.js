@@ -1,120 +1,86 @@
-$(document).ready(function(){
-  $.ajax({
-    url : "cleaningRobot.js",
-    dataType: "text",
-    success : function (data) {
-      $("#cleaningRobotCode").html(data);
+const SIZE = 100;
+const colors = {
+    dirtyFloor: 'hsl(0,50%,50%)',
+    vacuumFloor: 'hsl(60,50%,50%)',
+    cleanFloor: 'hsl(240,10%,90%)'
+};
+
+
+// Create a diagram object that includes the world (model) and the svg
+// elements (view)
+function makeDiagram(id) {
+    let diagram = {}, world = new World(2);
+    diagram.world = world;
+    diagram.xPosition = (floorNumber) => 150 + floorNumber * 600 / diagram.world.floors.length;
+    
+    diagram.root = d3.select('#' + id);
+    diagram.robot = diagram.root.append('g')
+            .attr('transform', `translate(${diagram.xPosition(world.location)},100)`);
+    diagram.robot.append('rect')
+        .attr('width', SIZE)
+        .attr('height', SIZE)
+        .attr('fill', 'hsl(120,25%,50%)');
+    diagram.text = diagram.robot.append('text')
+        .attr('x', SIZE/2)
+        .attr('y', -10)
+        .attr('text-anchor', 'middle');
+
+    diagram.floors = [];
+    for (let floorNumber = 0; floorNumber < world.floors.length; floorNumber++) {
+        diagram.floors[floorNumber] =
+            diagram.root.append('rect')
+            .attr('class', 'floor') // for css
+            .attr('x', diagram.xPosition(floorNumber))
+            .attr('y', 225)
+            .attr('width', SIZE)
+            .attr('height', SIZE/4)
+            .attr('fill', colors.cleanFloor)
+            .attr('stroke', 'black')
+            .on('click', function() {
+                world.markFloorDirty(floorNumber);
+                diagram.floors[floorNumber].transition().duration(100)
+                    .attr('fill', colors.dirtyFloor);
+            });
     }
-  });
-
-  // Constants
-  const SIZE = 100;
-  const SPEED = 2;
-  const WAIT = 1 * 60; // 60 FPS
-
-  var robotCanvas;
-  var robot;
-  var left,right;
-  var robotMarker;
-  var robotGroup;
-  var floorLeft;
-  var floorRight;
-  var two;
-  var w = $("#robotCanvas").width(),h = 300;
-  var text;
-  var isDirty = [false,false];
-  var msg = "Cleaning";
-
-  function init(){
-    // Initialize vars required by the cleaning robot
-    robotCanvas = document.getElementById('robotCanvas');
-    two = new Two({ width: w, height: h }).appendTo(robotCanvas);
-
-    // Initialize the leftmost and rightmost positions the robot moves to
-    left = [two.width/4,3*two.height/4];
-    right = [3*two.width/4,3*two.height/4];
-
-    // Initialize the robot, the text above it and group it together
-    robot = new Robot(left[0],two.height/2);
-    robotMarker = two.makeRectangle(0, 0, SIZE, SIZE);
-    robotMarker.noStroke().fill = 'rgb(100, 155, 100)';
-    text = two.makeText(msg,0,-SIZE/2-20,'normal');
-    robotGroup = two.makeGroup(text,robotMarker);
-
-    // Draw the floors
-    floorLeft = two.makeRectangle(left[0],left[1], SIZE, SIZE/4);
-    floorRight = two.makeRectangle(right[0],right[1],  SIZE, SIZE/4);
-
-    // Call the update to draw the svg on the screen
-    two.update();
-  }
-
-  init();
-
-  // Called when the left floor is clicked
-  floorLeft._renderer.elem.addEventListener('click', function() {
-    floorLeft.fill = '#d00';
-    isDirty[0] = true;
-  }, false);
-
-  // Called when the right floor is clicked
-  floorRight._renderer.elem.addEventListener('click', function() {
-    floorRight.fill = '#d00';
-    isDirty[1] = true;
-  }, false);
+    return diagram;
+}
 
 
-  var counter = 0;
-  var nextState = 0;
-  var previousState = 1;
-
-  two.bind('update', function(frameCount) {
-    if(robot.state == robot.STATES.LEFT){
-      if(robot.x <= left[0]){
-        // If the robot has reached the left most position then
-        // wait and change directions
-        robot.state = robot.STATES.WAIT;
-        nextState = robot.STATES.RIGHT;
-        previousState = robot.STATES.LEFT;
-        floorLeft.fill = '#fff'; // Clear floor color
-      } else {
-        // Otherwise move left
-        robot.x-=SPEED;
-        msg = "Going left";
-      }
-    } else if (robot.state == robot.STATES.RIGHT){
-      if(robot.x >= right[0]){
-        // If the robot has reached the right most position then
-        // wait and change directions
-        robot.state = robot.STATES.WAIT;
-        nextState = robot.STATES.LEFT;
-        previousState = robot.STATES.RIGHT;
-        floorRight.fill = '#fff'; // Clear floor color
-      } else {
-        // Otherwise move right
-        msg = "Going right";
-        robot.x+=SPEED;
-      }
-    } else {
-      counter++;
-      // Clean the floor if dirty
-      if(isDirty[previousState])
-      msg = "Cleaning";
-      else
-      msg = "Idle";
+// When the world changes, animate the changes over some time period
+const STEP_TIME_MS = 2500;
+function animate(diagram, action) {
+    switch (action) {
+    case 'SUCK':
+        diagram.text.text('It\'s dirty')
+            .transition().delay(0.3 * STEP_TIME_MS).text('Vacuuming');
+        diagram.floors[diagram.world.location]
+            .transition().duration(0.1 * STEP_TIME_MS)
+            .attr('fill', colors.vacuumFloor)
+            .transition().delay(0.6 * STEP_TIME_MS).duration(0.3 * STEP_TIME_MS)
+            .attr('fill', colors.cleanFloor);
+        break;
+    case 'LEFT':
+        diagram.text.text('It\'s clean')
+            .transition().delay(0.3 * STEP_TIME_MS).text('Going left');
+        break;
+    case 'RIGHT':
+        diagram.text.text('It\'s clean')
+            .transition().delay(0.3 * STEP_TIME_MS).text('Going right');
+        break;
     }
 
-    // When waiting period is over,
-    // go to next state
-    if(counter == WAIT){
-      counter = 0;
-      isDirty[previousState] = false;
-      robot.state = nextState;
-    }
+    diagram.robot.transition().delay(0.3 * STEP_TIME_MS).duration(0.7 * STEP_TIME_MS)
+        .attr('transform', `translate(${diagram.xPosition(diagram.world.location)},100)`);
+}
 
-    // Update message and position of robot
-    text.value = msg;
-    robotGroup.translation.set(robot.x,robot.y);
-  }).play();
 
-});
+// There's one diagram on the page, simulated at a regular interval
+let diagram = makeDiagram('robotCanvas');
+
+function update() {
+    let action = diagram.world.simulate();
+    animate(diagram, action);
+}
+
+update();
+setInterval(update, STEP_TIME_MS);

@@ -1,17 +1,43 @@
-var Robot = function(x,y){
-	// We have three states,
-	// going left, going right or waiting
-	this.STATES = {
-		LEFT:0,
-		RIGHT:1,
-		WAIT: 2
-	};
+// In this simple problem the world includes both the environment and the robot
+// but in most problems the environment and world would be separate
+class World {
+    constructor(numFloors) {
+        this.location = 0;
+        this.floors = [];
+        for (let i = 0; i < numFloors; i++) {
+            this.floors.push({dirty: false});
+        }
+    }
 
-	// Store the x and y coordinate used to draw the robot
-	this.x = x;
-	this.y = y;
+    markFloorDirty(floorNumber) {
+        this.floors[floorNumber].dirty = true;
+    }
 
-	// We start as left state
-	this.state = this.STATES.LEFT;
-	return this;
-};
+    simulate() {
+        // TODO: this should be a parameter so that there can be
+        // different sets of rules for how the agent makes decisions
+        let action = reflexVacuumAgent(this);
+        
+        switch(action) {
+        case 'SUCK':
+            this.floors[this.location].dirty = false;
+            break;
+        case 'LEFT':
+            this.location = 0;
+            break;
+        case 'RIGHT':
+            this.location = 1;
+            break;
+        }
+
+        return action;
+    }
+}
+
+
+// In this simple problem the agent can see everything about the environment
+function reflexVacuumAgent(world) {
+    if (world.floors[world.location].dirty) { return 'SUCK'; }
+    else if (world.location == 0)           { return 'RIGHT'; }
+    else if (world.location == 1)           { return 'LEFT'; }
+}
