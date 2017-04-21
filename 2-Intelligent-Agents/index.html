@@ -72,19 +72,48 @@
             <tbody>
               <tr>
                 <th data-input="clean">Clean</th>
-                <td data-action="left-clean">RIGHT</td>
-                <td data-action="right-clean">LEFT</td>
+                <td data-action="left-clean">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT" selected>RIGHT</option>
+                    <option value="SUCK">SUCK</option>
+                  </select>
+                </td>
+                <td data-action="right-clean">
+                  <select class="custom-select">
+                    <option value="LEFT" selected>LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK">SUCK</option>
+                  </select>
               </tr>
               <tr>
                 <th data-input="dirty">Dirty</th>
-                <td data-action="left-dirty">SUCK</td>
-                <td data-action="right-dirty">SUCK</td>
+                <td data-action="left-dirty">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK" selected>SUCK</option>
+                  </select>
+                </td>
+                <td data-action="right-dirty">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK" selected>SUCK</option>
+                  </select>
+                </td>
               </tr>
             </tbody>
           </table>
-          
+
           <svg width="600" height="300"></svg>
 
+          <p>
+            In this simple example there's only one set of rules that
+            works well, but in more complex examples it won't be as
+            obvious what set of rules to use. How would we find the
+            rules?
+          </p>
 
           <h2>Performance measures</h2>
 

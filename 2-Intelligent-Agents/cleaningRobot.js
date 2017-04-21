@@ -31,9 +31,16 @@ class World {
 }
 
 
-// In this simple problem the agent can see everything about the environment
+// Rules are defined in code
 function reflexVacuumAgent(world) {
     if (world.floors[world.location].dirty) { return 'SUCK'; }
     else if (world.location == 0)           { return 'RIGHT'; }
     else if (world.location == 1)           { return 'LEFT'; }
+}
+
+// Rules are defined in data, in a table indexed by [location][dirty]
+function tableVacuumAgent(world, table) {
+    let location = world.location;
+    let dirty = world.floors[location].dirty ? 1 : 0;
+    return table[location][dirty];
 }

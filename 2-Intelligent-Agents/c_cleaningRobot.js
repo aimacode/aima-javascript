@@ -166,7 +166,6 @@ function makeReaderControlledDiagram() {
         if (nextAction !== null) {
             diagram.world.simulate(nextAction);
             animate(diagram, percept, nextAction);
-            // TODO: highlight current percept/location and then the action
             nextAction = null;
             updateButtons();
             animating = setTimeout(update, STEP_TIME_MS);
@@ -187,19 +186,27 @@ function makeTableControlledDiagram() {
     let diagram = makeDiagram('#table-controlled-diagram svg');
 
     function update() {
+        let table = getRulesFromPage();
         let location = diagram.world.location;
         let percept = diagram.world.floors[location].dirty;
-        let action = reflexVacuumAgent(diagram.world);
+        let action = tableVacuumAgent(diagram.world, table);
         diagram.world.simulate(action);
         animate(diagram, percept, action);
-        show_percept_and_action(location, percept, action);
+        showPerceptAndAction(location, percept, action);
     }
     update();
     setInterval(update, STEP_TIME_MS);
     
-    // TODO: click on this table to change it
-    
-    function show_percept_and_action(location, percept, action) {
+    function getRulesFromPage() {
+        let table = d3.select("#table-controlled-diagram table");
+        let left_clean = table.select("[data-action=left-clean] select").node().value;
+        let left_dirty = table.select("[data-action=left-dirty] select").node().value;
+        let right_clean = table.select("[data-action=right-clean] select").node().value;
+        let right_dirty = table.select("[data-action=right-dirty] select").node().value;
+        return [[left_clean, left_dirty], [right_clean, right_dirty]];
+    }
+
+    function showPerceptAndAction(location, percept, action) {
         let locationMarker = location? 'right' : 'left';
         let perceptMarker = percept? 'dirty' : 'clean';
         
@@ -214,6 +221,7 @@ function makeTableControlledDiagram() {
             .style('background-color', colors.perceptBackground);
         
         d3.selectAll('#table-controlled-diagram td')
+            .style('padding', '5px')
             .filter(function() {
                 let marker = d3.select(this).attr('data-action');
                 return marker == locationMarker + '-' + perceptMarker;
