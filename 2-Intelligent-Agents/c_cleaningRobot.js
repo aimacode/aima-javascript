@@ -8,9 +8,6 @@
 
 const SIZE = 100;
 const colors = {
-    dirtyFloor: 'hsl(0,50%,50%)',
-    vacuumFloor: 'hsl(60,50%,50%)',
-    cleanFloor: 'hsl(240,10%,90%)',
     perceptBackground: 'hsl(240,10%,85%)',
     perceptHighlight: 'hsl(60,100%,90%)',
     actionBackground: 'hsl(0,0%,100%)',
@@ -27,12 +24,17 @@ function makeDiagram(selector) {
 
     diagram.root = d3.select(selector);
     diagram.robot = diagram.root.append('g')
-            .attr('transform', `translate(${diagram.xPosition(world.location)},100)`);
+        .attr('class', 'robot')
+        .style('transform', `translate(${diagram.xPosition(world.location)}px,100px)`);
     diagram.robot.append('rect')
         .attr('width', SIZE)
         .attr('height', SIZE)
         .attr('fill', 'hsl(120,25%,50%)');
-    diagram.text = diagram.robot.append('text')
+    diagram.perceptText = diagram.robot.append('text')
+        .attr('x', SIZE/2)
+        .attr('y', -25)
+        .attr('text-anchor', 'middle');
+    diagram.actionText = diagram.robot.append('text')
         .attr('x', SIZE/2)
         .attr('y', -10)
         .attr('text-anchor', 'middle');
@@ -41,59 +43,41 @@ function makeDiagram(selector) {
     for (let floorNumber = 0; floorNumber < world.floors.length; floorNumber++) {
         diagram.floors[floorNumber] =
             diagram.root.append('rect')
-            .attr('class', 'floor') // for css
+            .attr('class', 'clean floor') // for css
             .attr('x', diagram.xPosition(floorNumber))
             .attr('y', 225)
             .attr('width', SIZE)
             .attr('height', SIZE/4)
-            .attr('fill', colors.cleanFloor)
             .attr('stroke', 'black')
             .on('click', function() {
                 world.markFloorDirty(floorNumber);
-                diagram.floors[floorNumber].transition().duration(100)
-                    .attr('fill', colors.dirtyFloor);
+                diagram.floors[floorNumber].attr('class', 'dirty floor');
             });
     }
     return diagram;
 }
 
 
-/* Animate the agent's percept and actions when the agent takes an action */
-const STEP_TIME_MS = 2500;
-function animate(diagram, dirty, action) {
-    let currentStateLabel = dirty? "It's dirty" : "It's clean";
-    switch (action) {
-    case 'SUCK':
-        diagram.text.text(currentStateLabel)
-            .transition().delay(0.3 * STEP_TIME_MS).text('Vacuuming');
-        diagram.floors[diagram.world.location]
-            .transition().duration(0.1 * STEP_TIME_MS)
-            .attr('fill', colors.vacuumFloor)
-            .transition().delay(0.6 * STEP_TIME_MS).duration(0.3 * STEP_TIME_MS)
-            .attr('fill', colors.cleanFloor);
-        break;
-    case 'LEFT':
-        diagram.text.text(currentStateLabel)
-            .transition().delay(0.3 * STEP_TIME_MS).text('Going left');
-        break;
-    case 'RIGHT':
-        diagram.text.text(currentStateLabel)
-            .transition().delay(0.3 * STEP_TIME_MS).text('Going right');
-        break;
-    default:
-        diagram.text.text('Waiting');
+/* Render agent's percept and actions into the diagram object */
+function render(diagram, dirty, action) {
+    let perceptLabel = {false: "It's clean", true: "It's dirty"}[dirty];
+    let actionLabel = {null: 'Waiting', 'SUCK': 'Vacuuming', 'LEFT': 'Going left', 'RIGHT': 'Going right'}[action];
+    
+    diagram.perceptText.text(perceptLabel);
+    diagram.actionText.text(actionLabel);
+    
+    for (let floorNumber = 0; floorNumber < diagram.world.floors.length; floorNumber++) {
+        diagram.floors[floorNumber].attr('class', diagram.world.floors[floorNumber].dirty? 'dirty floor' : 'clean floor');
     }
-
-    diagram.robot.transition().delay(0.3 * STEP_TIME_MS).duration(0.7 * STEP_TIME_MS)
-        .attr('transform', `translate(${diagram.xPosition(diagram.world.location)},100)`);
+    diagram.robot.style('transform', `translate(${diagram.xPosition(diagram.world.location)}px,100px)`);
 }
-
 
 
 /* Control the diagram by letting the AI agent choose the action. This
    controller is simple. Every STEP_TIME_MS milliseconds choose an
    action, simulate the action in the world, and draw the action on
    the page. */
+const STEP_TIME_MS = 2500;
 function makeAgentControlledDiagram() {
     let diagram = makeDiagram('#agent-controlled-diagram svg');
 
@@ -102,7 +86,7 @@ function makeAgentControlledDiagram() {
         let percept = diagram.world.floors[location].dirty;
         let action = reflexVacuumAgent(diagram.world);
         diagram.world.simulate(action);
-        animate(diagram, percept, action);
+        render(diagram, percept, action);
     }
     update();
     setInterval(update, STEP_TIME_MS);
@@ -165,13 +149,13 @@ function makeReaderControlledDiagram() {
         let percept = diagram.world.floors[diagram.world.location].dirty;
         if (nextAction !== null) {
             diagram.world.simulate(nextAction);
-            animate(diagram, percept, nextAction);
+            render(diagram, percept, nextAction);
             nextAction = null;
             updateButtons();
             animating = setTimeout(update, STEP_TIME_MS);
         } else {
             animating = false;
-            animate(diagram, null, null);
+            render(diagram, percept, null);
         }
     }
 }
@@ -191,7 +175,7 @@ function makeTableControlledDiagram() {
         let percept = diagram.world.floors[location].dirty;
         let action = tableVacuumAgent(diagram.world, table);
         diagram.world.simulate(action);
-        animate(diagram, percept, action);
+        render(diagram, percept, action);
         showPerceptAndAction(location, percept, action);
     }
     update();
