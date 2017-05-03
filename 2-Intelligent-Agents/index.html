@@ -2,15 +2,11 @@
 <html lang="en">
   <head>
     <title>2 Intelligent Agents</title>
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../main.js"></script>
+    
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script>
-      $(function() {
-          $('header').load("../header.html");
-      });
-    </script>
     <style>
         .floor:hover { cursor: pointer; }
         .agent-actions { margin-left: auto; margin-right: auto; border-collapse: collapse; }
@@ -25,9 +21,6 @@
     </style>
   </head>
   <body>
-
-    <header>
-    </header>
 
     <div class="row">
       <div class="col-sm-6 col-md-offset-3" id="content">
@@ -145,9 +138,5 @@
 
     <script type="text/javascript" src="./cleaningRobot.js"></script>
     <script type="text/javascript" src="./c_cleaningRobot.js"></script>
-    
-    <footer class="container-fluid text-center">
-      <img src="http://aima.cs.berkeley.edu/aima_logo.png">
-    </footer>
   </body>
 </html>
