@@ -1,14 +1,14 @@
 {
   "name": "aima-javascript",
   "version": "1.0.0",
-  "description": "Java implementation of algorithms from Norvig And Russell's \"Artificial Intelligence - A Modern Approach 4th Edition.\"",
+  "description": "Javascript visualization of algorithms from Norvig And Russell's \"Artificial Intelligence - A Modern Approach 4th Edition.\"",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/aimacode/aima-Javascript.git"
+    "url": "git://github.com/aimacode/aima-javascript.git"
   },
   "keywords": [
     "aima",
@@ -16,9 +16,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aimacode/aima-Javascript/issues"
+    "url": "https://github.com/aimacode/aima-javascript/issues"
   },
-  "homepage": "https://github.com/aimacode/aima-Javascript#readme",
+  "homepage": "https://github.com/aimacode/aima-javascript#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-core": "^6.7.6",
