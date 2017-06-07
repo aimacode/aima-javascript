@@ -1,82 +1,109 @@
-$(document).ready(function(){
-	$.ajax({
-		url : "simulatedAnnealing.js",
-		dataType: "text",
-		success : function (data) {
-			$("#simulatedAnnealingCode").html(data);
-		}
-	});
+$(document).ready(function() {
 
-	var annealingCanvas;
-	var text,line,background;
-	var w,h;
-	var two;
-	var sa;
+  class SimulatedAnnealingDiagram extends HillWorld {
+    constructor(selector, h, w) {
+      super(selector, h, w);
 
-	var x = 0; // Current Index
-	var f; // The objective function
+    }
 
-	var DELAY = 1 * 60;
-	var POINTS = 30; // Number of points of the objective function
-	var INITIAL_TEMP = 50;
-	var K = 1; // Boltzmann constant
+    init(region, schedule, maxTime, delay, k) {
+      this.annealRegion = region;
+      this.maxTime = maxTime;
+      this.schedule = schedule;
+      this.delay = delay;
+      this.simulatedAnnealing =
+        new SimulatedAnnealing(this.hill, this.hillClimber.getCurrentState(), schedule, this.maxTime, this.annealRegion,k);
+      this.showAllStates();
+      this.paintGlobalMaxima();
+      this.showTemperature(this.schedule(0));
+      this.startAnnealing();
+    }
+    showAllStates() {
+      this.hillDiagram.svgRects.transition()
+        .duration(200)
+        .style('opacity', 1);
+    }
 
-	function init(){
-		annealingCanvas = document.getElementById("annealingCanvas");
-		annealingCanvas.addEventListener("click", handleClick, false);
-		w = annealingCanvas.offsetWidth;
-		h = 300;
-		two = new Two({ width: w, height: h }).appendTo(annealingCanvas);
-		sa = new SimulatedAnnealing(x,K,INITIAL_TEMP);
-		text = two.makeText("Temperature: "+INITIAL_TEMP,w/2 ,10,'normal');
-		line = two.makeLine(x,0,x,h);
-		line.stroke = 'orangered';
-		line.linewidth = 5;
-		setupScene();
-	}
+    paintGlobalMaxima() {
+      this.hillDiagram.svgRects.classed('hill-maxima', (d) => d.maxima);
+    }
 
-	init();
+    updateAnnealRegion(currentState) {
+      this.hillDiagram.svgRects.classed('anneal-region', (d) => {
+        if (d.state >= Math.max(0, currentState - this.annealRegion) && d.state <= Math.min(this.hill.getStates().length, currentState + this.annealRegion)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
 
-	two.bind('update', function(frameCount){
-		if(frameCount % DELAY == 0){
-			x = sa.anneal(f);
-			// Translate the point according to the new chosen point
-			line.translation.set(x*w/POINTS,h/2);
-			y = Math.round(f[x]*100)/100;
-			text.value = "Temperature: "+sa.T + " ("+x+" , "+y+")";
-		}
-	}).play();
+    showTemperature(t) {
+      this.svgTemp = this.hillDiagram.svg.append('text')
+        .attr('x', this.w - 200)
+        .attr('y', this.h - 470)
+        .text(`Temperature : ${Math.round(t*10000)/10000}`);
+    }
 
-	function handleClick(){
-		// When ever the canvas is clicked
-		// recalculate and redraw the background
-		// and reinitialize the sa object
-		setupScene();
-		x = 0;
-		sa = new SimulatedAnnealing(x,K,INITIAL_TEMP);
-	}
+    updateTemperature(t) {
+      this.svgTemp.text(`Temperature : ${Math.round(t*10000)/10000}`);
+    }
+    nextMove() {
+      let nextNode = this.anneal.next();
+      let nextState = nextNode.value.state;
+      this.hillClimber.changeState(nextState);
+      this.hillClimberDiagram.move(nextState);
+      this.updateAnnealRegion(nextState);
+      this.updateTemperature(nextNode.value.temp)
+      if (nextNode.done) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    startAnnealing() {
+      this.anneal = this.simulatedAnnealing.anneal();
+      this.stopAnnealing();
+      this.intervalFunction = setInterval(() => {
+        if (!this.nextMove()) {
+          this.stopAnnealing();
+        }
+      }, this.delay);
+    }
+    stopAnnealing() {
+      clearInterval(this.intervalFunction, this.delay);
+    }
+  }
 
-	function setupScene(){
-		// If background already exists,
-		// then clear it
-		if(background != null)
-		two.remove(background);
-		f = new Array(POINTS);
-		background = new Array(POINTS-1);
-		f[0] = 0;
-		for(var i = 1; i < f.length; i++){
-			// f[i] ranges between 0 and 3*h/4
-			f[i] = Math.random() * 3*h/4;
-			sx = (i-1) * w/POINTS;
-			sy = h - f[i-1];
-			fx = i * w/POINTS;
-			fy = h - f[i];
-			// Draw lines connecting all f[i]
-			background[i-1] = two.makeLine(sx,sy,fx,fy);
-			background[i-1].linewidth = 2;
-			background[i-1].stroke = '#090A3B';
-		}
-		two.update();
-	}
+  function init() {
+    let simulatedAnnealingDiagram = new SimulatedAnnealingDiagram('#annealingCanvas', 500, 1000);
 
+    let delay = 10;
+
+    let maxTime = $('#maxTimeSelector').val();
+    $('#maxTimeDisplay').html(maxTime);
+
+    function scheduleExp(t) {
+      return Math.exp((-0.005) * t);
+    }
+
+    function scheduleLinear(t) {
+      return maxTime-t;
+    }
+
+    let annealWidth = parseInt($('#annealWidthSelector').val());
+    $('#annealWidthDisplay').html(annealWidth);
+
+    let scheduleChoice = $('input:radio[name=scheduleFunction]:checked').val();
+    let schedule = (scheduleChoice == 'exp')?scheduleExp:scheduleLinear;
+
+    let k = $('#pConstant').val();
+    simulatedAnnealingDiagram.init(annealWidth, schedule, maxTime, delay, k);
+  }
+  init();
+  $('#annealingRestart').click(init);
+  $('#maxTimeSelector').on('change input', init);
+  $('#annealWidthSelector').on('change input', init);
+  $('input:radio[name=scheduleFunction]').on('change input',init);
+  $('#pConstant').on('change input',init);
 });

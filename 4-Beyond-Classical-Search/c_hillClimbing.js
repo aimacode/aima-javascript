@@ -1,10 +1,3 @@
-var colors = {
-  hill: 'hsl(217,30%,70%)',
-  maxima: 'hsl(110,100%,75%)',
-  unvisitedMaxima: 'hsl(110,100%,50%)',
-  GMRA: 'hsl(110,25%,60%)'
-};
-
 class HillDiagram {
   constructor(hill, svg, h, w) {
     this.padding = 20;
@@ -265,7 +258,7 @@ $(document).ready(function() {
       svgRects.transition()
         .duration(200)
         .style('opacity', 1)
-        .style('class', (d) => {
+        .attr('class', (d) => {
           if (d.maxima) {
             return 'hill-maxima';
           } else {
@@ -273,17 +266,6 @@ $(document).ready(function() {
               return 'hill-gmra';
             } else {
               return 'hill';
-            }
-          }
-        })
-        .style('fill', (d) => {
-          if (d.maxima) {
-            return colors.maxima;
-          } else {
-            if (d.isGMRA) {
-              return colors.GMRA;
-            } else {
-              return colors.hill;
             }
           }
         });
