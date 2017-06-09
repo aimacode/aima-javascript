@@ -7,20 +7,45 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
   <script type="text/javascript" src="../main.js"></script>
   
+  <!-- D3 -->
+  <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- Chart -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
   <!-- MDP -->
   <script type="text/javascript" src="./mdp.js"></script>
   <!-- Policy Evaluation -->
   <script type="text/javascript" src="./policyEvaluation.js"></script>
+  <!-- Visualizer -->
   <script type="text/javascript" src="./c_policyEvaluation.js"></script>
+  <link rel="stylesheet" href="state.css">
 </head>
+
+
 <body>
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="col-sm-8 col-md-offset-2" id="content">
       <h1>Reinforcement Learning</h1>
       <h2>Policy Evaluation</h2>
-      <p><mark>tap on the grid world to get started</mark></p>
-      <div id='canvas'></div>
-      <button class="btn btn-danger text-center" id="reset-btn">Reset</button>
+      <ul>
+        <li>The intensity of the green overlay shows the influence of the state in the weighted average</li>
+        <li>The state that gets updated is bounded by an orange box</li>
+      </ul>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div id='canvas'></div>
+          <div  class="text-center">
+            <input id="history" type="range" min="0" max="50" step="1" value="0"/>
+          </div>
+          <div  class="text-center">
+            <button id="back" type="button" class="btn btn-primary"><</button>
+            <button id="animate" type="button" class="btn btn-success">start/stop</button>
+            <button id="next" type="button" class="btn btn-primary">></button>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <canvas id='sv-graph'></canvas>
+        </div>
+      </div>
       <pre id="policyEvaluationCode"></pre>
     </div>
   </div>
