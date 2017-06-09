@@ -6,17 +6,23 @@
   width: 10px;
   height: 10px;
 }
+.anneal-region {
+  background-color: hsl(303, 100%, 50%);
+}
 .maxima {
   background-color: hsl(110, 100%, 38%);
 }
 .unvisitedmaxima {
   background-color: hsl(102, 100%, 56%);
 }
-.grma {
+.gmra {
   background-color: hsl(110, 100%, 60%);
 }
 .hill {
   fill: hsl(217, 30%, 70%);
+}
+.hill-anneal-region {
+  fill: hsl(303, 100%, 50%);
 }
 .hill-maxima {
   fill: hsl(110, 100%, 75%);
@@ -26,4 +32,7 @@
 }
 .hill-gmra {
   fill: hsl(110, 25%, 60%);
+}
+.hill-maxima.hill-anneal-region {
+  fill: hsl(303, 100%, 30%);
 }
