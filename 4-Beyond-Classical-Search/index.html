@@ -36,7 +36,7 @@
         represented by x-axis and elevation(objective function value) represented by y-axis. The best state is hence the state with the highest objective value</p>
       <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
       <p><span class='inline-legend maxima'></span> represents found global maximas and <span class='inline-legend unvisitedmaxima'></span> represents unfound global maximas</p>
-      <p>Try to come up with a strategy that can be used for al kinds of hills.</p>
+      <p>Try to come up with a strategy that can be used for all kinds of hills.</p>
       <div class='row'>
         <div class="col-md-2">
           <div class='btn btn-primary restart-button' id='hillClimbRestart'>Restart</div>
@@ -63,21 +63,31 @@
       </div>
 
       <h2>Simulated Annealing</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <p>The orange line represents the current position.</p>
+      <p>Simulated Annealing is a combination of Hill Climbing and Random Walk to gain more efficiency and completeness.
+      In this procedure, instead of always moving to the best neighbor, a random neighbor is chosen. If the new state
+      has better objective value than the current state, it is always chosen. If not, the algorithm accept the new state
+      with a probability less than one. The probability of choosing a <b>bad state</b> depends on :
+      <ol>
+        <li>The difference in objective value of the new state and the current state</li>
+        <li>The temperature</li>
+      </ol>
+      The temperature T denotes how likely it is for a bad state to be accepted. The procedure starts with a high temperature
+      and decreases it with time. The probability of accepting a bad move decreases exponentially with temperature.</p>
+      <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend anneal-region'></span> represents current state.</p>
+      <p>Notice how the algorithm shakes violently between states when the temperature is high and then stabilizes to higher states as the temperature decreases.</p>
       <div class='row'>
         <div class="col-md-2">
           <div class='btn btn-primary restart-button' id='annealingRestart'>Restart</div>
         </div>
         <div class="col-md-3">
           <b>Maximum Time</b>
-          <input type="range" id="maxTimeSelector" name="timeInput" step="1" min="0" max="1000" value="500">
-          <span id='maxTimeDisplay'>500</span>
+          <input type="range" id="maxTimeSelector" name="timeInput" step="1" min="0" max="1000" value="800">
+          <span id='maxTimeDisplay'>800</span>
         </div>
         <div class="col-md-3">
           <b>Neighbors Width</b>
-          <input type="range" id="annealWidthSelector" name="widthInput" step="1" min="1" max="100" value="10">
-          <span id='annealWidthDisplay'>10</span>
+          <input type="range" id="annealWidthSelector" name="widthInput" step="1" min="1" max="100" value="20">
+          <span id='annealWidthDisplay'>20</span>
         </div>
         <div class="col-md-3">
           <b>Schedule Method</b><br>
@@ -86,7 +96,7 @@
         </div>
         <div class="col-md-1">
           <b>Probability Constant</b><br>
-          <input id = 'pConstant' type="number" name="bconstant" value="50">
+          <input id = 'pConstant' type="number" name="bconstant" value="20">
         </div>
       </div>
       <div id="annealingCanvas"></div>

@@ -25,7 +25,6 @@ class SimulatedAnnealing {
         this.current = nextState;
       } else {
         let p = Math.exp((diff) / parseInt(this.k*temperature));
-        // console.log(`Time is ${t} Temp is ${temperature} Diff is ${diff} and prob is ${p}`);
         if (Math.random() < p) {
           this.current = nextState;
         }

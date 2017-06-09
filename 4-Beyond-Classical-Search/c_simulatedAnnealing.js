@@ -28,9 +28,17 @@ $(document).ready(function() {
       this.hillDiagram.svgRects.classed('hill-maxima', (d) => d.maxima);
     }
 
+    teleportRobot(currentState) {
+      let robotLocation = currentState;
+      let robotStateValue = this.hill.getStates()[currentState];
+      this.hillClimberDiagram.robot
+            .attr('x', this.hillClimberDiagram.xScale(robotLocation) - this.hillClimberDiagram.xOffset)
+            .attr('y', this.h - this.hillClimberDiagram.yScale(robotStateValue) - this.hillClimberDiagram.yOffset);
+    }
     updateAnnealRegion(currentState) {
-      this.hillDiagram.svgRects.classed('anneal-region', (d) => {
-        if (d.state >= Math.max(0, currentState - this.annealRegion) && d.state <= Math.min(this.hill.getStates().length, currentState + this.annealRegion)) {
+      this.hillDiagram.svgRects.classed('hill-anneal-region', (d) => {
+        // if (d.state >= Math.max(0, currentState - this.annealRegion) && d.state <= Math.min(this.hill.getStates().length, currentState + this.annealRegion)) {
+        if (d.state == currentState) {
           return true;
         } else {
           return false;
@@ -40,7 +48,7 @@ $(document).ready(function() {
 
     showTemperature(t) {
       this.svgTemp = this.hillDiagram.svg.append('text')
-        .attr('x', this.w - 200)
+        .attr('x', this.w - 180)
         .attr('y', this.h - 470)
         .text(`Temperature : ${Math.round(t*10000)/10000}`);
     }
@@ -52,7 +60,7 @@ $(document).ready(function() {
       let nextNode = this.anneal.next();
       let nextState = nextNode.value.state;
       this.hillClimber.changeState(nextState);
-      this.hillClimberDiagram.move(nextState);
+      this.teleportRobot(nextState);
       this.updateAnnealRegion(nextState);
       this.updateTemperature(nextNode.value.temp)
       if (nextNode.done) {
@@ -75,8 +83,34 @@ $(document).ready(function() {
     }
   }
 
+  var simulatedAnnealingDiagram;
   function init() {
-    let simulatedAnnealingDiagram = new SimulatedAnnealingDiagram('#annealingCanvas', 500, 1000);
+    simulatedAnnealingDiagram = new SimulatedAnnealingDiagram('#annealingCanvas', 500, 1000);
+
+    let delay = 10;
+
+    let maxTime = $('#maxTimeSelector').val();
+    $('#maxTimeDisplay').html(maxTime);
+
+    function scheduleExp(t) {
+      return Math.exp((-0.005) * t);
+    }
+
+    function scheduleLinear(t) {
+      return maxTime-t;
+    }
+
+    let annealWidth = parseInt($('#annealWidthSelector').val());
+    $('#annealWidthDisplay').html(annealWidth);
+
+    let scheduleChoice = $('input:radio[name=scheduleFunction]:checked').val();
+    let schedule = (scheduleChoice == 'exp')?scheduleExp:scheduleLinear;
+
+    let k = $('#pConstant').val();
+    simulatedAnnealingDiagram.init(annealWidth, schedule, maxTime, delay, k);
+  }
+
+  function restart() {
 
     let delay = 10;
 
@@ -102,8 +136,8 @@ $(document).ready(function() {
   }
   init();
   $('#annealingRestart').click(init);
-  $('#maxTimeSelector').on('change input', init);
-  $('#annealWidthSelector').on('change input', init);
-  $('input:radio[name=scheduleFunction]').on('change input',init);
-  $('#pConstant').on('change input',init);
+  $('#maxTimeSelector').on('change input', restart);
+  $('#annealWidthSelector').on('change input', restart);
+  $('input:radio[name=scheduleFunction]').on('change input',restart);
+  $('#pConstant').on('change input',restart);
 });
