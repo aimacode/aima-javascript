@@ -1,232 +1,474 @@
-
-
-// Adds CONTAINS prototype to normal Array object and returns as Frontier
-function frontier(){
-  frontier =  Array;
-  frontier.prototype.CONTAINS = function(obj){
-    for(var i = 0;i < this.length; i++){
-      if(this[i].STATE == obj.STATE){
-        return true;
-      }
-    }
-    return false;
-  }
-  return frontier();
-}
-// Default Graph for visualizations
-function makeDefaultGraph(){
-  defaultGraph = {}
-  defaultGraph.nodes = [
-    {x:50,y:100,text:"A"},
-    {x:20,y:150,text:"B"},
-    {x:75,y:180,text:"C"},
-    {x:100,y:100,text:"D"},
-    {x:230,y:100,text:"E"},
-    {x:180,y:160,text:"F"},
-    {x:70,y:300,text:"G"},
-    {x:120,y:240,text:"H"},
-    {x:300,y:150,text:"I"},
-    {x:280,y:250,text:"J"},
-    {x:400,y:220,text:"K"},
-    {x:200,y:280,text:"L"},
-    {x:380,y:100,text:"M"},
-    {x:350,y:300,text:"N"},
-    {x:450,y:320,text:"O"}
-  ];
-  defaultGraph.adjMatrix = [
-  // a,b,c,d,e,f,g,h,i,j,k,l,m,n,o
-    [0,1,0,1,0,0,0,0,0,0,0,0,0,0,0],
-    [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,1,0,1,0,0,1,1,0,0,0,0,0,0,0],
-    [1,0,1,0,1,1,0,0,0,0,0,0,0,0,0],
-    [0,0,0,1,0,0,0,0,1,0,0,0,0,0,0],
-    [0,0,0,1,0,0,0,0,0,1,0,0,0,0,0],
-    [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,1,0,0,0,0,0,0,0,0,1,0,0,0],
-    [0,0,0,0,1,0,0,0,0,1,1,0,1,0,0],
-    [0,0,0,0,0,1,0,0,1,0,0,1,0,1,0],
-    [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0],
-    [0,0,0,0,0,0,0,1,0,1,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,1,1,0,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-  ];
-  return defaultGraph;
-}
-
-// Class for drawing frontier nodes for first visualization
-function drawQueue(canvas,h,w,agent,nodes){
-  this.canvas = canvas;
-  this.h = h;
-  this.w = w;
-  this.two = null;
-  this.agent = agent;
-  this.nodeRadius = 25;
-  this.waitingColor = 'hsl(200,50%,70%)';
-  this.nodes = nodes;
-  this.indexOfLastElement = 0;
-  this.rectangles = [];
-
-  this.init = function(){
-    this.canvas.innerHTML = '';
-    this.two = new Two({height:this.h,width:this.w}).appendTo(this.canvas);
-    this.iterate();
-  }
-  this.iterate = function(){
-    this.two.clear();
-    this.rectangles = [];
-    var frontier = this.agent.getExpandables();
-    if(frontier.length > 0){
-      for(var i = 0; i < frontier.length; i++ ){
-        node = this.nodes[frontier[i]];
-        var x = (i)*30+40;
-        var y = 20;
-        var rect = this.two.makeRectangle(x,y,this.nodeRadius,this.nodeRadius);
-        rect.fill = this.waitingColor;
-        this.rectangles.push(rect);
-        var text = this.two.makeText(node.text,x,y);
-        var group = this.two.makeGroup(rect,text);
-        this.two.update();
-      }
-    }
-    this.two.update();
-    this.indexOfLastElement = frontier.length - 1;
-  }
+// Structure of all nodes of a graph
+var GraphNode = function(x, y, id, text) {
+  this.x = x;
+  this.y = y;
+  this.id = id;
+  this.text = text;
+  this.state = 'unexplored';
+  this.cost = Number.POSITIVE_INFINITY;
+  this.parent = null;
+  this.depth = Number.POSITIVE_INFINITY;
 };
-
-function drawFrontierNodes(canvas,h,w,agent,nodes){
-  this.canvas = canvas;
-  this.h = h;
-  this.w = w;
-  this.two = null;
-  this.agent = agent;
-  this.nodeRadius = 15;
-  this.frontierColor = 'hsl(200,50%,70%)';
-  this.nodes = nodes;
-  this.init = function(){
-    this.canvas.innerHTML = '';
-    this.two = new Two({height:this.h,width:this.w}).appendTo(this.canvas);
-    this.iterate();
+// A function that takes as input the coordinates of an edges
+// and gives out the coordinates of the location where its cost should be mentioned
+// Uses a little trigonometry :)
+function getEdgeCostLocation(x1, y1, x2, y2) {
+  var midx = (x1 + x2) / 2;
+  var midy = (y1 + y2) / 2;
+  var angle = Math.atan((x1 - x2) / (y2 - y1));
+  var coords = {
+    x: midx + 8 * Math.cos(angle),
+    y: midy + 8 * Math.sin(angle)
   }
-  this.iterate = function(){
-    this.two.clear();
-    frontierNodes = this.agent.getExpandables();
-    for(var i=0;i<frontierNodes.length;i++){
-      node = this.nodes[frontierNodes[i]];
-      var x = (i%4)*50+40;
-      var y = (Math.floor(i/4))*50 + 20;
-      var circle = this.two.makeCircle(x,y,this.nodeRadius);
-      var text = this.two.makeText(node.text,x,y);
-      circle.fill = this.frontierColor;
+  return coords;
+};
+// Default Options that can be used to pass in a graph Draw Agent
+var DefaultOptions = function() {
+    this.nodes = {
+      explored: {
+        fill: 'hsl(0,50%,75%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      unexplored: {
+        fill: 'hsl(0, 2%, 76%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      frontier: {
+        fill: 'hsl(200,50%,70%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      next: {
+        fill: 'hsl(200,50%,70%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      nodeRadius: 16,
+    };
+    this.edges = {
+      lineWidth: 2,
+      showCost: false,
+      visited: {
+        lineWidth: 10,
+        opacity: 1
+      },
+      unvisited: {
+        lineWidth: 10,
+        opacity: 1
+      }
     }
-    this.two.update();
   }
-}
-// Class to render graph on the canvas
-function drawGraph(canvas,h,w,agent,nodes,adjMatrix) {
-  this.canvas = canvas;
-  this.h = h;
-  this.w = w;
-  this.two = null;
-  this.agent = agent;
-  this.nodeRadius = 15;
-  this.nodeGroups = [];
-  this.edges = [];
+  // The default graph that is used in most of the simulation
+  // This ensures consistency in the experience of the user
+var DefaultGraph = function() {
+  this.nodes = {
+    'A': new GraphNode(50, 100, 'A', 'A'),
+    'B': new GraphNode(20, 150, 'B', 'B'),
+    'C': new GraphNode(75, 180, 'C', 'C'),
+    'D': new GraphNode(100, 100, 'D', 'D'),
+    'E': new GraphNode(230, 100, 'E', 'E'),
+    'F': new GraphNode(180, 160, 'F', 'F'),
+    'G': new GraphNode(70, 300, 'G', 'G'),
+    'H': new GraphNode(120, 240, 'H', 'H'),
+    'I': new GraphNode(300, 150, 'I', 'I'),
+    'J': new GraphNode(280, 250, 'J', 'J'),
+    'K': new GraphNode(400, 220, 'K', 'K'),
+    'L': new GraphNode(200, 280, 'L', 'L'),
+    'M': new GraphNode(380, 100, 'M', 'M'),
+    'N': new GraphNode(350, 300, 'N', 'N'),
+    'O': new GraphNode(450, 320, 'O', 'O')
+  };
+  this.edges = [
+    ['A', 'B', 3],
+    ['A', 'D', 6],
+    ['B', 'C', 1],
+    ['C', 'D', 1],
+    ['C', 'G', 5],
+    ['C', 'H', 2],
+    ['D', 'E', 3],
+    ['D', 'F', 1],
+    ['E', 'I', 5],
+    ['F', 'J', 2],
+    ['H', 'L', 8],
+    ['I', 'J', 1],
+    ['I', 'K', 1],
+    ['I', 'M', 3],
+    ['J', 'L', 5],
+    ['J', 'N', 2],
+    ['K', 'N', 2],
+    ['L', 'N', 6],
+    ['N', 'O', 2]
+  ];
+};
+// Structure for the graph problem for the simulations
+var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   this.nodes = nodes;
-  this.adjMatrix = adjMatrix;
-  this.unvisitedColor = 'hsl(0, 2%, 76%)';
-  this.frontierColor = 'hsl(200,50%,70%)';
-  this.expandedColor = 'hsl(0,50%,75%)';
-  this.clickHandler = null;
-
-  this.drawCode = {
-    0:{
-      color:this.unvisitedColor,
-      opacity:1
-    },
-    1:{
-      color:this.frontierColor,
-      opacity:1
-    },
-    2:{
-      color:this.expandedColor,
-      opacity:1
+  this.edges = edges;
+  this.nodes[initialKey].state = 'frontier';
+  this.nodes[initialKey].cost = 0;
+  this.nodes[initialKey].parent = null;
+  this.nodes[initialKey].depth = 0;
+  this.initialKey = initialKey;
+  this.frontier = [initialKey];
+  this.explored = [];
+  //Used for BFS,DFS,UCS etc where it is important to show the next node which
+  //will be expanded from the graph before actually expanding it.
+  this.nextToExpand = nextToExpand;
+  //Takes a node and returns a list of its adjacent nodes
+  this.getAdjacent = function(nodeKey) {
+    var edges = this.edges.filter((edge) => edge[0] == nodeKey || edge[1] == nodeKey);
+    var adjacent = [];
+    for (var i = 0; i < edges.length; i++) {
+      if (edges[i][0] == nodeKey) {
+        adjacent.push({
+          nodeKey: edges[i][1],
+          cost: edges[i][2]
+        });
+      } else {
+        adjacent.push({
+          nodeKey: edges[i][0],
+          cost: edges[i][2]
+        });
+      }
     }
+    return adjacent;
+  };
+  //Check if an edge is already visited
+  this.ifEdgeVisited = function(edge) {
+    return this.nodes[edge[0]].state == 'explored' || this.nodes[edge[1]].state == 'explored';
+  }
+
+  this.removeFromFrontier = function(nodeKey) {
+    this.frontier = this.frontier.filter(function(e) {
+      return e != nodeKey;
+    });
+  };
+  this.addToFrontier = function(nodeKey) {
+    this.frontier.push(nodeKey);
+    this.nodes[nodeKey].state = 'frontier';
+  };
+  this.addToExplored = function(nodeKey) {
+    this.explored.push(nodeKey);
+    this.nodes[nodeKey].state = 'explored';
   };
 
-  this.init = function(){
-    var self = this;
-    this.canvas.innerHTML = '';
-    this.two = new Two({height:h,width:w}).appendTo(canvas);
-    //Draw edges first so they appear behind nodes.
-    for(var i=0; i < this.adjMatrix.length; i++){
-      for(var j=0; j< this.adjMatrix[i].length; j++){
-        if(this.adjMatrix[i][j]){
-          var line = this.two.makeLine(this.nodes[i].x,this.nodes[i].y,this.nodes[j].x , this.nodes[j].y);
-          line.linewidth = 2;
-          if(this.agent.getState(i) == 0 || this.agent.getState(j) == 0){
-            line.opacity = this.drawCode[0].opacity;
-          }else{
-            line.opacity = 1
+  this.reset = function() {
+    //Reset nodes
+    for (i in this.nodes) {
+      this.nodes[i].state = 'unexplored';
+      this.nodes[i].cost = Number.POSITIVE_INFINITY;
+      this.nodes[i].parent = null;
+      this.nodes[i].depth = Number.POSITIVE_INFINITY;
+    }
+
+    //Initialize first node
+    this.nodes[this.initialKey].state = 'frontier';
+    this.nodes[this.initialKey].cost = 0;
+    this.nodes[this.initialKey].parent = null;
+    this.nodes[this.initialKey].depth = 0;
+
+    this.frontier = [this.initialKey];
+    this.explored = [];
+  };
+
+};
+//An agent that can work on the graph by expanding nodes
+var GraphAgent = function(problem, algo) {
+    this.problem = problem;
+    this.algo = algo;
+    //The function that expands a node from the graph
+    this.expand = function(nodeKey) {
+      this.problem.removeFromFrontier(nodeKey);
+      this.problem.addToExplored(nodeKey);
+      let adjacent = this.problem.getAdjacent(nodeKey);
+      for (var i = 0; i < adjacent.length; i++) {
+        //For every adjacent node
+        let nextNodeKey = adjacent[i].nodeKey;
+        let nextNode = this.problem.nodes[nextNodeKey];
+        if (nextNode.state == 'unexplored') {
+          //If the adjacent node is unexplored,
+          this.problem.addToFrontier(nextNodeKey);
+          //Add it to frontier and update its properties
+          nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+          nextNode.parent = nodeKey;
+          nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
+        }
+        //In UCS, Some extra logic is involved
+        if (this.algo == 'ucs') {
+          //If the node which is in frontier has cost lower than the new cost,
+          if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
+            //Assign the lower cost
+            nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+            nextNode.parent = nodeKey;
           }
-          this.edges.push(line);
-          this.two.update();
-          $(line._renderer.elem).attr('nodesIndices',i+"_"+j)
         }
       }
-    }
-    //Draw Nodes
+    };
 
-    for(var i = 0; i < this.nodes.length; i++){
-      node = this.nodes[i];
-      var circle = this.two.makeCircle(node.x,node.y,this.nodeRadius);
+  }
+  // An agent which draws the graphs to the page
+var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
+  this.canvas = document.getElementById(selector);
+  this.canvas.innerHTML = '';
+  this.h = h;
+  this.w = w;
+  this.two = new Two({
+    height: h,
+    width: w
+  }).appendTo(this.canvas);
+  this.problem = graphProblem;
 
-      circle.fill = this.drawCode[this.agent.getState(i)].color;
+  this.options = options;
+  this.nodeGroups = [];
+  this.edges = [];
 
-      var text = this.two.makeText(node.text,node.x,node.y);
-      var group = this.two.makeGroup(circle,text);
-      if(this.agent.getState(i) == 0){
-        group.opacity = this.drawCode[0].opacity;
-      }else{
-          group.opacity = 1;
+  this.reset = function() {
+    this.two.clear();
+    this.nodeGroups = [];
+    this.edges = [];
+    this.drawEdges();
+    this.drawNodes();
+  };
+  //Draws the edges
+  this.drawEdges = function() {
+    let edgeOptions = this.options.edges;
+    let edges = this.problem.edges;
+    for (var i = 0; i < edges.length; i++) {
+      let edge = edges[i];
+      let node1 = this.problem.nodes[edge[0]];
+      let node2 = this.problem.nodes[edge[1]];
+      let cost = edge[2];
+      var line = this.two.makeLine(node1.x, node1.y, node2.x, node2.y);
+
+      line.linewidth = 1;
+      line.stroke = 'black';
+      if (!this.problem.ifEdgeVisited(edge)) {
+        line.lineWidth = edgeOptions.unvisited.lineWidth;
+        line.opacity = edgeOptions.unvisited.opacity;
+      } else {
+        line.lineWidth = edgeOptions.visited.lineWidth;
+        line.opacity = edgeOptions.visited.opacity;
       }
+      //If cost needs to be shown, draw it
+      if (edgeOptions.showCost) {
+        let coords = getEdgeCostLocation(node1.x, node1.y, node2.x, node2.y);
+        this.two.makeText(cost, coords.x, coords.y);
+      }
+      //two needs to be updated so that it is drawn on the page.
+      //Only after it is drawn, we can use the jquery functions on it.
       this.two.update();
-      $(group._renderer.elem).attr('nodeIndex',i);
-      if(this.agent.getState(i) == 1){
-        $(group._renderer.elem).css('cursor','pointer');
-        group._renderer.elem.onclick = this.clickHandler;
+      $(line._renderer.elem).attr('node1', node1.id);
+      $(line._renderer.elem).attr('node2', node2.id);
+      this.edges.push(line);
+    }
+    this.two.update();
+  };
+  //Draws the nodes
+  this.drawNodes = function() {
+    let nodeOptions = this.options.nodes;
+    let nodeDict = this.problem.nodes;
+    for (key in nodeDict) {
+      let currentNode = nodeDict[key];
+      let state = currentNode.state;
+      if (this.problem.nextToExpand == key) {
+        state = 'next';
       }
+      let currentOptions = nodeOptions[state];
+      var circle = this.two.makeCircle(currentNode.x, currentNode.y, nodeOptions.nodeRadius);
+      circle.fill = currentOptions.fill;
+      circle.stroke = currentOptions.stroke;
+
+      var text = this.two.makeText(currentNode.text, currentNode.x, currentNode.y);
+      var group = this.two.makeGroup(circle, text);
+
+      group.opacity = currentOptions.opacity;
+      group.linewidth = 1;
+      this.two.update();
+      $(group._renderer.elem).attr('nodeKey', currentNode.id);
+      if (currentOptions.clickHandler != null) {
+        $(group._renderer.elem).css('cursor', 'pointer');
+        group._renderer.elem.onclick = currentOptions.clickHandler;
+      }
+      group._renderer.elem.onmouseenter = currentOptions.onMouseEnter;
+      group._renderer.elem.onmouseleave = currentOptions.onMouseLeave;
       this.nodeGroups.push(group);
     }
     this.two.update();
   };
-
-  this.iterate = function(){
-    var self = this;
-
-    for(var i = 0; i < this.nodeGroups.length; i++){
-      f_node = this.nodeGroups[i];
-      node = this.nodes[i];
-      state = this.agent.getState(i);
-      if(state == 0){
-        f_node.opacity = this.drawCode[0].opacity;
-      }else{
-          f_node.opacity = 1;
+  //Updates the nodes
+  this.iterateNodes = function() {
+    let nodeOptions = this.options.nodes;
+    for (var i = 0; i < this.nodeGroups.length; i++) {
+      let group = this.nodeGroups[i];
+      let circle = group._collection[0];
+      let nodeKey = $(group._renderer.elem).attr('nodeKey');
+      let currentNode = this.problem.nodes[nodeKey];
+      let state = currentNode.state;
+      if (this.problem.nextToExpand == nodeKey) {
+        state = 'next';
       }
-      f_node._collection[0].fill = this.drawCode[state].color;
-      if(state == 1){
-        $(f_node._renderer.elem).css('cursor','pointer');
-        f_node._renderer.elem.onclick = this.clickHandler;
-      }else{
-        f_node._renderer.elem.onclick = null;
+      let currentOptions = nodeOptions[state];
+
+      circle.fill = currentOptions.fill;
+      circle.stroke = currentOptions.stroke;
+
+      this.two.update();
+      if (currentOptions.clickHandler != null) {
+        $(group._renderer.elem).css('cursor', 'pointer');
+        group._renderer.elem.onclick = currentOptions.clickHandler;
+      } else {
+        $(group._renderer.elem).css('cursor', 'auto');
+        group._renderer.elem.onclick = null;
       }
-    }
-    for(var i = 0 ;i < this.edges.length; i++){
-      edge = this.edges[i];
-      x = $(edge._renderer.elem).attr('nodesIndices').split('_')[0];
-      y = $(edge._renderer.elem).attr('nodesIndices').split('_')[1];
-      edge.opacity = Math.min(this.nodeGroups[x].opacity , this.nodeGroups[y].opacity)
+      //Special case for cost detail diagram right now, but can be assigned
+      //other functions to improve other diagrams too
+      group._renderer.elem.onmouseenter = currentOptions.onMouseEnter;
+      group._renderer.elem.onmouseleave = currentOptions.onMouseLeave;
+      group.opacity = currentOptions.opacity;
+      group.linewidth = 1;
     }
     this.two.update();
   };
+  //Update the edges
+  this.iterateEdges = function() {
+    let edgeOptions = this.options.edges;
+    let edges = this.edges;
+    for (edgeKey in edges) {
+      let edge = edges[edgeKey];
+      let node1 = $(edge._renderer.elem).attr('node1');
+      let node2 = $(edge._renderer.elem).attr('node2');
+      if (typeof edgeOptions.unvisited != 'undefined' && !this.problem.ifEdgeVisited([node1, node2])) {
+        edge.lineWidth = edgeOptions.unvisited.lineWidth;
+        edge.opacity = edgeOptions.unvisited.opacity;
+      } else {
+        edge.linewidth = edgeOptions.lineWidth;
+        edge.opacity = edgeOptions.unvisited.opactiy;
+      }
+      edge.linewidth = 1;
+      edge.stroke = 'black';
+    }
+    this.two.update();
+  };
+  this.iterate = function() {
+    this.iterateEdges();
+    this.iterateNodes();
+  }
+  this.reset();
 };
+
+
+
+
+
+
+// An agent to draw queues for bfs and dfs
+function QueueDrawAgent(selector, h, w, problem, options) {
+  this.canvas = document.getElementById(selector);
+  this.canvas.innerHTML = '';
+  this.two = new Two({
+    height: h,
+    width: w
+  }).appendTo(this.canvas);
+  this.problem = problem;
+  this.nodeRadius = 25;
+  this.options = options;
+
+  this.iterate = function() {
+    this.two.clear();
+    var frontier = this.problem.frontier;
+    for (var i = 0; i < frontier.length; i++) {
+      node = this.problem.nodes[frontier[i]];
+      var x = (i) * 30 + 40;
+      var y = 20;
+      var rect = this.two.makeRectangle(x, y, this.nodeRadius, this.nodeRadius);
+      rect.fill = options.nodes.frontier.fill;
+      if (frontier[i] == this.problem.nextToExpand) {
+        rect.fill = options.nodes.next.fill;
+      }
+      var text = this.two.makeText(node.text, x, y);
+      if (this.options.showCost) {
+        t = this.two.makeText(node.cost, x, y + 30);
+      }
+    }
+    this.two.update();
+  }
+  this.iterate();
+};
+
+var dlsDrawAgent = function(selector) {
+  this.h = 350;
+  this.w = 600;
+  this.limit = 2;
+  this.graph = new DLSGraph();
+  this.initial = 'A';
+  this.selector = selector;
+  this.graphProblem = new GraphProblem(this.graph.nodes, this.graph.edges, this.initial, null);
+  this.graphAgent = new GraphAgent(this.graphProblem);
+  this.options = new DefaultOptions();
+  this.graphDrawAgent = new GraphDrawAgent(this.graphProblem, this.selector, this.options, this.h, this.w);
+  //Expand nodes for the current limit
+  this.iterate = function(limit) {
+    this.limit = limit;
+    this.graphProblem.reset();
+    let previous = this.initial;
+    while (this.graphProblem.frontier.length > 0 && previous != null) {
+      let nextNode = depthLimitedSearch(this.graphProblem, this.limit);
+      previous = nextNode;
+      if (nextNode != null) {
+        this.graphAgent.expand(nextNode);
+      }
+    }
+    this.graphDrawAgent.iterate();
+    this.iterateDepthsOnEdges();
+  }
+
+  this.drawDepthOnEdges = function() {
+    this.graphDrawAgent.depths = [];
+    let edges = this.graphDrawAgent.edges;
+    for (let i = 0; i < edges.length; i++) {
+      let node1Key = $(edges[i]._renderer.elem).attr('node1');
+      let node2Key = $(edges[i]._renderer.elem).attr('node2');
+      let node1 = this.graphProblem.nodes[node1Key];
+      let node2 = this.graphProblem.nodes[node2Key];
+      let coords = getEdgeCostLocation(node1.x, node1.y, node2.x, node2.y);
+      let text = this.graphDrawAgent.two.makeText(0, coords.x, coords.y);
+      text.opacity = 0;
+      this.graphDrawAgent.two.update();
+      $(text._renderer.elem).attr('node1', node1Key);
+      $(text._renderer.elem).attr('node2', node2Key);
+      this.graphDrawAgent.depths.push(text);
+    }
+  }
+  this.iterateDepthsOnEdges = function() {
+    for (let i = 0; i < this.graphDrawAgent.depths.length; i++) {
+      let text = this.graphDrawAgent.depths[i];
+      let node1Key = $(text._renderer.elem).attr('node1');
+      let node2Key = $(text._renderer.elem).attr('node2');
+      let node1 = this.graphProblem.nodes[node1Key];
+      let node2 = this.graphProblem.nodes[node2Key];
+      if (node1.state == 'explored' && node2.state == 'explored') {
+        let depth = Math.max(node1.depth, node2.depth);
+        text.value = depth;
+        text.opacity = 1;
+      } else {
+        text.opacity = 0;
+      }
+    }
+    this.graphDrawAgent.two.update();
+  }
+  this.drawDepthOnEdges();
+}

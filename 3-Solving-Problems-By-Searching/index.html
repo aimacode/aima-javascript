@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>3 Solving Problems By Searching</title>
-  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script type="text/javascript" src="../main.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  
   <script type="text/javascript" src="./helpers.js"></script>
   <script type="text/javascript" src="./aStarSearch.js"></script>
   <script type="text/javascript" src="./bestFirstSearch.js"></script>
@@ -12,7 +17,7 @@
   <script type="text/javascript" src="./depthLimitedSearch.js"></script>
   <script type="text/javascript" src="./iterativeDeepening.js"></script>
   <script type="text/javascript" src="./uniformCostSearch.js"></script>
-  <script type="text/javascript" src="./nodeExpansion.js"></script>
+  <script type="text/javascript" src="./costDetails.js"></script>
 
   <script type="text/javascript" src="./c_aStarSearch.js"></script>
   <script type="text/javascript" src="./c_bestFirstSearch.js"></script>
@@ -22,17 +27,10 @@
   <script type="text/javascript" src="./c_iterativeDeepening.js"></script>
   <script type="text/javascript" src="./c_uniformCostSearch.js"></script>
   <script type="text/javascript" src="./c_nodeExpansion.js"></script>
-  <script>
-   $(function(){
-      $('header').load("../header.html");
-   });
-   </script>
+  <script type="text/javascript" src="./c_costDetails.js"></script>
 </head>
+
 <body>
-  <header>
-
-  </header>
-
   <div class="row">
     <div class="col-sm-6 col-md-10 col-md-offset-1" id="content">
       <div class="row">
@@ -41,171 +39,337 @@
 
           <h2>Node Expansion</h2>
           <p>
-            To search through a graph, a Search Agent needs to <b>expand</b>
-            nodes.
-            The nodes which can be expanded by the Agent together forms the
-            <b>frontier</b>.
-            Expanding a node refers to marking the node as 'expanded' or
-            'visited' and adding its immediate neighbors to the frontier.
+            To search through a graph, a Search Agent needs to <b>expand</b> nodes. The nodes which can be expanded by the Agent together forms the
+            <b>frontier</b>. Expanding a node refers to marking the node as 'expanded' or 'visited' and adding its immediate neighbors to the frontier.
           </p>
           <p>
-            In the following diagram, 'A' is the initial node and belongs to
-            the frontier. Click on the frontier nodes to see how they are
-            expanded.
+            In the following diagram, 'A' is the initial node and belongs to the frontier. Click on the frontier nodes to see how they are expanded.
           </p>
         </div>
       </div>
 
-        <div class="row">
-          <div class="col-sm-6 col-md-6">
-            <div class='btn btn-primary' id='nodeRestartButton'>Restart</div>
-            <div class="canvas" id='nodeExpansionCanvas' height="400px">
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-6">
-            <div class="notes">
-              <ul type="none" id='nodeLegend'>
-                <li><div id='legendExpanded' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes </li>
-                <li><div id='legendFrontier' style="width:15px;height:15px;display: inline-block;"></div> Frontier Nodes </li>
-                <li><div id='legendUnexplored' style="width:15px;height:15px;display: inline-block;"></div> Unexplored/Unknown Nodes </li>
-              </ul>
-            </div>
-            <div id="frontierNodesWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:50%;height:200px;margin-top:40px">
-              <center>
-                <h4>Frontier Nodes</h4>
-                <div id='frontierCanvas'>
-                </div>
-              </center>
-            </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='nodeRestartButton'>Restart</div>
+          <div class="canvas" id='nodeExpansionCanvas' height="400px">
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-6 col-sm-6">
-            <h2>Getting in the shoes of a Search Agent</h2>
-            <p>
-              Let's see the prespective of a Search Agent as it searches through the graph.<br>
-              Remember, the Agent can only see the nodes which are either expanded or currently present in
-              the frontier.
-            </p>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='nodeLegend'>
+              <li>
+                <div id='legendExpanded' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes </li>
+              <li>
+                <div id='legendFrontier' style="width:15px;height:15px;display: inline-block;"></div> Frontier Nodes </li>
+              <li>
+                <div id='legendUnexplored' style="width:15px;height:15px;display: inline-block;"></div> Unexplored/Unknown Nodes </li>
+            </ul>
+          </div>
+          <div id="frontierNodesWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:50%;height:200px;margin-top:40px">
+            <center>
+              <h4>Frontier Nodes</h4>
+              <div id='frontierCanvas'>
+              </div>
+            </center>
           </div>
         </div>
-
-        <div class="row">
-          <div class="col-sm-6 col-md-6">
-            <div class='btn btn-primary' id='agentViewRestartButton'>Restart</div>
-            <div class="canvas" id='agentViewCanvas' height="400px">
-            </div>
-          </div>
-        </div>
-
-        <p>
-          Now that we know how nodes are expanded and how a search Agent perceives the graph, we are
-          now ready to meet some Search Algorithms. In the above two visualizations, you decided which
-          node to expand next(by clicking on them) but now we shall see some algorithms in action which can
-          decide by themselves which node to expand next.
-        </p>
-        <div class="row">
-          <div class="col-md-6 col-sm-6">
-            <h2>Breadth First Search</h2>
-            <p>In Breadth First Search, the node which was discovered the earliest is expanded next i.e. the node which joined
-            the frontier earlier, is expanded earlier.</p>
-            <p>
-              To achieve this, Breadth First Search Algorithm uses a FIFO(First In First Out) Queue.
-              The following graph is explored by a Breadth First Search Algorithm with 'A' as the initial node.
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6 col-md-6">
-              <div class='btn btn-primary' id='bfsRestartButton'>Restart</div>
-              <div class = "canvas" id="breadthFirstSearchCanvas" height="300px">
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-6">
-            <div class="notes">
-              <ul type="none" id='fifoLegend'>
-                <li><div id='fifoWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
-                <li><div id='fifoNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
-              </ul>
-            </div>
-            <div id="fifoQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:70%;height:100px;margin-top:40px">
-              <center>
-                <h4>FIFO QUEUE</h4>
-                <div id='fifoQueueCanvas'>
-                </div>
-              </center>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-sm-6">
-            <h2>Depth First Search</h2>
-            <p>In Depth First Search, the node which was discovered the latest is expanded next i.e. the node which joined
-            the frontier later, is expanded later.</p>
-            <p>
-              To achieve this, Depth First Search Algorithm uses a LIFO(Last In First Out) Queue.
-              The following graph is explored by a Depth First Search Algorithm with 'A' as the initial node.
-            </p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6 col-md-6">
-              <div class='btn btn-primary' id='dfsRestartButton'>Restart</div>
-              <div class = "canvas" id="depthFirstSearchCanvas" height="300px">
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-6">
-            <div class="notes">
-              <ul type="none" id='lifoLegend'>
-                <li><div id='lifoWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
-                <li><div id='lifoNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
-              </ul>
-            </div>
-            <div id="lifoQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:70%;height:100px;margin-top:40px">
-              <center>
-                <h4>LIFO QUEUE</h4>
-                <div id='lifoQueueCanvas'>
-                </div>
-              </center>
-            </div>
-          </div>
-        </div>
-
-        <h2>Uniform Cost Search</h2>
-        <p>Click on the canvas to restart the simulation</p>
-        <div class = "canvas" id="uniformCostSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-        </div>
-
-        <pre id="uniformCostSearchCode"></pre>
-
-        <h2>Depth Limited Search</h2>
-        <p>Click on the canvas to restart the simulation</p>
-        <div class = "canvas" id="depthLimitedSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-        </div>
-
-        <pre id="depthLimitedSearchCode"></pre>
-
-        <h2>Iterative Deepening Search</h2>
-        <p>Click on the canvas to restart the simulation</p>
-        <div class = "canvas" id="iterativeDeepeningCanvas" height="300px" style="background: rgb(154, 255, 255);">
-        </div>
-
-        <pre id="iterativeDeepeningCode"></pre>
-
-        <h2>A Star Search</h2>
-        <p>Click on the canvas to restart the simulation</p>
-        <div class = "canvas" id="aStarSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
-        </div>
-
-        <pre id="aStarSearchCode"></pre>
       </div>
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Getting in the shoes of a Search Agent</h2>
+          <p>
+            Let's see the prespective of a Search Agent as it searches through the graph.
+            <br> Remember, the Agent can only see the nodes which are either expanded or currently present in the frontier.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='agentViewRestartButton'>Restart</div>
+          <div class="canvas" id='agentViewCanvas' height="400px">
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Now that we know how nodes are expanded and how a search Agent perceives the graph, we are now ready to meet some Search Algorithms. In the above two visualizations, you decided which node to expand next(by clicking on them) but now we shall see some
+        algorithms in action which can decide by themselves which node to expand next.
+      </p>
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Breadth First Search</h2>
+          <p>In Breadth First Search, the node which was discovered the earliest is expanded next i.e. the node which joined the frontier earlier, is expanded earlier.</p>
+          <p>
+            To achieve this, Breadth First Search Algorithm uses a FIFO(First In First Out) Queue. The following graph is explored by a Breadth First Search Algorithm with 'A' as the initial node.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='bfsRestartButton'>Restart</div>
+          <div class="canvas" id="breadthFirstSearchCanvas" height="300px">
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='fifoLegend'>
+              <li>
+                <div id='fifoWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
+              <li>
+                <div id='fifoNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
+            </ul>
+          </div>
+          <div id="fifoQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:70%;height:100px;margin-top:40px">
+            <center>
+              <h4>FIFO Queue</h4>
+              <div id='fifoQueueCanvas'>
+              </div>
+            </center>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Depth First Search</h2>
+          <p>In Depth First Search, the node which was discovered the latest is expanded next i.e. the node which joined the frontier later, is expanded later.</p>
+          <p>
+            To achieve this, Depth First Search Algorithm uses a LIFO(Last In First Out) Queue. The following graph is explored by a Depth First Search Algorithm with 'A' as the initial node.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='dfsRestartButton'>Restart</div>
+          <div class="canvas" id="depthFirstSearchCanvas" height="300px">
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='lifoLegend'>
+              <li>
+                <div id='lifoWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
+              <li>
+                <div id='lifoNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
+            </ul>
+          </div>
+          <div id="lifoQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:70%;height:100px;margin-top:40px">
+            <center>
+              <h4>LIFO Queue</h4>
+              <div id='lifoQueueCanvas'>
+              </div>
+            </center>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Step Costs</h2>
+          <p>
+            Until now, all the edges in our graph had the same cost.(That's why we didn't bother to mention the cost on the graph). For those kind of graphs, Breadth First Search is optimal because it always pops the shallowest node first. For the case when some
+            step costs are involved when exploring the nodes, the BFS algorithm needs be extended.
+          </p>
+          <p>
+            Associated cost of any node in the graph is calculated as the cost of the 'lowest cost path' from an initial node. Cost of the initial node is 0.
+          </p>
+          <p>
+            Below is a side by side comparison of both 'Lowest Cost Path' and the 'Breadth First Search Path' from the same initial node 'A'.
+            <br> Note how <b>BFS fails</b> to derive the lowest cost path for many nodes. BFS successfully finds the paths with the <b>minimum number of nodes</b> from the initial node, but it doesn't take into account the costs of the steps.
+          </p>
+          <p>
+            Hover your mouse over any node to see the paths.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class="canvas" id="costGraphCanvas" height="300px">
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="canvas" id="no-costGraphCanvas" height="300px">
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class="col-sm-6 col-md-6">
+          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
+            <center>
+              <h4>Lowest Cost Path</h4>
+              <h5>Uniform Cost Search (Extension of BFS)</h5>
+              <div id='lowestCostDetailCanvas'>
+              </div>
+            </center>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
+            <center>
+              <h4>BFS Shortest Path</h4>
+              <h5>Breadth First Search</h5>
+              <div id='bfsCostDetailCanvas'>
+              </div>
+            </center>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Uniform Cost Search</h2>
+          <p>
+            For Unifrom Cost Search, instead of using a simple LIFO queue, A priority Queue is used where the cost of reaching that node from the initial node is considered as its priority. On each iteration, the node with the smallest cost is extracted from the
+            frontier for expansion.
+          </p>
+          <p>
+            At any point of time in the process of a Uniform Cost Search, the costs of the explored nodes are always less than or equal to the costs of the frontier nodes (and also unexplored nodes as a matter of fact).
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='ucsRestartButton'>Restart</div>
+          <div class="canvas" id="uniformCostSearchCanvas" height="300px">
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='ucsLegend'>
+              <li>
+                <div id='ucsWaiting' style="width:15px;height:15px;display: inline-block;"></div> Nodes waiting to be expanded </li>
+              <li>
+                <div id='ucsNextNode' style="width:15px;height:15px;display: inline-block;"></div> Node to be expanded next from the queue </li>
+              <li>
+                <div id='ucsExploredNode' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes</li>
+
+            </ul>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-xs-12 col-lg-6">
+              <div id="priorityQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:300px;margin-top:40px">
+                <center>
+                  <h4>Priority Queue</h4>
+                  <h4> costs >= <span class = 'ucsSeparation' style="font-size:150%;color:green">0</span></h4>
+                  <div id='priorityQueueCanvas'>
+                  </div>
+                </center>
+              </div>
+            </div>
+            <div class="col-md-6 col-xs-12 col-lg-6">
+              <div id="ExploredPriorityQueueWrapper" style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:300px;margin-top:40px">
+                <center>
+                  <h4>Explored Nodes</h4>
+                  <h4> costs <= <span class = 'ucsSeparation' style="font-size:150%;color:green">0</span></h4>
+                  <div id='exploredPriorityQueueCanvas'>
+                  </div>
+                </center>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Depth Limited Search</h2>
+          <p>
+            The Depth Limited Search is the same as Depth First Search except that there is an upper limit to the depth of the nodes which the algorithm traverses. The nodes which have depths greater than this limit is not expanded by the Depth Limited Search.
+          </p>
+          <p>
+            Given below is a <b>Search Tree</b> that is generated by a Depth first Search Algorithm on some graph. Try giving different limits to the Depth Limited Search Algorithm and notice that only the nodes with depths less than or equal to the given
+            depth limit is searched.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <h4>Depth Limit : </h4>
+              <input type="range" id="limitSelector" name="rangeInput" step="1" min="0" max="5" value="2">
+              <label id="limitSelectorText">2</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="canvas" id="depthLimitedSearchCanvas" height="300px">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='dlsLegend'>
+              <li>
+                <div id='dlsExpanded' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes </li>
+              <li>
+                <div id='dlsFrontier' style="width:15px;height:15px;display: inline-block;"></div> Frontier Nodes </li>
+              <li>
+                <div id='dlsUnexplored' style="width:15px;height:15px;display: inline-block;"></div> Unexplored/Unknown Nodes </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-sm-6">
+          <h2>Iterative Deepening Depth-First Search</h2>
+          <p>
+            Iterative Deepening Depth-First Search is a general strategy that is used to find the best depth limit. It does this by applying Depth Limited Search to the given problem with increasing depth limit. (0, 1, 2, 3 and so on.)
+          </p>
+          <p>
+            Given below is a search tree which is traversed using Iterative Deepening Depth-First Search. The depth-limit is varied from 0 to 5 and Depth Limited Search is applied with that limit.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class='btn btn-primary' id='idRestartButton'>Restart</div>
+          <div class="row">
+
+            <div class="form-group col-md-4">
+              <h4>Depth Limit : </h4>
+              <input disabled type="range" id="idlimitSelector" name="rangeInput" step="1" min="0" max="5" value="0">
+              <label id="idlimitSelectorText">0</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="canvas" id="iterativeDeepeningCanvas" height="300px">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          <div class="notes">
+            <ul type="none" id='idLegend'>
+              <li>
+                <div id='idExpanded' style="width:15px;height:15px;display: inline-block;"></div> Expanded Nodes </li>
+              <li>
+                <div id='idFrontier' style="width:15px;height:15px;display: inline-block;"></div> Frontier Nodes </li>
+              <li>
+                <div id='idUnexplored' style="width:15px;height:15px;display: inline-block;"></div> Unexplored/Unknown Nodes </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h2>A Star Search</h2>
+      <p>Click on the canvas to restart the simulation</p>
+      <div class="canvas" id="aStarSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
+      </div>
+
+      <pre id="aStarSearchCode"></pre>
     </div>
   </div>
-
-  <footer class="container-fluid text-center">
-	<img src="http://aima.cs.berkeley.edu/aima_logo.png">
-  </footer>
+  </div>
 </body>
+
 </html>

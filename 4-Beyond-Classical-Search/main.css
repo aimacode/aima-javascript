@@ -1,0 +1,38 @@
+.restart-button {
+  margin: 20px;
+}
+.inline-legend {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+}
+.anneal-region {
+  background-color: hsl(303, 100%, 50%);
+}
+.maxima {
+  background-color: hsl(110, 100%, 38%);
+}
+.unvisitedmaxima {
+  background-color: hsl(102, 100%, 56%);
+}
+.gmra {
+  background-color: hsl(110, 100%, 60%);
+}
+.hill {
+  fill: hsl(217, 30%, 70%);
+}
+.hill-anneal-current-state {
+  fill: hsl(303, 100%, 50%);
+}
+.hill-maxima {
+  fill: hsl(110, 100%, 75%);
+}
+.hill-unvisitedmaxima {
+  fill: hsl(110, 100%, 50%);
+}
+.hill-gmra {
+  fill: hsl(110, 25%, 60%);
+}
+.hill-maxima.hill-anneal-current-state {
+  fill: hsl(110, 100%, 85%);
+}

@@ -1,54 +1,39 @@
+$(document).ready(function() {
+  var w = 600,
+    h = 350;
+  var DELAY = 2000;
+  var intervalFunction = null;
 
-$(document).ready(function(){
-	var w = 600, h = 350;
-	var visGraph = null;
-	var visQueue = null;
-	var agent = null;
-	var initial = 0;
-	var end = 16;
-	var canvas = null;
-	var queueCanvas = null;
-	var DELAY = 2000;
-	var updateFunction = null;
-	var intervalFunction = null;
-	var nextNodeColor = 'hsl(108, 96%, 50%)';
-	function init(){
-		canvas = document.getElementById('depthFirstSearchCanvas');
-		queueCanvas = document.getElementById('lifoQueueCanvas')
-		graph = new makeDefaultGraph();
-		agent = new nodeExpansionAgent(graph.adjMatrix,initial);
-		visGraph = new drawGraph(canvas,h,w,agent,graph.nodes,graph.adjMatrix);
-		visQueue = new drawQueue(queueCanvas,h,w,agent,graph.nodes);
-		visGraph.init();
-		visQueue.init();
-		visGraph.nodeGroups[initial].children[0].fill = nextNodeColor;
-		visQueue.rectangles[0].fill = nextNodeColor;
-		visGraph.two.update();
-		visQueue.two.update();
-		updateFunction = function(){
-			frontier = agent.frontier;
-			if(frontier.length == 0){
-				clearInterval(intervalFunction,DELAY);
-			}else{
-				var x = depthFirstSearch(frontier);
-				agent.expand(x);
-				visGraph.iterate();
-				visQueue.iterate();
-				if(agent.frontier.length != 0){
-					visGraph.nodeGroups[agent.frontier[agent.frontier.length - 1]].children[0].fill = nextNodeColor;
-					visGraph.two.update();
-					visQueue.rectangles[visQueue.rectangles.length - 1].fill = nextNodeColor;
-					visQueue.two.update();
-				}
-			}
-		};
-		intervalFunction = setInterval(updateFunction,DELAY);
-		$('#lifoWaiting').css('background-color',visQueue.waitingColor);
-		$('#lifoNextNode').css('background-color',nextNodeColor);
-	};
-	init();
-	$('#dfsRestartButton').click(function(){
-		clearInterval(intervalFunction,DELAY);
-		init();
-	})
-})
+  function init() {
+    clearInterval(intervalFunction, DELAY);
+    var graph = new DefaultGraph();
+    var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
+    var graphAgent = new GraphAgent(graphProblem);
+    var options = new DefaultOptions();
+    options.nodes.next.fill = 'hsla(126, 100%, 69%, 1)';
+    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'depthFirstSearchCanvas', options, h, w);
+    var queueDrawAgent = new QueueDrawAgent('lifoQueueCanvas', h, w, graphProblem, options);
+    var updateFunction = function() {
+      if (graphProblem.frontier.length > 0) {
+        var nextNode = depthFirstSearch(graphProblem);
+        graphAgent.expand(nextNode);
+        //If frontier is still present, find the next node to be expanded so it
+        //could be colored differently
+        if (graphProblem.frontier.length > 0) {
+          graphProblem.nextToExpand = depthFirstSearch(graphProblem);
+        } else {
+          graphProblem.nextToExpand = null;
+        }
+        graphDrawAgent.iterate();
+        queueDrawAgent.iterate();
+      } else {
+        clearInterval(intervalFunction, DELAY);
+      }
+    }
+    intervalFunction = setInterval(updateFunction, DELAY);
+  };
+  $('#dfsRestartButton').click(init);
+  $('#lifoWaiting').css('background-color', 'hsl(200,50%,70%)');
+  $('#lifoNextNode').css('background-color', 'hsla(126, 100%, 69%, 1)');
+  init();
+});
