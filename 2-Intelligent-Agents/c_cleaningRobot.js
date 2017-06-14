@@ -226,7 +226,7 @@ function makeTableControlledDiagram() {
                 let marker = d3.select(this).attr('data-action');
                 return marker == locationMarker + '-' + perceptMarker;
             })
-            .transition().delay(0.2 * STEP_TIME_MS)
+            .transition().duration(0.05 * STEP_TIME_MS)
             .style('background-color', colors.actionHighlight)
             .transition().duration(0.9 * STEP_TIME_MS)
             .style('background-color', colors.actionBackground);
