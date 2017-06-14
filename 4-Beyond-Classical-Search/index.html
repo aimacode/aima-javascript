@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>4 Beyond Classical Search</title>
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="main.css" charset="utf-8">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
   <script type="text/javascript" src="./geneticAlgorithm.js"></script>
   <script type="text/javascript" src="./simulatedAnnealing.js"></script>
   <script type="text/javascript" src="./hillClimbing.js"></script>
   <script type="text/javascript" src="./andOrGraphSearch.js"></script>
   <script type="text/javascript" src="./lrtaAgent.js"></script>
   <script type="text/javascript" src="./onlineDfsAgent.js"></script>
+  <script type="text/javascript" src="./erraticVacuum.js"></script>
 
   <script type="text/javascript" src="./c_geneticAlgorithm.js"></script>
   <script type="text/javascript" src="./c_simulatedAnnealing.js"></script>
@@ -20,58 +24,109 @@
   <script type="text/javascript" src="./c_andOrGraphSearch.js"></script>
   <script type="text/javascript" src="./c_lrtaAgent.js"></script>
   <script type="text/javascript" src="./c_onlineDfsAgent.js"></script>
+  <script type="text/javascript" src="./c_erraticVacuum.js"></script>
 </head>
+
 <body>
 
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="col-sm-6 col-md-8 col-md-offset-1" id="content">
       <h1>Beyond classical search</h1>
 
-      <h2>Hill Climbing</h2>
-      <p>Click on the canvas to move the robot to that position</p>
-      <p>A small robot tries to get to the top.</p>
-      <div class = "canvas" id="hillCanvas" height="300px" style="background: rgb(154, 255, 255);">
+      <h2>Optimization Problem</h2>
+      <p>In many optimization problems, the path to the solution is irrelevant. In pure optimization problems, the best state is defined by the objective function. To represent such problems, a <b>state-space</b> landscape is used. It has a location (state)
+        represented by x-axis and elevation(objective function value) represented by y-axis. The best state is hence the state with the highest objective value</p>
+      <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
+      <p><span class='inline-legend maxima'></span> represents found global maximas and <span class='inline-legend unvisitedmaxima'></span> represents unfound global maximas</p>
+      <p>Try to come up with a strategy that can be used for all kinds of hills.</p>
+      <div class='row'>
+        <div class="col-md-2">
+          <div class='btn btn-primary restart-button' id='hillClimbRestart'>Restart</div>
+        </div>
+        <div class="col-md-4">
+          <h2 id='hillMoves'></h2>
+        </div>
+      </div>
+      <div id="hillCanvas">
       </div>
 
-      <pre id="hillCode"></pre>
+      <h2>Hill Climbing Search</h2>
+      <p>In hill climbing search, the current node is replaced by the best neighbor. In this case, the objective function is represented by elevation, neighbors of a state are the states to the left and right of it and the best neigbor is the neigbor state
+        with the highest elevation.</p>
+      <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend gmra'></span> represents the states from where the hill climbing search can reach a global maxima.</p>
+      <p>Click on different states to start Hill Climbing Search from there and see which direction it prefers and when does it stop.</p>
+      <p>Use the restart button to try it on different kinds of hills.</p>
+      <div class='row'>
+        <div class="col-md-2">
+          <div class='btn btn-primary restart-button' id='hillSearchRestart'>Restart</div>
+        </div>
+      </div>
+      <div id="hillSearchCanvas">
+      </div>
 
       <h2>Simulated Annealing</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <p>The orange line represents the current position.</p>
-      <div class = "canvas" id="annealingCanvas" height="300px"></div>
+      <p>Simulated Annealing is a combination of Hill Climbing and Random Walk to gain more efficiency and completeness. In this procedure, instead of always moving to the best neighbor, a random neighbor is chosen. If the new state has better objective
+        value than the current state, it is always chosen. If not, the algorithm accept the new state with a probability less than one. The probability of choosing a <b>bad state</b> depends on :
+        <ol>
+          <li>The difference in objective value of the new state and the current state</li>
+          <li>The temperature</li>
+        </ol>
+        The temperature T denotes how likely it is for a bad state to be accepted. The procedure starts with a high temperature and decreases it with time. The probability of accepting a bad move decreases exponentially with temperature.</p>
+      <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend anneal-region'></span> represents current state.</p>
+      <p>Notice how the algorithm shakes violently between states when the temperature is high and then stabilizes to higher states as the temperature decreases.</p>
+      <p>Try to set the temperature from the slider to different values and notice how the algorithm behaves.</p>
+      <div class='row'>
+        <div class="col-md-2">
+          <div class='btn btn-primary restart-button' id='annealingRestart'>Restart</div>
+        </div>
+        <div class="col-md-8">
+          <b>Temperature</b>
+          <input style="margin-top:1.5%" type="range" id="tempSelector" name="tempInput" step="0.1" min="0" max="100" value="100">
+        </div>
+      </div>
+      <div id="annealingCanvas"></div>
 
-      <pre id="simulatedAnnealingCode"></pre>
 
       <h2>Genetic Algorithm</h2>
       <p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>
       <p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
       <p>Note: Single point crossover might not be suitable for all applications</p>
-      <div class = "canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
+      <div class="canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
       </div>
 
       <pre id="geneticAlgorithmCode"></pre>
 
       <h2>And-Or-Graph-Search</h2>
-      <div class = "canvas" id="andOrGraphCanvas" height="300px">
+      <div class="canvas" id="andOrGraphCanvas" height="300px">
       </div>
       <pre id="andOrGraphSearchCode"></pre>
 
       <h2>Online DFS Agent</h2>
       <p>Click to reset. Green tile is destination.</p>
-      <div class = "canvas" id="onlineDfsCanvas" height="300px">
+      <div class="canvas" id="onlineDfsCanvas" height="300px">
       </div>
 
       <pre id="onlineDfsCode"></pre>
 
       <h2>LRTA*-Agent</h2>
       <p></p>
-      <div class = "canvas" id="lrtaCanvas" height="300px">
+      <div class="canvas" id="lrtaCanvas" height="300px">
         <p></p>
       </div>
 
       <pre id="lrtaCode"></pre>
+
+
+      <div class='license'>
+        <h4>Third Party License Information</h4>
+        <ul>
+          <li><a href="https://thenounproject.com/term/robot/1248/">Robot by Simon Child, The Noun Project</a>, <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons BY-3.0</a></li>
+        </ul>
+      </div>
+
     </div>
   </div>
-</div>
+  </div>
 </body>
+
 </html>

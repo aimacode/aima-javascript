@@ -54,12 +54,5 @@ var AndOrGraphSearchProblemStatement = function(){
 };
 
 $(document).ready(function(){
-	$.ajax({
-		url : "andOrGraphSearch.js",
-		dataType: "text",
-		success : function (data) {
-			$("#andOrGraphSearchCode").html(data);
-		}
-	});
 
 });

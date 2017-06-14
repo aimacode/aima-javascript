@@ -1,28 +1,30 @@
-var SimulatedAnnealing = function(x,k,T){
-	this.x = x; // Starting state
-	this.k = k; // Boltzmann constant
-	this.T = T; // Initial temperature
+class SimulatedAnnealing {
+  constructor(hill, initial, k) {
+    this.states = hill.getStates();
+    this.initial = initial;
+    this.current = this.initial;
+    this.k = k;
+  }
 
-	this.anneal = function(f){
-		if(this.T == 0) return x;
-		var new_x = this.getRandomInt(0,f.length);	 
-		if(f[new_x] > f[x]){
-			// If the new chosen value is better
-			// then just move to new state
-			x = new_x;
-		} else {
-			// Calculate probability of transfer
-			var p = Math.exp((f[new_x] - f[x])/(k * T));
-			// If a randomly chosen value is within p
-			// then move to the new state
-			if(Math.random() < p)
-				x = new_x;
-		}
-		this.T--;
-		return x;
-	};
-
-	this.getRandomInt = function(min, max) {
-		return Math.floor(Math.random() * (max - min)) + min;
-	};
-};
+  anneal(temperature) {
+    let nextState = this.getRandomState();
+    let diff = this.states[nextState] - this.states[this.current];
+    if (diff > 0) {
+      this.current = nextState;
+    } else {
+      let p = Math.exp((diff) / parseInt(this.k * temperature));
+      if (Math.random() < p) {
+        this.current = nextState;
+      }
+    }
+    return {
+      state: this.current,
+      temp: temperature
+    };
+  }
+  getRandomState() {
+    let mini = 0;
+    let maxi = this.states.length;
+    return Math.floor(Math.random() * (maxi - mini + 1)) + mini;
+  }
+}

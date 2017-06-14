@@ -1,0 +1,38 @@
+.state {
+  stroke: white;
+}
+.state.normal {
+  fill: #DDDDDD;
+}
+.state.terminal {
+  fill: #B2B2B2;
+}
+.policy {
+  fill: white;
+}
+.state_value {
+  text-anchor: middle;
+  alignment-baseline: middle;
+  font-family: "Sans-serif", Arial;
+}
+.state_value.normal {
+  font-size: 1em;
+}
+.state_value.terminal {
+  font-size: 3em;
+  fill: white;
+}
+.next_state {
+  stroke: white;
+  fill: green;
+}
+.next_state.imp {
+  fill-opacity: 0.6;
+}
+.next_state.nor {
+  fill-opacity: 0.2;
+}
+.next_state.selected {
+  stroke-width: 2;
+  stroke: orange;
+}
