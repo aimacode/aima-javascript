@@ -1,6 +1,12 @@
 .restart-button {
   margin: 20px;
 }
+.control-button {
+  margin-top: 20px;
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 100%;
+}
 .inline-legend {
   display: inline-block;
   width: 10px;
@@ -35,4 +41,26 @@
 }
 .hill-maxima.hill-anneal-current-state {
   fill: hsl(110, 100%, 85%);
+}
+.floor {
+  fill: hsl(240, 10%, 90%);
+  transition: fill 0.5s;
+}
+.floor.dirty {
+  fill: hsl(0, 50%, 50%);
+  transition: fill 0.1s;
+}
+#movesWrapper {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+#movesList {
+  padding-left: 0;
+}
+.moves-list-item {
+  width: 100%;
+}
+.waiting-move {}
+.done-move {
+  color: green;
 }

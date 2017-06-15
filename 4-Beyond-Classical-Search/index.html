@@ -94,19 +94,75 @@
       <div class="canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
       </div>
 
-      <pre id="geneticAlgorithmCode"></pre>
+      <h1>Searching with non-deterministic actions</h1>
+      <p>In a world with non-deterministic actions, the result of an action is not known with complete certainty. </p>
+      <h2>The erratic vacuum world</h2>
+      <p>The erratic vacuum world is an extension of vacuum world from Chapter 2. In this world, the behavior of the cleaner is non-deterministic.</p>
+      <p>To define this behavior more formally, in this world, the <b>Suck</b> action works as follows</p>
+      <ul>
+        <li>If the tile is dirty, the suck action cleans up the tile and sometimes also clean up dirt in adjacent tiles </li>
+        <li>If the tile is clean, the suck action sometimes deposits dirt on the carpet.</li>
+      </ul>
+      <p>Given below is a 5 tile erratic vacuum world. You can record a sequence of actions which you believe will clean up all the dirt. Use the play the button to execute that sequence.
+      Play the sequence multiple times to see how they can result in different end state sometimes. Use restart button to generate a new initial state. Use clear button to clear the recorded sequence
+      and record a new one.</p>
+      <div class='row'>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-4">
+              <div class='btn btn-primary restart-button' id='erraticVacuumRestart'>Restart</div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button' id='erraticMoveLeft'>Left</div>
+                </div>
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button' id='erraticVacuum'>Vacuum</div>
+                </div>
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button' id='erraticMoveRight'>Right</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <div id="erraticVacuumCanvas"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-6">
+              <div class='btn btn-success control-button' id='movesPlayBtn'>Play</div>
+            </div>
+            <div class="col-md-6">
+              <div class='btn btn-default control-button' id='movesClearBtn'>Clear</div>
+            </div>
+          </div>
+          <h5>Moves</h5>
+          <div class='list-group' id='movesWrapper'>
+            <ol id="movesList">
+
+            </ol>
+          </div>
+        </div>
+
+      </div>
+
+      <p></p>
 
       <h2>And-Or-Graph-Search</h2>
       <div class="canvas" id="andOrGraphCanvas" height="300px">
       </div>
-      <pre id="andOrGraphSearchCode"></pre>
 
       <h2>Online DFS Agent</h2>
       <p>Click to reset. Green tile is destination.</p>
       <div class="canvas" id="onlineDfsCanvas" height="300px">
       </div>
 
-      <pre id="onlineDfsCode"></pre>
+
 
       <h2>LRTA*-Agent</h2>
       <p></p>
@@ -114,13 +170,13 @@
         <p></p>
       </div>
 
-      <pre id="lrtaCode"></pre>
 
 
       <div class='license'>
         <h4>Third Party License Information</h4>
         <ul>
           <li><a href="https://thenounproject.com/term/robot/1248/">Robot by Simon Child, The Noun Project</a>, <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons BY-3.0</a></li>
+          <li><a href="http://game-icons.net/delapouite/originals/vacuum-cleaner.html">Vacuum Cleaner from Delapouite under CC BY 3.0</a></li>
         </ul>
       </div>
 
