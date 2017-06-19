@@ -25,6 +25,7 @@
   <script type="text/javascript" src="./c_lrtaAgent.js"></script>
   <script type="text/javascript" src="./c_onlineDfsAgent.js"></script>
   <script type="text/javascript" src="./c_erraticVacuum.js"></script>
+  <script type="text/javascript" src="./c_noObservation.js"></script>
 </head>
 
 <body>
@@ -103,47 +104,46 @@
         <li>If the tile is dirty, the suck action cleans up the tile and sometimes also clean up dirt in adjacent tiles </li>
         <li>If the tile is clean, the suck action sometimes deposits dirt on the carpet.</li>
       </ul>
-      <p>Given below is a 5 tile erratic vacuum world. You can record a sequence of actions which you believe will clean up all the dirt. Use the play the button to execute that sequence.
-      Play the sequence multiple times to see how they can result in different end state sometimes. Use restart button to generate a new initial state. Use clear button to clear the recorded sequence
-      and record a new one.</p>
-      <div class='row'>
+      <p>Given below is a 5 tile erratic vacuum world. You can record a sequence of actions which you believe will clean up all the dirt. Use the play the button to execute that sequence. Play the sequence multiple times to see how they can result in different
+        end state sometimes. Use restart button to generate a new initial state. Use clear button to clear the recorded sequence and record a new one.</p>
+      <div class='row' id='erraticVacuum'>
         <div class="col-md-8">
           <div class="row">
             <div class="col-md-4">
-              <div class='btn btn-primary restart-button' id='erraticVacuumRestart'>Restart</div>
+              <div class='btn btn-primary restart-button'>Restart</div>
             </div>
             <div class="col-md-6">
               <div class="row">
                 <div class="col-md-4">
-                  <div class='btn btn-default control-button' id='erraticMoveLeft'>Left</div>
+                  <div class='btn btn-default control-button left-button'>Left</div>
                 </div>
                 <div class="col-md-4">
-                  <div class='btn btn-default control-button' id='erraticVacuum'>Vacuum</div>
+                  <div class='btn btn-default control-button suck-button'>Vacuum</div>
                 </div>
                 <div class="col-md-4">
-                  <div class='btn btn-default control-button' id='erraticMoveRight'>Right</div>
+                  <div class='btn btn-default control-button right-button'>Right</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-md-10">
-              <div id="erraticVacuumCanvas"></div>
+              <div class='canvas'></div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="row">
             <div class="col-md-6">
-              <div class='btn btn-success control-button' id='movesPlayBtn'>Play</div>
+              <div class='btn btn-success control-button play-button'>Play</div>
             </div>
             <div class="col-md-6">
-              <div class='btn btn-default control-button' id='movesClearBtn'>Clear</div>
+              <div class='btn btn-default control-button clear-button'>Clear</div>
             </div>
           </div>
           <h5>Moves</h5>
-          <div class='list-group' id='movesWrapper'>
-            <ol id="movesList">
+          <div class='list-group movesWrapper'>
+            <ol class='movesList'>
 
             </ol>
           </div>
@@ -151,7 +151,55 @@
 
       </div>
 
-      <p></p>
+
+
+      <h1>Searching with Partial Observations</h1> Now we come back to a world where the actions of the robot are deterministic again (no erratic behavior like before) but, the robot no longer has complete sense of its current state or its environment.
+      <h2>Vacuum World with no observation</h2>
+      <p>In this world, the vacuum cleaner has no idea initially about its own location and the location of dirt in the world. Since the robot has no percept, it should be able to figure out a sequence of actions that will work despite its current state.</p>
+      <p>Given below are 8 random initial states. You can record a sequence of actions and see it in action just like before. Assume that illegal moves (like moving right in the right-most tile) have no effect on the world.</p>
+      <p>Try to find a sequence of actions that will lead to a final state (Clean all the dirt), no matter what the initial state of the world.</p>
+      <div class='row' id='noObservation'>
+        <div class="col-md-9">
+          <div class="row">
+            <div class="col-md-4">
+              <div class='btn btn-primary restart-button'>Restart</div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button left-button'>Left</div>
+                </div>
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button suck-button'>Vacuum</div>
+                </div>
+                <div class="col-md-4">
+                  <div class='btn btn-default control-button right-button'>Right</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id='canvasWrapper'>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <div class='btn btn-success control-button play-button'>Play</div>
+            </div>
+            <div class="col-md-6">
+              <div class='btn btn-default control-button clear-button'>Clear</div>
+            </div>
+          </div>
+          <h5>Moves</h5>
+          <div class='list-group movesWrapper'>
+            <ol class='movesList'>
+
+            </ol>
+          </div>
+        </div>
+
+      </div>
+
 
       <h2>And-Or-Graph-Search</h2>
       <div class="canvas" id="andOrGraphCanvas" height="300px">

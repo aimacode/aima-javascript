@@ -50,11 +50,11 @@
   fill: hsl(0, 50%, 50%);
   transition: fill 0.1s;
 }
-#movesWrapper {
+.movesWrapper {
   overflow-y: scroll;
   max-height: 250px;
 }
-#movesList {
+.movesList {
   padding-left: 0;
 }
 .moves-list-item {

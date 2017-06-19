@@ -1,5 +1,4 @@
-class ErraticWorld {
-
+class VacuumWorld {
   constructor(floorCount) {
     this.floorCount = (floorCount == undefined) ? 2 : floorCount;
     this.dirt = new Array(this.floorCount).fill(false);
@@ -26,6 +25,24 @@ class ErraticWorld {
     }
   }
 
+  suck() {
+    this.clean(this.robotLocation);
+  }
+
+  randomize() {
+    for (let i = 0; i < this.floorCount; i++) {
+      this.dirt[i] = (Math.random() < 0.5);
+    }
+    this.robotLocation = Math.floor(Math.random() * this.floorCount);
+  }
+}
+
+class ErraticWorld extends VacuumWorld {
+
+  constructor(floorCount) {
+    super(floorCount);
+  }
+
   erraticSuck() {
     let i = this.robotLocation;
     if (this.dirt[i]) {
@@ -46,16 +63,6 @@ class ErraticWorld {
         this.makeDirt(i);
       }
     }
-  }
 
-  normalSuck() {
-    this.clean(this.robotLocation);
-  }
-
-  randomize() {
-    for (let i = 0; i < this.floorCount; i++) {
-      this.dirt[i] = (Math.random() < 0.5);
-    }
-    this.robotLocation = Math.floor(Math.random() * this.floorCount);
   }
 };
