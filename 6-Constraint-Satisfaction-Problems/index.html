@@ -1,26 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>6 Constraint Satisfaction Problems</title>
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="main.css">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
   <script type="text/javascript" src="./AC3.js"></script>
   <script type="text/javascript" src="./backtracking.js"></script>
   <script type="text/javascript" src="./minConflicts.js"></script>
   <script type="text/javascript" src="./treeCSP.js"></script>
+  <script type="text/javascript" src="./mapColoring.js"></script>
+
   <script type="text/javascript" src="./c_AC3.js"></script>
   <script type="text/javascript" src="./c_backtracking.js"></script>
   <script type="text/javascript" src="./c_minConflicts.js"></script>
   <script type="text/javascript" src="./c_treeCSP.js"></script>
+  <script type="text/javascript" src="./c_mapColoring.js"></script>
 </head>
+
 <body>
 
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="col-sm-8 col-md-10 col-md-offset-1" id="content">
       <h1>Constraint Satisfaction Problems</h1>
+      <h2>Defining CSP with Map Coloring Problem</h2>
+      <p>
+        A map coloring problem is a type of CSP where each state can be assigned a color from the set (red,green,blue). The constraint involved says that no two neighbouring state is allowed to have the same color.
+      </p>
+      <p>
+        Given below is a map of Australia showing its states and territories. You can select a color from the color palette given on the top right and then click on any state to color it with the selected color.
+      </p>
+      <p>
+        Try to color all the states while satisfying the condition that neighbouring states cannot have the same color.
+      </p>
+      <div id='mapColoring'>
+        <div class="row">
+          <div class='btn btn-primary restart-button'>Restart</div>
+        </div>
+        <div class="row">
+          <div class="canvas">
+
+          </div>
+        </div>
+      </div>
+
+
 
       <h2>Arc consistency</h2>
       <p>
@@ -32,30 +61,38 @@
         </ul>
       </p>
       <p>Step by step visualization of the procedure. Click to restart the simulation.</p>
-      <div class = "canvas" id="ac3Canvas" height="300px">
+      <div class="canvas" id="ac3Canvas" height="300px">
       </div>
       <pre id="AC3Code"></pre>
 
       <h2>Backtracking</h2>
       <p>Map colouring using backtracking. Click to restart the simulation.</p>
-      <div class = "canvas" id="backtrackCanvas" height="300px">
+      <div class="canvas" id="backtrackCanvas" height="300px">
       </div>
       <pre id="backtrackingCode"></pre>
       <h2>Min Conflicts</h2>
       <p>Min conflicts stuff</p>
-      <div class = "canvas" id="minConflictsCanvas" height="300px">
+      <div class="canvas" id="minConflictsCanvas" height="300px">
       </div>
       <pre id="minConflictsCode"></pre>
 
       <h2>Tree CSP</h2>
       <p>Tree CSP Stuff</p>
-      <div class = "canvas" id="treeCspCanvas" height="300px">
+      <div class="canvas" id="treeCspCanvas" height="300px">
       </div>
       <pre id="treeCSPCode"></pre>
+
+      <div class='license'>
+        <h4>Third Party License Information</h4>
+        <ul>
+          <li>Australia Map Lokal_Profil [<a href="http://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>, <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AAustralia_map%2C_States.svg">via Wikimedia Commons</a></li>
+        </ul>
+      </div>
 
     </div>
   </div>
 
-</div>
+  </div>
 </body>
+
 </html>
