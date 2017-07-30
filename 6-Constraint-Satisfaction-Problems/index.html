@@ -10,6 +10,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+  <script type="text/javascript" src="../globalHelpers.js"></script>
   <script type="text/javascript" src="./AC3.js"></script>
   <script type="text/javascript" src="./backtracking.js"></script>
   <script type="text/javascript" src="./minConflicts.js"></script>
@@ -110,14 +111,10 @@
           <div class='btn btn-primary restart-button'>Restart</div>
         </div>
         <div class="row animation-controls">
-          <div class="col-md-1">
-            <div class='btn btn-default prevButton'>Previous</div>
-          </div>
-          <div class="col-md-4">
-            <input class='slider' id='backtrackSlider' type="range" steps="1" min='0' value="0">
-          </div>
-          <div class="col-md-1">
-            <div class='btn btn-default nextButton'>Next</div>
+          <div class="col-md-6">
+            <div class="row" id='backtrackingAC'>
+
+            </div>
           </div>
         </div>
         <div class="row">

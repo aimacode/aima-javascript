@@ -20,45 +20,51 @@ $(document).ready(function() {
     }).appendTo(exploredQueueCanvas);
     //Intial value for separation is 0
     $('.ucsSeparation').html(0);
-    var graph = new DefaultGraph();
-    //Precompute costs of all nodes from the initial node
     var costMap = precomputedCosts();
-    var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
-    //Change the text of all the nodes to its cost
-    for (key in graphProblem.nodes) {
-      graphProblem.nodes[key].text = costMap[graphProblem.nodes[key].id];
-    }
-    var graphAgent = new GraphAgent(graphProblem, 'ucs');
+
     var options = new DefaultOptions();
     options.nodes.next.fill = 'hsla(126, 100%, 69%, 1)';
     options.edges.showCost = true;
-    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'uniformCostSearchCanvas', options, h, w);
-    drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
-    drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
-    var updateFunction = function() {
-      if (graphProblem.frontier.length > 0) {
-        var nextNode = uniformCostSearch(graphProblem);
-        graphAgent.expand(nextNode);
-        if (graphProblem.frontier.length > 0) {
-          graphProblem.nextToExpand = uniformCostSearch(graphProblem);
-        } else {
-          graphProblem.nextToExpand = null;
-        }
-        graphDrawAgent.iterate();
-        drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
-        drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
-        let maxCost = 0;
-        //Find the max cost which separates the explored from frontier nodes
-        if (graphProblem.nextToExpand) {
-          maxCost = graphProblem.nodes[graphProblem.nextToExpand].cost;
-        }
-        //Draw it in the front end
-        $('.ucsSeparation').html(maxCost);
-      } else {
-        clearInterval(intervalFunction, DELAY);
+
+    var drawState = function(n) {
+      var graph = new DefaultGraph();
+      var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', 'A');
+      var graphAgent = new GraphAgent(graphProblem);
+      for (key in graphProblem.nodes) {
+        graphProblem.nodes[key].text = costMap[graphProblem.nodes[key].id];
       }
+
+      var graphDrawAgent = new GraphDrawAgent(graphProblem, 'uniformCostSearchCanvas', options, h, w);
+      var maxCost;
+      while (n--) {
+        if (graphProblem.frontier.length > 0) {
+          var nextNode = uniformCostSearch(graphProblem);
+          graphAgent.expand(nextNode);
+          //If frontier is still present, find the next node to be expanded so it
+          //could be colored differently
+          if (graphProblem.frontier.length > 0) {
+            graphProblem.nextToExpand = uniformCostSearch(graphProblem);
+            maxCost = graphProblem.nodes[graphProblem.nextToExpand].cost;
+          } else {
+            graphProblem.nextToExpand = null;
+          }
+        } else {
+          break;
+        }
+      }
+      graphDrawAgent.iterate();
+      drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
+      drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
+      //Draw it in the front end
+      $('.ucsSeparation').html(maxCost);
     }
-    intervalFunction = setInterval(updateFunction, DELAY);
+    let ac = new AnimationController({
+      selector: '#ucsAC',
+      min: 0,
+      max: 15,
+      renderer: drawState
+    });
+    ac.renderFirst();
   };
   $('#ucsRestartButton').click(init);
   $('#ucsWaiting').css('background-color', 'hsl(0,50%,75%)');
@@ -81,7 +87,6 @@ function drawList(two, list, problem, options, costMap) {
     let text = two.makeText(costMap[node.id], x, y);
     let fillColor = options.nodes[state].fill;
     circle.fill = fillColor;
-
   }
   two.update();
 }

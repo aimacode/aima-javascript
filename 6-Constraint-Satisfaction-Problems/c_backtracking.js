@@ -97,30 +97,14 @@ class BacktrackingDiagram {
     //Run the algorithm and record frames
     this.recordFrames(heuristics);
     this.addAssignmentTable(this.backtracker.variables);
-    //Attach listener to the sliders and buttons
-    let sliderElement = this.selector.select('#backtrackSlider');
-    this.selector.select('.prevButton').on('mousedown', () => {
-      let value = parseInt(sliderElement.property('value'));
-      if (value > 0) {
-        value -= 1;
-      }
-      sliderElement.property('value', value).dispatch('input');
+    //Create AnimationController
+    let ac = new AnimationController({
+      selector: '#backtrackingAC',
+      min: 0,
+      max: this.frames.length - 1,
+      renderer: (n) => this.loadFrame(n)
     });
-    this.selector.select('.nextButton').on('mousedown', () => {
-      let value = parseInt(sliderElement.property('value'));
-      if (value < this.frames.length - 1) {
-        value += 1;
-      }
-      sliderElement.property('value', value).dispatch('input');
-    });
-    sliderElement.attr('max', this.frames.length - 1)
-      .property('value', 0)
-      .on('input', () => {
-        let frameIndex = parseInt(sliderElement.property('value'));
-        this.loadFrame(this.frames[frameIndex], frameIndex);
-      });
-    //Load the first frame
-    this.loadFrame(this.frames[0], 0);
+    ac.renderFirst();
   }
 
   addNewMap(assignment) {
@@ -268,7 +252,8 @@ class BacktrackingDiagram {
   }
 
   //Given a frame, load it into the diagram.
-  loadFrame(frame, frameIndex) {
+  loadFrame(frameIndex) {
+    let frame = this.frames[frameIndex];
     this.selector.selectAll('.map').remove();
     this.maps = [];
     this.mapElements = [];

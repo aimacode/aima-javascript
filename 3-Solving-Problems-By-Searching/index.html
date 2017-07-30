@@ -10,6 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
 
+  <script type="text/javascript" src="../globalHelpers.js"></script>
   <script type="text/javascript" src="./helpers.js"></script>
   <script type="text/javascript" src="./gitter-grid.js"></script>
   <script type="text/javascript" src="./aStarSearch.js"></script>
@@ -111,10 +112,11 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id='bfsDiagram'>
         <div class="col-sm-6 col-md-6">
-          <div class='btn btn-primary' id='bfsRestartButton'>Restart</div>
-          <div class="canvas" id="breadthFirstSearchCanvas" height="300px">
+          <div class="row" id='bfsAC'></div>
+          <div class="row">
+            <div class="canvas" id="breadthFirstSearchCanvas" height="300px"></div>
           </div>
         </div>
         <div class="col-sm-6 col-md-6">
@@ -135,6 +137,7 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-6 col-sm-6">
           <h2>Depth First Search</h2>
@@ -145,10 +148,11 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id='dfsDiagram'>
         <div class="col-sm-6 col-md-6">
-          <div class='btn btn-primary' id='dfsRestartButton'>Restart</div>
-          <div class="canvas" id="depthFirstSearchCanvas" height="300px">
+          <div class="row" id='dfsAC'></div>
+          <div class="row">
+            <div class="canvas" id="depthFirstSearchCanvas" height="300px"></div>
           </div>
         </div>
         <div class="col-sm-6 col-md-6">
@@ -238,10 +242,11 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id='ucsDiagram'>
         <div class="col-sm-6 col-md-6">
-          <div class='btn btn-primary' id='ucsRestartButton'>Restart</div>
-          <div class="canvas" id="uniformCostSearchCanvas" height="300px">
+          <div class="row" id='ucsAC'></div>
+          <div class="row">
+            <div class="canvas" id="uniformCostSearchCanvas" height="300px"></div>
           </div>
         </div>
         <div class="col-sm-6 col-md-6">
@@ -378,12 +383,12 @@
           <div class="col-md-6">
             <h2 style="text-align:center;">Bi-directional BFS</h2>
             <div class="canvas" id='biCanvas' height="300px"></div>
-            <h1 id = 'biStepCount' style="text-align:center;margin-top:0%;"></h1>
+            <h1 id='biStepCount' style="text-align:center;margin-top:0%;"></h1>
           </div>
           <div class="col-md-6">
             <h2 style="text-align:center;">Standard BFS</h2>
             <div class="canvas" id='bfsCanvas' height="300px"></div>
-            <h1 id = 'bfsStepCount' style="text-align:center;margin-top:0%;"></h1>
+            <h1 id='bfsStepCount' style="text-align:center;margin-top:0%;"></h1>
           </div>
         </div>
       </div>
