@@ -233,7 +233,7 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.problem = graphProblem;
 
   this.options = options;
-  this.nodeGroups = [];
+  this.nodeGroups = {};
   this.edges = [];
 
   this.reset = function() {
@@ -305,17 +305,16 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
       }
       group._renderer.elem.onmouseenter = currentOptions.onMouseEnter;
       group._renderer.elem.onmouseleave = currentOptions.onMouseLeave;
-      this.nodeGroups.push(group);
+      this.nodeGroups[key] = group;
     }
     this.two.update();
   };
   //Updates the nodes
   this.iterateNodes = function() {
     let nodeOptions = this.options.nodes;
-    for (var i = 0; i < this.nodeGroups.length; i++) {
-      let group = this.nodeGroups[i];
+    for (let nodeKey in this.nodeGroups) {
+      let group = this.nodeGroups[nodeKey];
       let circle = group._collection[0];
-      let nodeKey = $(group._renderer.elem).attr('nodeKey');
       let currentNode = this.problem.nodes[nodeKey];
       let state = currentNode.state;
       if (this.problem.nextToExpand == nodeKey) {
@@ -367,6 +366,14 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     this.iterateEdges();
     this.iterateNodes();
   }
+  this.highlight = function(nodeKey) {
+    this.nodeGroups[nodeKey]._collection[0].scale = 1.2;
+    this.two.update();
+  }
+  this.unhighlight = function(nodeKey) {
+    this.nodeGroups[nodeKey]._collection[0].scale = 1;
+    this.two.update();
+  }
   this.reset();
 };
 
@@ -384,7 +391,7 @@ function QueueDrawAgent(selector, h, w, problem, options) {
     width: w
   }).appendTo(this.canvas);
   this.problem = problem;
-  this.nodeRadius = 25;
+  this.nodeRadius = options.nodes.nodeRadius;
   this.options = options;
 
   this.iterate = function() {
@@ -392,9 +399,9 @@ function QueueDrawAgent(selector, h, w, problem, options) {
     var frontier = this.problem.frontier;
     for (var i = 0; i < frontier.length; i++) {
       node = this.problem.nodes[frontier[i]];
-      var x = (i) * 30 + 40;
+      var x = (i) * (this.nodeRadius+20) + 40;
       var y = 20;
-      var rect = this.two.makeRectangle(x, y, this.nodeRadius, this.nodeRadius);
+      var rect = this.two.makeCircle(x, y, this.nodeRadius);
       rect.fill = options.nodes.frontier.fill;
       if (frontier[i] == this.problem.nextToExpand) {
         rect.fill = options.nodes.next.fill;
@@ -433,42 +440,5 @@ var dlsDrawAgent = function(selector) {
       }
     }
     this.graphDrawAgent.iterate();
-    this.iterateDepthsOnEdges();
   }
-
-  this.drawDepthOnEdges = function() {
-    this.graphDrawAgent.depths = [];
-    let edges = this.graphDrawAgent.edges;
-    for (let i = 0; i < edges.length; i++) {
-      let node1Key = $(edges[i]._renderer.elem).attr('node1');
-      let node2Key = $(edges[i]._renderer.elem).attr('node2');
-      let node1 = this.graphProblem.nodes[node1Key];
-      let node2 = this.graphProblem.nodes[node2Key];
-      let coords = getEdgeCostLocation(node1.x, node1.y, node2.x, node2.y);
-      let text = this.graphDrawAgent.two.makeText(0, coords.x, coords.y);
-      text.opacity = 0;
-      this.graphDrawAgent.two.update();
-      $(text._renderer.elem).attr('node1', node1Key);
-      $(text._renderer.elem).attr('node2', node2Key);
-      this.graphDrawAgent.depths.push(text);
-    }
-  }
-  this.iterateDepthsOnEdges = function() {
-    for (let i = 0; i < this.graphDrawAgent.depths.length; i++) {
-      let text = this.graphDrawAgent.depths[i];
-      let node1Key = $(text._renderer.elem).attr('node1');
-      let node2Key = $(text._renderer.elem).attr('node2');
-      let node1 = this.graphProblem.nodes[node1Key];
-      let node2 = this.graphProblem.nodes[node2Key];
-      if (node1.state == 'explored' && node2.state == 'explored') {
-        let depth = Math.max(node1.depth, node2.depth);
-        text.value = depth;
-        text.opacity = 1;
-      } else {
-        text.opacity = 0;
-      }
-    }
-    this.graphDrawAgent.two.update();
-  }
-  this.drawDepthOnEdges();
 }

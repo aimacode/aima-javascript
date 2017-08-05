@@ -7,8 +7,11 @@ $(document).ready(function() {
     var graph = new DefaultGraph();
     var graphProblem = new GraphProblem(graph.nodes, graph.edges, 'A', null);
     var graphAgent = new GraphAgent(graphProblem);
-    var frontierNodesAgent = new DrawFrontierAgent('frontierCanvas', 150, 250, graphProblem);
     var options = new DefaultOptions();
+    var frontierNodesAgent = new DrawFrontierAgent('frontierCanvas', 150, 250, graphProblem, options);
+
+    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'nodeExpansionCanvas', options, h, w);
+
     //Function to execute whenever a node is clicked
     var clickHandler = function() {
       //Find out which node has been clicked
@@ -17,10 +20,23 @@ $(document).ready(function() {
       graphAgent.expand(nodeKey);
       graphDrawAgent.iterate();
       frontierNodesAgent.iterate();
+      graphDrawAgent.unhighlight(nodeKey);
     };
     options.nodes.frontier.clickHandler = clickHandler;
-    options.nodes.next.clickHandler = clickHandler
-    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'nodeExpansionCanvas', options, h, w);
+    options.nodes.next.clickHandler = clickHandler;
+
+    options.nodes.frontier.onMouseEnter = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      frontierNodesAgent.highlight(nodeKey);
+      graphDrawAgent.highlight(nodeKey);
+    };
+    options.nodes.frontier.onMouseLeave = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      frontierNodesAgent.unhighlight(nodeKey);
+      graphDrawAgent.unhighlight(nodeKey);
+    };
+
+    graphDrawAgent.reset();
   };
   $('#nodeRestartButton').click(init);
   init();
@@ -32,12 +48,13 @@ $(document).ready(function() {
 $(document).ready(function() {
   var w = 600,
     h = 350;
+  var options = new DefaultOptions();
 
   function init() {
     var graph = new DefaultGraph();
     var graphProblem = new GraphProblem(graph.nodes, graph.edges, String.fromCharCode(65 + Math.random() * 15), null);
     var graphAgent = new GraphAgent(graphProblem);
-    var options = new DefaultOptions();
+    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'agentViewCanvas', options, h, w);
     //For this simulation, unexplored nodes and edges needs to be invisible
     options.nodes.unexplored.opacity = 0;
     options.edges.unvisited.opacity = 0;
@@ -45,22 +62,31 @@ $(document).ready(function() {
       let nodeKey = $(this).attr('nodeKey');
       graphAgent.expand(nodeKey);
       graphDrawAgent.iterate();
+      graphDrawAgent.unhighlight(nodeKey);
     };
     options.nodes.frontier.clickHandler = clickHandler;
     options.nodes.next.clickHandler = clickHandler;
+    options.nodes.frontier.onMouseEnter = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      graphDrawAgent.highlight(nodeKey);
+    }
+    options.nodes.frontier.onMouseLeave = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      graphDrawAgent.unhighlight(nodeKey);
+    }
 
-    var graphDrawAgent = new GraphDrawAgent(graphProblem, 'agentViewCanvas', options, h, w);
+    graphDrawAgent.reset();
   };
   $('#agentViewRestartButton').click(init);
-  $('#legendExpanded').css('background-color', 'hsl(0,50%,75%)');
-  $('#legendFrontier').css('background-color', 'hsl(200,50%,70%)');
-  $('#legendUnexplored').css('background-color', 'hsl(0, 2%, 76%)');
+  $('#legendExpanded').css('background-color', options.nodes.explored.fill);
+  $('#legendFrontier').css('background-color', options.nodes.frontier.fill);
+  $('#legendUnexplored').css('background-color', options.nodes.unexplored.fill);
   init();
 });
 
 
 //Function to draw the frontier nodes
-function DrawFrontierAgent(selector, h, w, problem) {
+function DrawFrontierAgent(selector, h, w, problem, options) {
   this.canvas = document.getElementById(selector);
   this.canvas.innerHTML = '';
   this.two = new Two({
@@ -71,6 +97,7 @@ function DrawFrontierAgent(selector, h, w, problem) {
   this.nodeRadius = 15;
   this.iterate = function() {
     this.two.clear();
+    this.nodeDict = {};
     frontierNodes = this.problem.frontier;
     for (var i = 0; i < frontierNodes.length; i++) {
       node = this.problem.nodes[frontierNodes[i]];
@@ -78,9 +105,24 @@ function DrawFrontierAgent(selector, h, w, problem) {
       var y = (Math.floor(i / 4)) * 50 + 20;
       var circle = this.two.makeCircle(x, y, this.nodeRadius);
       var text = this.two.makeText(node.text, x, y);
-      circle.fill = 'hsl(200,50%,70%)';
+      circle.fill = options.nodes.frontier.fill;
+      var group = this.two.makeGroup(circle, text);
+      this.two.update();
+      this.nodeDict[node.text] = group;
     }
     this.two.update();
+  }
+
+  this.highlight = function(nodeKey) {
+    this.nodeDict[nodeKey]._collection[0].scale = 1.2;
+    this.two.update();
+  }
+
+  this.unhighlight = function(nodeKey) {
+    if (this.nodeDict[nodeKey]) {
+      this.nodeDict[nodeKey]._collection[0].scale = 1;
+      this.two.update();
+    }
   }
   this.iterate();
 }

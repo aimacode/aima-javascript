@@ -197,11 +197,11 @@
 
       <div class="row">
         <div class="col-sm-6 col-md-6">
-          <div class="canvas" id="costGraphCanvas" height="300px">
+          <div class="canvas" id="no-costGraphCanvas" height="300px">
           </div>
         </div>
         <div class="col-sm-6 col-md-6">
-          <div class="canvas" id="no-costGraphCanvas" height="300px">
+          <div class="canvas" id="costGraphCanvas" height="300px">
           </div>
         </div>
       </div>
@@ -209,9 +209,9 @@
         <div class="col-sm-6 col-md-6">
           <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
             <center>
-              <h4>Lowest Cost Path</h4>
-              <h5>Uniform Cost Search (Extension of BFS)</h5>
-              <div id='lowestCostDetailCanvas'>
+              <h4>BFS Shortest Path</h4>
+              <h5>Breadth First Search</h5>
+              <div id='bfsCostDetailCanvas'>
               </div>
             </center>
           </div>
@@ -219,9 +219,9 @@
         <div class="col-sm-6 col-md-6">
           <div style="background-color:hsl(0, 0%, 90%);padding:10px; width:100%;height:170px;margin-top:40px">
             <center>
-              <h4>BFS Shortest Path</h4>
-              <h5>Breadth First Search</h5>
-              <div id='bfsCostDetailCanvas'>
+              <h4>Lowest Cost Path</h4>
+              <h5>Uniform Cost Search (Extension of BFS)</h5>
+              <div id='lowestCostDetailCanvas'>
               </div>
             </center>
           </div>
@@ -375,20 +375,20 @@
       <p>The motivation behind this is that <b>b<sup>d/2</sup> + b<sup>d/2</sup> is smaller than b<sup>d</sup></b></p>
       <p>In the diagram below, we compare the performance between bi-directional BFS and standard BFS side by side. The total number of nodes generated for each strategy is given below the diagram.</p>
       <p>Notice that the further apart the final node is from the initial node, the better bi-directional BFS performs (as compared to standard BFS). Use the restart button to restart the simulation.</p>
-      <div id='backtracking'>
+      <div id='bi-directional'>
         <div class="row">
           <div class='btn btn-primary restart-button'>Restart</div>
         </div>
         <div class="row" style="margin-top:1%">
           <div class="col-md-6">
-            <h2 style="text-align:center;">Bi-directional BFS</h2>
-            <div class="canvas" id='biCanvas' height="300px"></div>
-            <h1 id='biStepCount' style="text-align:center;margin-top:0%;"></h1>
-          </div>
-          <div class="col-md-6">
             <h2 style="text-align:center;">Standard BFS</h2>
             <div class="canvas" id='bfsCanvas' height="300px"></div>
             <h1 id='bfsStepCount' style="text-align:center;margin-top:0%;"></h1>
+          </div>
+          <div class="col-md-6">
+            <h2 style="text-align:center;">Bi-directional BFS</h2>
+            <div class="canvas" id='biCanvas' height="300px"></div>
+            <h1 id='biStepCount' style="text-align:center;margin-top:0%;"></h1>
           </div>
         </div>
       </div>

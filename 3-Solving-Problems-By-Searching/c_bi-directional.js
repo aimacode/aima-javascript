@@ -21,9 +21,9 @@ class BidirectionalDiagram {
     this.final = this.problem.final;
     this.textElement = textElement;
 
-    this.initialColor = 'hsl(0, 20%, 80%)';
+    this.initialColor = 'hsl(0, 2%, 76%)';
     this.edgeColor = 'hsl(0, 2%, 80%)';
-    this.sourceBFSColor = 'hsl(209, 100%, 50%)';
+    this.sourceBFSColor = 'hsl(200,50%,70%)';
     this.destBFSColor = 'hsl(209, 30%, 50%)';
     this.sourceColor = 'hsl(209, 100%, 20%)';
     this.destColor = 'hsl(209, 100%, 20%)';
@@ -80,7 +80,7 @@ class BidirectionalDiagram {
       this.steps++;
       //Update steps in the page
       this.textElement.style('color', this.textColorScale(this.steps));
-      this.textElement.text(this.steps);
+      this.textElement.text(`${this.steps} nodes`);
     }
   }
 
@@ -98,6 +98,10 @@ class BidirectionalDiagram {
         clearInterval(this.intervalFunction)
       }
     }, this.delay);
+  }
+
+  destroy() {
+    clearInterval(this.intervalFunction);
   }
 }
 
@@ -119,14 +123,24 @@ class BFSDiagram extends BidirectionalDiagram {
 }
 
 $(document).ready(function() {
+  let bidirectionalDiagram = new BidirectionalDiagram(d3.select('#bi-directional').select('#biCanvas'), 500, 550);
+  let bfsDiagram = new BFSDiagram(d3.select('#bi-directional').select('#bfsCanvas'), 500, 550)
+
   function init() {
-    let bidirectionalDiagram = new BidirectionalDiagram(d3.select('#backtracking').select('#biCanvas'), 500, 550);
-    let bfsDiagram = new BFSDiagram(d3.select('#backtracking').select('#bfsCanvas'), 500, 550)
+    bidirectionalDiagram = new BidirectionalDiagram(d3.select('#bi-directional').select('#biCanvas'), 500, 550);
+    bfsDiagram = new BFSDiagram(d3.select('#bi-directional').select('#bfsCanvas'), 500, 550)
     let graph = new Graph(500, 530, 1500);
     let problem = new BidirectionalProblem(graph);
-    bidirectionalDiagram.init(problem, d3.select('#backtracking').select('#biStepCount'));
-    bfsDiagram.init(problem, d3.select('#backtracking').select('#bfsStepCount'));
+    bidirectionalDiagram.init(problem, d3.select('#bi-directional').select('#biStepCount'));
+    bfsDiagram.init(problem, d3.select('#bi-directional').select('#bfsStepCount'));
   }
+
+  function restart() {
+    bidirectionalDiagram.destroy();
+    bfsDiagram.destroy();
+    init();
+  }
+
   init();
-  $('#backtracking .restart-button').click(init);
+  $('#bi-directional .restart-button').click(restart);
 });
