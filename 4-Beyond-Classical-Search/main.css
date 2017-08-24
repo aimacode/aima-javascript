@@ -68,20 +68,23 @@
 .clickable {
   cursor: pointer;
 }
-#localization .cell{
+.localization .cell{
   fill : hsla(360, 0%, 90%, 1);
   stroke-width : 1;
   stroke : hsla(360, 0%, 50%, 1);
 }
-#localization .cell.highlighted{
+.localization .cell.highlighted{
   fill : hsla(250, 100%, 80%, 1);
 }
 
-#localization .cell.blocked {
+.localization .cell.blocked {
   fill : hsla(360, 0%, 50%, 1);
   stroke-width : 0;
 }
-#localization .boundary {
+.localization .boundary {
   fill : none;
   stroke : hsla(360, 0%, 60%, 1);
+}
+.localization .sidePanel1 {
+  margin-top: 15%;
 }

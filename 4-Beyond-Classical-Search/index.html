@@ -203,8 +203,19 @@
       </div>
 
       <h2>Localization in a partially observable environment</h2>
-      <div class='row' id='localization'>
-        <div class="col-md-9">
+      <p>
+        Localization refers to the process of finding its own position in the world by a robot.
+      </p>
+      <h3>
+        Find initial states.
+      </h3>
+      <p>
+        In the given diagram, A robot is assigned a random position in the maze.
+        Only the current percept of the robot is visible to you.
+        Try to find all the positions in the maze where the robot can be.
+      </p>
+      <div class='row localization' id='localization1'>
+        <div class="col-md-8">
           <div class="row">
             <div class="col-md-4">
               <div class='btn btn-primary restart-button'>Restart</div>
@@ -213,8 +224,69 @@
           <div class="row canvas">
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <div class="row">
+            <div class='sidePanel1'>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class='sidePanel2'>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>
+        Get to know percept.
+      </h3>
+      <p>
+        Hover over the cells of the maze to see the percept the robot would give if it was there.
+        Also, notice all the other cells which can have the same percept.
+      </p>
+      <div class='row localization' id='localization2'>
+        <div class="col-md-8">
+          <div class="row canvas">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class='sidePanel1'>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class='sidePanel2'>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class='row localization' id='localization3'>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-4">
+              <div class='btn btn-primary restart-button'>Restart</div>
+            </div>
+          </div>
+          <div class="row canvas">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row">
+            <div class='sidePanel1'>
+            </div>
+          </div>
+          <div class="row">
+            <div class='sidePanel2'>
+              <button type="button" name="button" class='up'>UP</button>
+              <button type="button" name="button" class='down'>DOWN</button>
+              <button type="button" name="button" class='left'>LEFT</button>
+              <button type="button" name="button" class='right'>RIGHT</button>
+            </div>
           </div>
         </div>
 

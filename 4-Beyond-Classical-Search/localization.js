@@ -56,6 +56,9 @@ class MazeMap {
   }
 
   stringifyPercept(percept) {
+    if(typeof percept == "string"){
+      return percept
+    }
     let str = '';
     if(percept.N) str += 'N';
     if(percept.S) str += 'S';
@@ -76,7 +79,54 @@ class MazeMap {
     }
     return cells;
   }
+
+  getRandomLocation() {
+    let found = false;
+    while(!found) {
+      let i = Math.floor(Math.random()*(this.rows));
+      let j = Math.floor(Math.random()*(this.cols));
+      if(!this.isBlocked([i,j])) {
+        return [i,j];
+      }
+    }
+  }
+
+  //Receives a list of robot positions and a percept.
+  //Returns an obj containing list of robots that do not match the percept
+  //and a list of locations that match the percept but do not have a robot
+  getWrongRobots(robots,percept) {
+    let correctPositions = this.getCellsFromPercept(percept);
+    let obj = {
+      wrongRobotsIndices : Array.from(Array(robots.length).keys()),
+      unoccupiedPositions: correctPositions.slice()
+    };
+
+    obj.wrongRobotsIndices = obj.wrongRobotsIndices.filter((index) => {
+      let pos = robots[index].currLocation;
+      for(let i = 0; i < correctPositions.length; i++) {
+        let correctPosition = correctPositions[i];
+        if(correctPosition[0] == pos[0] && correctPosition[1] == pos[1]) {
+          return false;
+        }
+      }
+      return true;
+    })
+
+    obj.unoccupiedPositions = obj.unoccupiedPositions.filter((x) => {
+      for(let i = 0; i < robots.length; i++) {
+        let pos = robots[i].currLocation;
+        if(x[0] == pos[0] && x[1] == pos[1]) {
+          return false;
+        }
+      }
+      return true;
+    })
+
+    return obj;
+  }
+
 }
+
 class MazeBot {
   constructor(start,map) {
     this.currLocation = start;
