@@ -25,3 +25,7 @@ pre{
 	margin-top:20px;
 	margin-bottom:20px;
 }
+
+.navbar-inverse{
+  border-radius: 0;
+}
