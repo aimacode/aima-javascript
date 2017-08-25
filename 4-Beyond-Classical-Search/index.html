@@ -33,8 +33,21 @@
   <div class="row">
     <div class="col-sm-6 col-md-10 col-md-offset-1" id="content">
       <h1>Beyond classical search</h1>
-
-      <h2>Optimization Problem</h2>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#optimization-problem">Node Expansion</a></li>
+        <li><a href="#hill-climbing">Hill Climbing Search</a></li>
+        <li><a href="#simulated-annealing">Simulated Annealing</a></li>
+        <li><a href="#genetic-algorith">Genetic Algorithm</a></li>
+        <li><a href="#searching-with-non-deterministic-actions">Searching with non-deterministic actions</a></li>
+        <li><a href="#erratic-vacuum-world">he erratic vacuum world</a></li>
+        <li><a href="#searching-with-partial-observations">Searching with Partial Observations</a></li>
+        <li><a href="#vacuum-world-with-no-observation">Vacuum World with no observation</a></li>
+        <li><a href="#and-or-graph-search">And-Or-Graph-Search</a></li>
+        <li><a href="#online-dfs-agent">Online DFS Agent</a></li>
+        <li><a href="#lrta-agent">LRTA*-Agent</a></li>
+      </ul>
+      <h2 id="optimization-problem">Optimization Problem</h2>
       <p>In many optimization problems, the path to the solution is irrelevant. In pure optimization problems, the best state is defined by the objective function. To represent such problems, a <b>state-space</b> landscape is used. It has a location (state)
         represented by x-axis and elevation(objective function value) represented by y-axis. The best state is hence the state with the highest objective value</p>
       <p>The given diagram is a state-space representation of an objective function. You can click anywhere inside the box to reveal the elevation there. You are allowed <i>25 moves</i> to <b>find the highest peak</b> before the hill is revealed.</p>
@@ -51,7 +64,7 @@
       <div id="hillCanvas">
       </div>
 
-      <h2>Hill Climbing Search</h2>
+      <h2 id="hill-climbing">Hill Climbing Search</h2>
       <p>In hill climbing search, the current node is replaced by the best neighbor. In this case, the objective function is represented by elevation, neighbors of a state are the states to the left and right of it and the best neigbor is the neigbor state
         with the highest elevation.</p>
       <p>The <span class='inline-legend maxima'></span> represents global maximas and <span class='inline-legend gmra'></span> represents the states from where the hill climbing search can reach a global maxima.</p>
@@ -65,7 +78,7 @@
       <div id="hillSearchCanvas">
       </div>
 
-      <h2>Simulated Annealing</h2>
+      <h2 id="simulated-annealing">Simulated Annealing</h2>
       <p>Simulated Annealing is a combination of Hill Climbing and Random Walk to gain more efficiency and completeness. In this procedure, instead of always moving to the best neighbor, a random neighbor is chosen. If the new state has better objective
         value than the current state, it is always chosen. If not, the algorithm accept the new state with a probability less than one. The probability of choosing a <b>bad state</b> depends on :
         <ol>
@@ -88,16 +101,16 @@
       <div id="annealingCanvas"></div>
 
 
-      <h2>Genetic Algorithm</h2>
+      <h2 id="genetic-algorith">Genetic Algorithm</h2>
       <p>Little critters change the color of their fur to match the background to camouflage themselves from predators.</p>
       <p>Click on the canvas to generate next generation. Keep clicking to generate another progeny.</p>
       <p>Note: Single point crossover might not be suitable for all applications</p>
       <div class="canvas" id="geneticCanvas" height="300px" style="background: #87BC5E">
       </div>
 
-      <h1>Searching with non-deterministic actions</h1>
+      <h1 id="searching-with-non-deterministic-actions">Searching with non-deterministic actions</h1>
       <p>In a world with non-deterministic actions, the result of an action is not known with complete certainty. </p>
-      <h2>The erratic vacuum world</h2>
+      <h2 id="erratic-vacuum-world">The erratic vacuum world</h2>
       <p>The erratic vacuum world is an extension of vacuum world from Chapter 2. In this world, the behavior of the cleaner is non-deterministic.</p>
       <p>To define this behavior more formally, in this world, the <b>Suck</b> action works as follows</p>
       <ul>
@@ -153,8 +166,9 @@
 
 
 
-      <h1>Searching with Partial Observations</h1> Now we come back to a world where the actions of the robot are deterministic again (no erratic behavior like before) but, the robot no longer has complete sense of its current state or its environment.
-      <h2>Vacuum World with no observation</h2>
+      <h1 id="searching-with-partial-observations">Searching with Partial Observations</h1>
+      <p>Now we come back to a world where the actions of the robot are deterministic again (no erratic behavior like before) but, the robot no longer has complete sense of its current state or its environment.</p>
+      <h2 id="vacuum-world-with-no-observation">Vacuum World with no observation</h2>
       <p>In this world, the vacuum cleaner has no idea initially about its own location and the location of dirt in the world. Since the robot has no percept, it should be able to figure out a sequence of actions that will work despite its current state.</p>
       <p>Given below are 8 random initial states. You can record a sequence of actions and see it in action just like before. Assume that illegal moves (like moving right in the right-most tile) have no effect on the world.</p>
       <p>Try to find a sequence of actions that will lead to a final state (Clean all the dirt), no matter what the initial state of the world.</p>
@@ -201,18 +215,18 @@
       </div>
 
 
-      <h2>And-Or-Graph-Search</h2>
+      <h2 id="and-or-graph-search">And-Or-Graph-Search</h2>
       <div class="canvas" id="andOrGraphCanvas" height="300px">
       </div>
 
-      <h2>Online DFS Agent</h2>
+      <h2 id="online-dfs-agent">Online DFS Agent</h2>
       <p>Click to reset. Green tile is destination.</p>
       <div class="canvas" id="onlineDfsCanvas" height="300px">
       </div>
 
 
 
-      <h2>LRTA*-Agent</h2>
+      <h2 id="lrta-agent">LRTA*-Agent</h2>
       <p></p>
       <div class="canvas" id="lrtaCanvas" height="300px">
         <p></p>

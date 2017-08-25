@@ -42,8 +42,20 @@
       <div class="row">
         <div class="col-md-6 col-sm-6">
           <h1>Solving Problems By Searching</h1>
-
-          <h2>Node Expansion</h2>
+          <h3>Table of contents</h3>
+          <ul class="content-table">
+            <li><a href="#node-expansion">Node Expansion</a></li>
+            <li><a href="#search-agent">Getting in the shoes of a Search Agent</a></li>
+            <li><a href="#breadth-first-search">Breadth First Search</a></li>
+            <li><a href="#depth-first-search">Depth First Search</a></li>
+            <li><a href="#step-costs">Step Costs</a></li>
+            <li><a href="#uniform-cost-search">Uniform Cost Search</a></li>
+            <li><a href="#depth-limited-search">Depth Limited Search</a></li>
+            <li><a href="#iterative-deepening">Iterative Deepening Depth-First Search</a></li>
+            <li><a href="#bi-directional-bfs">Bi-directional BFS</a></li>
+            <li><a href="#a-star-search">A Star Search</a></li>
+          </ul>
+          <h2 id="node-expansion">Node Expansion</h2>
           <p>
             To search through a graph, a Search Agent needs to <b>expand</b> nodes. The nodes which can be expanded by the Agent together forms the
             <b>frontier</b>. Expanding a node refers to marking the node as 'expanded' or 'visited' and adding its immediate neighbors to the frontier.
@@ -82,7 +94,7 @@
       </div>
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Getting in the shoes of a Search Agent</h2>
+          <h2 id="search-agent">Getting in the shoes of a Search Agent</h2>
           <p>
             Let's see the prespective of a Search Agent as it searches through the graph.
             <br> Remember, the Agent can only see the nodes which are either expanded or currently present in the frontier.
@@ -104,7 +116,7 @@
       </p>
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Breadth First Search</h2>
+          <h2 id="breadth-first-search">Breadth First Search</h2>
           <p>In Breadth First Search, the node which was discovered the earliest is expanded next i.e. the node which joined the frontier earlier, is expanded earlier.</p>
           <p>
             To achieve this, Breadth First Search Algorithm uses a FIFO(First In First Out) Queue. The following graph is explored by a Breadth First Search Algorithm with 'A' as the initial node.
@@ -140,7 +152,7 @@
 
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Depth First Search</h2>
+          <h2 id="depth-first-search">Depth First Search</h2>
           <p>In Depth First Search, the node which was discovered the latest is expanded next i.e. the node which joined the frontier later, is expanded later.</p>
           <p>
             To achieve this, Depth First Search Algorithm uses a LIFO(Last In First Out) Queue. The following graph is explored by a Depth First Search Algorithm with 'A' as the initial node.
@@ -177,7 +189,7 @@
 
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Step Costs</h2>
+          <h2 id="step-costs">Step Costs</h2>
           <p>
             Until now, all the edges in our graph had the same cost.(That's why we didn't bother to mention the cost on the graph). For those kind of graphs, Breadth First Search is optimal because it always pops the shallowest node first. For the case when some
             step costs are involved when exploring the nodes, the BFS algorithm needs be extended.
@@ -231,7 +243,7 @@
 
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Uniform Cost Search</h2>
+          <h2 id="uniform-cost-search">Uniform Cost Search</h2>
           <p>
             For Unifrom Cost Search, instead of using a simple LIFO queue, A priority Queue is used where the cost of reaching that node from the initial node is considered as its priority. On each iteration, the node with the smallest cost is extracted from the
             frontier for expansion.
@@ -290,7 +302,7 @@
 
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Depth Limited Search</h2>
+          <h2 id="depth-limited-search">Depth Limited Search</h2>
           <p>
             The Depth Limited Search is the same as Depth First Search except that there is an upper limit to the depth of the nodes which the algorithm traverses. The nodes which have depths greater than this limit is not expanded by the Depth Limited Search.
           </p>
@@ -331,7 +343,7 @@
 
       <div class="row">
         <div class="col-md-6 col-sm-6">
-          <h2>Iterative Deepening Depth-First Search</h2>
+          <h2 id="iterative-deepening">Iterative Deepening Depth-First Search</h2>
           <p>
             Iterative Deepening Depth-First Search is a general strategy that is used to find the best depth limit. It does this by applying Depth Limited Search to the given problem with increasing depth limit. (0, 1, 2, 3 and so on.)
           </p>
@@ -370,7 +382,7 @@
           </div>
         </div>
       </div>
-      <h2>Bi-directional BFS</h2>
+      <h2 id="bi-directional-bfs">Bi-directional BFS</h2>
       <p>In bi-directional BFS, we run two simultaneous searches, one from the initial state and one from the goal state. We stop when these searches meet in the middle (ie, a node is explored by both the BFS)</p>
       <p>The motivation behind this is that <b>b<sup>d/2</sup> + b<sup>d/2</sup> is smaller than b<sup>d</sup></b></p>
       <p>In the diagram below, we compare the performance between bi-directional BFS and standard BFS side by side. The total number of nodes generated for each strategy is given below the diagram.</p>
@@ -394,7 +406,7 @@
       </div>
 
 
-      <h2>A Star Search</h2>
+      <h2 id="a-star-search">A Star Search</h2>
       <p>Click on the canvas to restart the simulation</p>
       <div class="canvas" id="aStarSearchCanvas" height="300px" style="background: rgb(154, 255, 255);">
       </div>

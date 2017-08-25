@@ -31,7 +31,16 @@
   <div class="row">
     <div class="col-sm-8 col-md-10 col-md-offset-1" id="content">
       <h1>Constraint Satisfaction Problems</h1>
-      <h2>Defining CSP with Map Coloring Problem</h2>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#sp-with-map-coloring">Defining CSP with Map Coloring Problem</a></li>
+        <li><a href="#arc-consistency">Arc consistency</a></li>
+        <li><a href="#sudoku-example-of-csp">Sudoku Example of CSP</a></li>
+        <li><a href="#backtracking-search">Backtracking Search</a></li>
+        <li><a href="#min-conflicts">Min Conflicts</a></li>
+        <li><a href="#tree-csp">Tree CSP</a></li>
+      </ul>
+      <h2 id="csp-with-map-coloring">Defining CSP with Map Coloring Problem</h2>
       <p>
         A map coloring problem is a type of CSP where each state can be assigned a color from the set (red,green,blue). The constraint involved says that no two neighbouring state is allowed to have the same color.
       </p>
@@ -54,7 +63,7 @@
 
 
 
-      <h2>Arc consistency</h2>
+      <h2 id="arc-consistency">Arc consistency</h2>
       <p>
         <ul>
           <li>Y = X + 1</li>
@@ -67,7 +76,7 @@
       <div class="canvas" id="ac3Canvas" height="300px">
       </div>
 
-      <h2>Sudoku Example of CSP</h2>
+      <h2 id="sudoku-example-of-csp">Sudoku Example of CSP</h2>
       <p>All sudoku puzzles can be forumulated as CSP by considering each <b>cell</b> as a variable. The initial domain of all cells is {1,2,3,4,5,6,7,8,9}.
         <br> The constraints are formulated by the fact that in the solution of a sudoku puzzle, no two cell in a row, column or block can have identical numbers. Thus, there is an
         <b>AllDiff( )</b> constraint for all the rows, columns and blocks.</p>
@@ -99,7 +108,7 @@
         </div>
       </div>
 
-      <h2>Backtracking Search</h2>
+      <h2 id="backtracking-search">Backtracking Search</h2>
       <p>Backtracking Search is a type of Search algorithm that is useful to solve CSPs. It interweaves inferences and search to arrive at a solution by pruning parts of the search tree.</p>
       <p>It repeatedly chooses an unassigned variable and tries all the possible values for it. If any inconsistency is detected, it backtracks and tries another value for the previous assignment.</p>
       <p>In the diagram below, order of selection of variable as well as the order of values for the variable is chosen randomly. Use the <b>Next</b> button to move forward and <b>Previous</b> button to go back. You can also use the slider to go to any state
@@ -132,13 +141,13 @@
         </div>
       </div>
 
-      <h2>Min Conflicts</h2>
+      <h2 id="min-conflicts">Min Conflicts</h2>
       <p>Min conflicts stuff</p>
       <div class="canvas" id="minConflictsCanvas" height="300px">
       </div>
       <pre id="minConflictsCode"></pre>
 
-      <h2>Tree CSP</h2>
+      <h2 id="tree-csp">Tree CSP</h2>
       <p>Tree CSP Stuff</p>
       <div class="canvas" id="treeCspCanvas" height="300px">
       </div>
