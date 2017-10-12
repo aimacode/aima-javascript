@@ -5,18 +5,34 @@
   <link rel="stylesheet" href="../styles.css">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
+  <script type="text/javascript" src="../22-Natural-Language-Processing/nGramModels.js"></script>
 </head>
 <body>
 
   <div class="row">
     <div class="col-sm-6 col-md-offset-3" id="content">
       <h1>Natural Language Processing</h1>
-      <p>TODO</p>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#n-gram-character-models">N-gram character models</a></li>
+      </ul>
 
-      
+      <h2 id="n-gram-character-models">N-gram character models</h2><br>
+
+      <form id="form">
+        <div class="form-group">
+          <label >Enter a phrase</label>
+          <input type="text" class="form-control" name="firstname" id="phrase"/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="submit btn btn-success">Submit</button>
+        </div>
+      </form>
+      <span><h5>Character Level Unigrams :-</h5></span><div id="character-level-unigram"></div><br>
+      <span><h5>Character Level Bigrams :-</h5></span><div id="character-level-bigram"></div><br>
+      <span><h5>Character Level Triigrams :-</h5></span><div id="character-level-trigram"></div><br>
     </div>
   </div>
-
 
 </body>
 </html>
