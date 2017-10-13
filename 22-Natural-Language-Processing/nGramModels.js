@@ -2,6 +2,9 @@ $(document).ready(function() {
     $('#form').submit(function() {
             var str = $('#phrase').val();
             var charUnigram;
+            $('#character-level-unigram').empty();
+            $('#character-level-trigram').empty();
+            $('#character-level-bigram').empty();
             for (var x = 0; x < str.length; x++)
             {
                 var a = str.charAt(x);
