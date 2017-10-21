@@ -71,12 +71,12 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class='btn btn-primary' id='nodeRestartButton'>Restart</div>
           <div class="canvas" id='nodeExpansionCanvas' height="400px">
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='nodeLegend'>
               <li>
@@ -98,7 +98,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="search-agent">Getting in the shoes of a Search Agent</h2>
           <p>
             Let's see the prespective of a Search Agent as it searches through the graph.
@@ -108,7 +108,7 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class='btn btn-primary' id='agentViewRestartButton'>Restart</div>
           <div class="canvas" id='agentViewCanvas' height="400px">
           </div>
@@ -120,7 +120,7 @@
         algorithms in action which can decide by themselves which node to expand next.
       </p>
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="breadth-first-search">Breadth First Search</h2>
           <p>In Breadth First Search, the node which was discovered the earliest is expanded next i.e. the node which joined the frontier earlier, is expanded earlier.</p>
           <p>
@@ -130,13 +130,13 @@
       </div>
 
       <div class="row" id='bfsDiagram'>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="row" id='bfsAC'></div>
           <div class="row">
             <div class="canvas" id="breadthFirstSearchCanvas" height="300px"></div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='fifoLegend'>
               <li>
@@ -158,7 +158,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="depth-first-search">Depth First Search</h2>
           <p>In Depth First Search, the node which was discovered the latest is expanded next i.e. the node which joined the frontier later, is expanded later.</p>
           <p>
@@ -168,13 +168,13 @@
       </div>
 
       <div class="row" id='dfsDiagram'>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="row" id='dfsAC'></div>
           <div class="row">
             <div class="canvas" id="depthFirstSearchCanvas" height="300px"></div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='lifoLegend'>
               <li>
@@ -196,7 +196,7 @@
 
 
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="step-costs">Step Costs</h2>
           <p>
             Until now, all the edges in our graph had the same cost.(That's why we didn't bother to mention the cost on the graph). For those kind of graphs, Breadth First Search is optimal because it always pops the shallowest node first. For the case when some
@@ -216,17 +216,17 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="canvas" id="no-costGraphCanvas" height="300px">
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="canvas" id="costGraphCanvas" height="300px">
           </div>
         </div>
       </div>
       <div class='row'>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="explanation-container explanation-area">
             <center>
               <h4>BFS Shortest Path</h4>
@@ -236,7 +236,7 @@
             </center>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="explanation-container explanation-area">
             <center>
               <h4>Lowest Cost Path</h4>
@@ -250,7 +250,7 @@
 
 
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="uniform-cost-search">Uniform Cost Search</h2>
           <p>
             For Unifrom Cost Search, instead of using a simple LIFO queue, A priority Queue is used where the cost of reaching that node from the initial node is considered as its priority. On each iteration, the node with the smallest cost is extracted from the
@@ -263,13 +263,13 @@
       </div>
 
       <div class="row" id='ucsDiagram'>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="row" id='ucsAC'></div>
           <div class="row">
             <div class="canvas" id="uniformCostSearchCanvas" height="300px"></div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='ucsLegend'>
               <li>
@@ -311,7 +311,7 @@
 
 
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="depth-limited-search">Depth Limited Search</h2>
           <p>
             The Depth Limited Search is the same as Depth First Search except that there is an upper limit to the depth of the nodes which the algorithm traverses. The nodes which have depths greater than this limit is not expanded by the Depth Limited Search.
@@ -324,7 +324,7 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="row">
             <div class="form-group col-md-4">
               <h4>Depth Limit : </h4>
@@ -337,7 +337,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='dlsLegend'>
               <li>
@@ -355,7 +355,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6">
           <h2 id="iterative-deepening">Iterative Deepening Depth-First Search</h2>
           <p>
             Iterative Deepening Depth-First Search is a general strategy that is used to find the best depth limit. It does this by applying Depth Limited Search to the given problem with increasing depth limit. (0, 1, 2, 3 and so on.)
@@ -367,7 +367,7 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class='btn btn-primary' id='idRestartButton'>Restart</div>
           <div class="row">
 
@@ -382,7 +382,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-md-6">
           <div class="notes">
             <ul type="none" id='idLegend'>
               <li>
@@ -426,7 +426,7 @@
         <h2>A Star Search</h2>
 
         <div class="row">
-          <div class="col-sm-6 col-md-6">
+          <div class="col-md-6">
             <div class="row">
               <div class="col-sm-3 col-md-3">
                 <label>Start node</label>

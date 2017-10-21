@@ -229,10 +229,11 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.h = h;
   this.w = w;
   this.two = new Two({
-    height: h,
-    width: w
+    width: '100%',
+    height: '100%'
   }).appendTo(this.canvas);
   this.problem = graphProblem;
+  this.two.renderer.domElement.setAttribute("viewBox","0 0 " + String(w) + " " + String(h));
 
   this.options = options;
   this.nodeGroups = {};
