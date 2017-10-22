@@ -6,6 +6,7 @@
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
   <script type="text/javascript" src="nGramModels.js"></script>
+  <script type="text/javascript" src="textClassification.js"></script>
 </head>
 <body>
 
@@ -34,6 +35,23 @@
       <h5>Character Level Unigrams :-</h5><div id="character-level-unigram"></div><br>
       <h5>Character Level Bigrams :-</h5><div id="character-level-bigram"></div><br>
       <h5>Character Level Triigrams :-</h5><div id="character-level-trigram"></div><br>
+
+      <h2 id="text-classification">Text Classification</h2><br>
+
+      <p>
+        Given a text of some kind, to decide which of a predefined set of classes it belongs to is called text classification.
+        Language identification , genre classification ,sentiment analysis and spam detection are examples of text classification.
+      </p>
+      <form id="form">
+        <div class="form-group">
+          <label >Enter English or French text here.</label>
+          <input type="text" class="form-control"  id="test_phrase"/>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-success" id="test_button" onclick="go();">Guess Language</button>
+        </div>
+      <h2>Language : <span id="test_result"></span></h2>
+      </form>
     </div>
   </div>
 
