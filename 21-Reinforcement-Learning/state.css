@@ -10,29 +10,22 @@
 .policy {
   fill: white;
 }
-.state_value {
-  text-anchor: middle;
-  alignment-baseline: middle;
-  font-family: "Sans-serif", Arial;
-}
-.state_value.normal {
-  font-size: 1em;
-}
-.state_value.terminal {
-  font-size: 3em;
-  fill: white;
-}
-.next_state {
+.sv_highlight {
   stroke: white;
-  fill: green;
 }
-.next_state.imp {
-  fill-opacity: 0.6;
+.sv_highlight.imp {
+  fill: blue;
 }
-.next_state.nor {
+.sv_highlight.nor {
+  fill: lightskyblue;
+}
+.state_value_history .bar {
+  stroke: white;
   fill-opacity: 0.2;
 }
-.next_state.selected {
-  stroke-width: 2;
-  stroke: orange;
+.state_value_history .bar.pos {
+  fill: green;
+}
+.state_value_history .bar.neg {
+  fill: red;
 }

@@ -1,28 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>6 Constraint Satisfaction Problems</title>
   <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="main.css">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+  <script type="text/javascript" src="../globalHelpers.js"></script>
   <script type="text/javascript" src="./AC3.js"></script>
   <script type="text/javascript" src="./backtracking.js"></script>
   <script type="text/javascript" src="./minConflicts.js"></script>
   <script type="text/javascript" src="./treeCSP.js"></script>
+  <script type="text/javascript" src="./mapColoring.js"></script>
+  <script type="text/javascript" src="./sudoku.js"></script>
+
   <script type="text/javascript" src="./c_AC3.js"></script>
   <script type="text/javascript" src="./c_backtracking.js"></script>
   <script type="text/javascript" src="./c_minConflicts.js"></script>
   <script type="text/javascript" src="./c_treeCSP.js"></script>
+  <script type="text/javascript" src="./c_mapColoring.js"></script>
+  <script type="text/javascript" src="./c_sudoku.js"></script>
 </head>
+
 <body>
 
   <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="col-sm-8 col-md-10 col-md-offset-1" id="content">
       <h1>Constraint Satisfaction Problems</h1>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#csp-with-map-coloring">Defining CSP with Map Coloring Problem</a></li>
+        <li><a href="#arc-consistency">Arc consistency</a></li>
+        <li><a href="#sudoku-example-of-csp">Sudoku Example of CSP</a></li>
+        <li><a href="#backtracking-search">Backtracking Search</a></li>
+        <li><a href="#min-conflicts">Min Conflicts</a></li>
+        <li><a href="#tree-csp">Tree CSP</a></li>
+      </ul>
+      <h2 id="csp-with-map-coloring">Defining CSP with Map Coloring Problem</h2>
+      <p>
+        A map coloring problem is a type of CSP where each state can be assigned a color from the set (red,green,blue). The constraint involved says that no two neighbouring state is allowed to have the same color.
+      </p>
+      <p>
+        Given below is a map of Australia showing its states and territories. You can select a color from the color palette given on the top right and then click on any state to color it with the selected color.
+      </p>
+      <p>
+        Try to color all the states while satisfying the condition that neighbouring states cannot have the same color.
+      </p>
+      <div id='mapColoring'>
+        <div class="row">
+          <div class='btn btn-primary restart-button'>Restart</div>
+        </div>
+        <div class="row">
+          <div class="canvas">
 
-      <h2>Arc consistency</h2>
+          </div>
+        </div>
+      </div>
+
+
+
+      <h2 id="arc-consistency">Arc consistency</h2>
       <p>
         <ul>
           <li>Y = X + 1</li>
@@ -32,30 +73,97 @@
         </ul>
       </p>
       <p>Step by step visualization of the procedure. Click to restart the simulation.</p>
-      <div class = "canvas" id="ac3Canvas" height="300px">
+      <div class="canvas" id="ac3Canvas" height="300px">
       </div>
-      <pre id="AC3Code"></pre>
 
-      <h2>Backtracking</h2>
-      <p>Map colouring using backtracking. Click to restart the simulation.</p>
-      <div class = "canvas" id="backtrackCanvas" height="300px">
+      <h2 id="sudoku-example-of-csp">Sudoku Example of CSP</h2>
+      <p>All sudoku puzzles can be forumulated as CSP by considering each <b>cell</b> as a variable. The initial domain of all cells is {1,2,3,4,5,6,7,8,9}.
+        <br> The constraints are formulated by the fact that in the solution of a sudoku puzzle, no two cell in a row, column or block can have identical numbers. Thus, there is an
+        <b>AllDiff( )</b> constraint for all the rows, columns and blocks.</p>
+      <p>
+        The given sudoku puzzle calculates the reduced domain for each cell and shows them as dots. You can hover over any cell to see how the domain was reduced on the right side of the puzzle. The colors of the cross denote if the number was eliminated due
+        to <span style="color:green;font-size:120%">row</span>, <span style="color:blue;font-size:120%">column</span> or <span style="color:red;font-size:120%">block</span>. If the domain of a cell has reduced to <b>just 1 variable (or number)</b>,
+        this means we can safely assign that number there. This will further reduce the domain of other cells. Click to assign the number.
+      </p>
+      <p>
+        Try to solve the entire puzzle by assigning numbers by clicking on cells whose domains have reduced to 1 variable.
+        <br> Use the restart button to reset the puzzle.
+      </p>
+
+      <div id='sudoku'>
+        <div class="row">
+          <div class='btn btn-primary restart-button' style="margin-left:2%">Restart</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="canvas">
+
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="cellDetails">
+
+            </div>
+          </div>
+        </div>
       </div>
-      <pre id="backtrackingCode"></pre>
-      <h2>Min Conflicts</h2>
+
+      <h2 id="backtracking-search">Backtracking Search</h2>
+      <p>Backtracking Search is a type of Search algorithm that is useful to solve CSPs. It interweaves inferences and search to arrive at a solution by pruning parts of the search tree.</p>
+      <p>It repeatedly chooses an unassigned variable and tries all the possible values for it. If any inconsistency is detected, it backtracks and tries another value for the previous assignment.</p>
+      <p>In the diagram below, order of selection of variable as well as the order of values for the variable is chosen randomly. Use the <b>Next</b> button to move forward and <b>Previous</b> button to go back. You can also use the slider to go to any state
+        directly.
+      </p>
+      <p>Restart the diagrams several times and notice how many assignments a random ordering takes. Try to figure out why a particular ordering performs well (or bad).</p>
+      <div id='backtracking'>
+        <div class="row">
+          <div class='btn btn-primary restart-button'>Restart</div>
+        </div>
+        <div class="row animation-controls">
+          <div class="col-md-6">
+            <div class="row" id='backtrackingAC'>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="canvas">
+            <div class="row header">
+              <h5>Assignments : <span class="counter"></span></h5>
+            </div>
+            <div class="row maps">
+
+            </div>
+            <div class="row assign-table">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="min-conflicts">Min Conflicts</h2>
       <p>Min conflicts stuff</p>
-      <div class = "canvas" id="minConflictsCanvas" height="300px">
+      <div class="canvas" id="minConflictsCanvas" height="300px">
       </div>
       <pre id="minConflictsCode"></pre>
 
-      <h2>Tree CSP</h2>
+      <h2 id="tree-csp">Tree CSP</h2>
       <p>Tree CSP Stuff</p>
-      <div class = "canvas" id="treeCspCanvas" height="300px">
+      <div class="canvas" id="treeCspCanvas" height="300px">
       </div>
       <pre id="treeCSPCode"></pre>
+
+      <div class='license'>
+        <h4>Third Party License Information</h4>
+        <ul>
+          <li>Australia Map Lokal_Profil [<a href="http://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>, <a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a>], <a href="https://commons.wikimedia.org/wiki/File%3AAustralia_map%2C_States.svg">via Wikimedia Commons</a></li>
+        </ul>
+      </div>
 
     </div>
   </div>
 
-</div>
+  </div>
 </body>
+
 </html>

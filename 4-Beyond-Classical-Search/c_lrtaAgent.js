@@ -90,11 +90,5 @@ function step(){
 }
 
 $(document).ready(function(){
-	$.ajax({
-		url : "lrtaAgent.js",
-		dataType: "text",
-		success : function (data) {
-			$("#lrtaCode").html(data);
-		}
-	});
+
 });

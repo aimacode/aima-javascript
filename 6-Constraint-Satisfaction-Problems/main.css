@@ -1,0 +1,112 @@
+.clickable {
+  cursor: pointer;
+}
+.canvas {
+  margin-top: 2%;
+}
+
+/*nc -> No color*/
+
+.territory-text {
+  stroke: none;
+  fill: black;
+}
+svg .nc {
+  fill: hsl(0, 0%, 83%);
+}
+svg .r {
+  fill: hsl(20, 80%, 70%);
+}
+svg .g {
+  fill: hsl(110, 80%, 70%);
+}
+svg .b {
+  fill: hsl(250, 80%, 70%);
+}
+.palette-color {
+  opacity: 0.4;
+}
+.active-palette {
+  opacity: 1;
+}
+.inconsistent-state {
+  stroke: hsl(20, 100%, 50%);
+  stroke-width: 1.5;
+}
+.status {
+  fill: black;
+  font-size: 18px;
+  stroke: none;
+}
+svg .cell {
+  fill: hsl(0, 0%, 95%);
+  stroke: black;
+  stroke-width: 1;
+}
+svg .cell.grey {
+  fill: hsl(0, 0%, 83%);
+}
+svg .cell-number {
+  font-size: 200%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .cell-dots {
+  font-size: 100%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .domain-text {
+  font-size: 200%;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  stroke: none;
+  fill: black;
+}
+svg .cell.highlight {
+  fill: hsl(31, 92%, 74%)
+}
+svg .cell.active-cell {
+  fill: hsl(31, 92%, 60%)
+}
+svg .highlight-border {
+  fill: none;
+  stroke-width: 3;
+}
+svg .original-domain {
+  text-anchor: middle;
+  alignment-baseline: middle;
+  stroke: none;
+  fill: black;
+}
+svg .invisible {
+  display: block;
+}
+svg .cell-dots {
+  fill: hsl(205, 100%, 20%);
+}
+svg .highlight-dot {
+  fill: hsl(337, 63%, 50%);
+}
+.map {
+  display: inline-block;
+}
+.animation-controls {
+  margin-top: 2%;
+}
+.slider {
+  margin-top: 1.5%;
+}
+.assignment-table table, th, td {
+  border: 1px solid black;
+}
+.assigned-cell {
+  background-color: hsla(105, 0%, 82%, 1);
+}
+.assignment-table * {
+  text-align: center;
+}

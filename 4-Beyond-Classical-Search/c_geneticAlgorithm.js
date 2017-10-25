@@ -1,11 +1,4 @@
 $(document).ready(function(){
-  $.ajax({
-    url : "geneticAlgorithm.js",
-    dataType: "text",
-    success : function (data) {
-      $("#geneticAlgorithmCode").html(data);
-    }
-  });
   var geneticCanvas;
   var w,h;
   var ga;

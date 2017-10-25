@@ -1,82 +1,163 @@
-var CSP = {};
+//Basic implementation of Fisher-Yates (aka Knuth) Array Shuffle algorithm
+function shuffleArray(original) {
+  let arr = original.slice();
+  let count = arr.length;
+  let temp, rIndex;
+  while (count > 0) {
+    rIndex = Math.floor(Math.random() * count);
+    count = count - 1;
+    temp = arr[count];
+    arr[count] = arr[rIndex];
+    arr[rIndex] = temp;
+  }
+  return arr;
+}
 
-/****
- * vars        An array of variables
- * domains     An object of { "var1": ["possible value 1", "possible value 2", ...], ... } that lists the possible options for each var
- * neighbours  An object of { "var1": ["var2", "var3"], ...} that lists the other variables that participate in constraints
- * constraints A function f(A, a, B, b) that returns true if neighbours A, B satisfy the contraint when they have values A=a, B=b
- ****/
-CSP.get_solution = function(vars_list, domains_list, neighbours, constraints){
-	//sort the vars array and put the one with the highest number of constraints first
-	vars_list.sort(function (a,b){
-		return neighbours[b].length - neighbours[a].length;
-	});
+class BackTrackingAlgorithm {
+  constructor(csp) {
+      this.csp = csp;
+      //Shuffle the variables
+      //Useful when no heurisitc is involved to demonstrate different
+      //situations in the algorithm
+      this.variables = shuffleArray(this.csp.variables);
+      //Inferences represents reductions in domains.
+      //It has a list of values that CANNOT be assigned to variables.
+      this.inferences = {};
+      this.inferedDomains = {};
+      for (let i = 0; i < this.csp.variables.length; i++) {
+        this.inferences[this.csp.variables[i]] = [];
+        //Copies the array
+        this.inferedDomains[this.csp.variables[i]] = this.csp.domains[this.csp.variables[i]].slice();
+      }
+    }
+    //Generator that yields states in the algorithm
+    //Since its a recursive function, takes depth to keep track of how deep the
+    //tree has reached.
+    //Heuristics object represents which heurisitics to use
+    * backtrack(depth, heuristics) {
+      if (this.csp.countUnassigned() == 0) {
+        yield {
+          'finished': true,
+          'success': true,
+          'depth': depth
+        };
+      }
+      let variable = this.selectUnassignedVariable(heuristics);
+      let valueSet = this.orderDomainValues(variable, heuristics);
+      //Try all values
+      for (let i = 0; i < valueSet.length; i++) {
+        let value = valueSet[i];
+        this.csp.assign(variable, value);
+        let inference = this.addInference(variable, value);
+        yield {
+          'finished': false,
+          'depth': depth,
+          'assignment': this.csp.assignment,
+          'variable': variable,
+          'value': value,
+          'inferedDomains': this.inferedDomains
+        };
+        if (inference != 'failure') {
+          yield * this.backtrack(depth + 1, heuristics);
+        }
+        this.removeInference(variable, value);
+      }
+      this.csp.assign(variable, this.csp.noAssignment);
+      //Yield 'not successful' so it can backtrack
+      yield {
+        'finished': true,
+        'success': false,
+        'depth': depth,
+        'assignment': this.csp.assignment,
+        'inferedDomains': this.inferedDomains,
+        'backtrack': (valueSet.length > 0)
+      };
+    }
 
-	//recurse into a solution selector
-	var res = CSP.select_soln([], vars_list, domains_list, neighbours, constraints);
-	//convert the res array into an object
-	if (res){
-		var soln_obj = {};
-		res.map(function(val, i, arr){
-			soln_obj[val["variable"]] = val["soln"];
-		});
-		return soln_obj;
-	}else
-		return false;
-};
+  orderUnassignedVariables(heuristics) {
+    let unassigned = this.variables.filter(e => this.csp.assignment[e] == this.csp.noAssignment);
+    //MRV
+    if (heuristics.mrv) {
+      unassigned = unassigned.sort((a, b) => {
+        return this.inferedDomains[a].length > this.inferedDomains[b].length;
+      });
+    }
+    //Degree
+    if (heuristics.degree) {
+      unassigned = unassigned.sort((a, b) => {
+        return this.csp.neighbours[a].length < this.csp.neighbours[b].length;
+      })
+    }
+    return unassigned;
+  }
 
-CSP.select_soln = function(assigned, vars_left, domains_left, neighbours, constraints_fn){
-	if (vars_left.length == 0){
-		//finished!
-		return assigned;
-	}else{
-		//take the most constrained item...
-		var solve_for = vars_left.shift();
+  selectUnassignedVariable(heuristics) {
+    return this.orderUnassignedVariables(heuristics)[0];
+  }
 
-		//...check if there are any possible solutions remaining for it
-		if (domains_left[solve_for].length < 1){
-			//this path is not viable
-			return false;
-		}
+  orderDomainValues(variable, heuristics) {
+    let domain = shuffleArray(this.inferedDomains[variable]);
+    //LCV Heuristics
+    if (heuristics.lcv) {
+      let constraintAmount = {};
+      for (let i = 0; i < domain.length; i++) {
+        let value = domain[i];
+        let c = 0;
+        for (let j = 0; j < this.csp.neighbours[variable].length; j++) {
+          let neighbour = this.csp.neighbours[variable][j];
+          if (this.inferedDomains[neighbour].includes(value) && this.csp.assignment[neighbour] == this.csp.noAssignment) {
+            c++;
+          }
+        }
+        constraintAmount[value] = c;
+      }
+      domain = domain.sort((a, b) => {
+        return constraintAmount[a] > constraintAmount[b];
+      });
+    }
+    return domain;
+  }
 
-		var new_domains = Object.clone(domains_left);
+  addInference(variable, value) {
 
-		//now that we know there are still options here...
-		for (var i = 0; i < domains_left[solve_for].length; i++){
-			//...take the next domain element available for this solution
-			var proposed = domains_left[solve_for][i];
+    for (let i = 0; i < this.csp.neighbours[variable].length; i++) {
+      let neighbour = this.csp.neighbours[variable][i];
+      this.inferences[neighbour].push(value);
+      //If value is present in domain
+      let index = this.inferedDomains[neighbour].indexOf(value);
+      if (index > -1) {
+        //Remove it
+        this.inferedDomains[neighbour].splice(index, 1);
+      }
+    }
+    return 'success';
+  }
 
-			//navigate through the neighbours to remove any options that are no longer viable due to this assigment
-			neighbours[solve_for].map(function (curr_neighbour, j, all_neighbours){
-				var curr_neighbour_options = domains_left[curr_neighbour];
-				var new_neighbour_options = [];
-				curr_neighbour_options.map(function (neighbour_option, k, all_options){
-					if (constraints_fn(solve_for, proposed, curr_neighbour, neighbour_option))
-						//keep this valid option
-						new_neighbour_options.push(neighbour_option);
-				//replace the options list with this one
-				});
-				new_domains[curr_neighbour] = new_neighbour_options;
+  removeInference(variable, value) {
+    //It simply recalculates inferences after removing last element from this.inferences
+    //Remove the last contribution to this.inferences
+    for (let i = 0; i < this.csp.neighbours[variable].length; i++) {
+      let neighbour = this.csp.neighbours[variable][i];
+      this.inferences[neighbour].pop();
+    }
+    //Reassigns inferedDomains to original csp domains
+    for (let i = 0; i < this.variables.length; i++) {
+      this.inferedDomains[this.variables[i]] = this.csp.domains[this.variables[i]].slice();
+    }
+    //Recalulate InferedDomains from inferences
+    for (let i = 0; i < this.variables.length; i++) {
+      let variable = this.variables[i];
+      for (let j = 0; j < this.inferences[variable].length; j++) {
+        let valueToRemove = this.inferences[variable][j];
+        let index = this.inferedDomains[variable].indexOf(valueToRemove);
+        if (index > -1) {
+          this.inferedDomains[variable].splice(index, 1);
+        }
+      }
+    }
+  }
 
-				//TODO - if a variable is removed that is NOT assigned and the domain is reduced to zero, fail early
-
-			});
-
-			var viable = (function(a, v, d, n, c){
-				return CSP.select_soln(a, v, d, n, c);
-			})(Array.prototype.concat(assigned, {variable: solve_for, soln: proposed}),
-			   clone(vars_left),
-			   new_domains,
-			   neighbours,
-			   constraints_fn);
-
-			//if this is not false, it means success, otherwise we have to iterate to the next possible value
-			if (viable != false){
-				return viable;
-			}
-		}
-		//this path is not viable
-		return false;
-	}
-
-};
+  isInInferedDomain(variable, value) {
+    return (this.inferedDomains[variable].includes(value));
+  }
+}

@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="../styles.css">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
   <script type="text/javascript" src="./minimax.js"></script>
   <script type="text/javascript" src="./alphabeta.js"></script>
@@ -17,15 +17,19 @@
   <div class="row">
     <div class="col-sm-6 col-md-offset-3" id="content">
       <h1>Adversarial Search</h1>
-
-      <h2>Minimax</h2>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#minimax">Minimax</a></li>
+        <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
+      </ul>
+      <h2 id="minimax">Minimax</h2>
       <p>Click on the screen to restart the simulation.</p>
       <div class = "canvas" id="minimaxCanvas" height="300px" style="background: rgb(154, 255, 255);">
       </div>
 
       <pre id="minimaxCode"></pre>
 
-      <h2>Alpha Beta Pruning</h2>
+      <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
       <p>Click on the screen to restart the simulation.</p>
       <div class = "canvas" id="alphaBetaCanvas" height="300px"></div>
 

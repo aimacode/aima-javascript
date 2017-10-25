@@ -24,8 +24,8 @@ $(document).ready(function() {
     }, DELAY)
   }
 
-  $('#idExpanded').css('background-color', 'hsl(0,50%,75%)');
-  $('#idFrontier').css('background-color', 'hsl(200,50%,70%)');
+  $('#idExpanded').css('background-color', 'hsl(200,50%,70%)');
+  $('#idFrontier').css('background-color', 'hsl(0,50%,75%)');
   $('#idUnexplored').css('background-color', 'hsl(0, 2%, 76%)');
   $('#idRestartButton').click(function() {
     clearInterval(intervalFunction);

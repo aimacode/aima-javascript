@@ -115,9 +115,9 @@ const MDP = (function() {
                 return [1.0, state];
             } else {
                 return [
-                    {p: 0.8, next_state: this.go(state, action)},
-                    {p: 0.1, next_state: this.go(state, action.left())},
-                    {p: 0.1, next_state: this.go(state, action.right())},
+                    {p: 0.8, s: this.go(state, action)},
+                    {p: 0.1, s: this.go(state, action.left())},
+                    {p: 0.1, s: this.go(state, action.right())},
                 ];
             }
         }

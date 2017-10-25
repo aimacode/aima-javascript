@@ -66,13 +66,6 @@ var OnlineDfsAgentProblemStatement = function(){
 };
 
 $(document).ready(function(){
-	$.ajax({
-		url : "onlineDfsAgent.js",
-		dataType: "text",
-		success : function (data) {
-			$("#onlineDfsCode").html(data);
-		}
-	});
 
 	var two;
 	var canvas;

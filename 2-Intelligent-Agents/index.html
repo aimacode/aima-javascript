@@ -1,27 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>2 Intelligent Agents</title>
-  <link rel="stylesheet" href="../styles.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-  <script type="text/javascript" src="../main.js"></script>
+  <head>
+    <title>2 Intelligent Agents</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../main.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
-  <script type="text/javascript" src="./cleaningRobot.js"></script>
-  <script type="text/javascript" src="./c_cleaningRobot.js"></script>
-</head>
-<body>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        .floor:hover { cursor: pointer; }
+        .agent-actions { margin-left: auto; margin-right: auto; border-collapse: collapse; }
+        .agent-actions th { padding: 0.5ex; border: 1px solid hsl(240,10%,90%); background: hsl(240,10%,85%); text-align: center; }
+        .agent-actions td { padding: 0.25ex; border: 1px solid hsl(240,20%,80%); text-align: center; }
 
-  <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Artificial Intelligence</h1>
-      <h2>Intelligent Agents</h2>
-      <h4>Simple cleaning robot</h4>
-      <p>Demonstration of a simple reflex agent. The robot patrols between two positions and when the floor is dirty, the robot cleans it.</p>
-      <p>Click on a box to make it dirty. </p>
-      <div class = "canvas" id="robotCanvas" height="300px"></div>
-      <pre id="cleaningRobotCode"></pre>
+        .robot { transition: transform 2.0s; }
+        .floor { fill: white; }
+        .floor.clean { fill: hsl(240,10%,90%); transition: fill 2.0s; }
+        .floor.dirty { fill: hsl(0,50%,50%); transition: fill 0.1s; }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="row">
+      <div class="col-sm-6 col-md-offset-3" id="content">
+        <h1>Intelligent Agents</h1>
+        <h3>Table of contents</h3>
+        <ul class="content-table">
+          <li><a href="#vacuum-cleaner-problem">Vacuum cleaner problem</a></li>
+          <li><a href="#simple-cleaning-robot">Simple cleaning robot</a></li>
+          <li><a href="#rules-to-follow">Rules for the agent to follow</a></li>
+          <li><a href="#performance-measures">Performance measures</a></li>
+        </ul>
+
+        <h2 id="vacuum-cleaner-problem">Vacuum cleaner problem</h2>
+
+        <p>
+          Choose an action for the robot. Click on a box to make it dirty.
+        </p>
+
+        <div id="reader-controlled-diagram">
+          <div class="buttons" style="position:relative"></div>
+          <svg width="600" height="300"></svg>
+        </div>
+
+        <h2 id="simple-cleaning-robot">Simple cleaning robot</h2>
+
+        <div id="agent-controlled-diagram">
+
+          <p>
+            The robot will choose its own actions based on simple rules. Click on a box to make it dirty.
+          </p>
+
+          <svg width="600" height="300"></svg>
+
+        </div>
+
+        <h2 id="rules-to-follow">Rules for the agent to follow</h2>
+
+        <div id="table-controlled-diagram">
+
+          <p>
+            The robot will follow the rules you choose. Click on a rule in the table to change it.
+          </p>
+
+          <table class="agent-actions"
+            <thead>
+              <tr>
+                <th rowspan="2" valign="bottom">Percept</th>
+                <th colspan="2">Position</th>
+              </tr>
+              <tr>
+                <th data-input="left">Left</th>
+                <th data-input="right">Right</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th data-input="clean">Clean</th>
+                <td data-action="left-clean">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT" selected>RIGHT</option>
+                    <option value="SUCK">SUCK</option>
+                  </select>
+                </td>
+                <td data-action="right-clean">
+                  <select class="custom-select">
+                    <option value="LEFT" selected>LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK">SUCK</option>
+                  </select>
+              </tr>
+              <tr>
+                <th data-input="dirty">Dirty</th>
+                <td data-action="left-dirty">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK" selected>SUCK</option>
+                  </select>
+                </td>
+                <td data-action="right-dirty">
+                  <select class="custom-select">
+                    <option value="LEFT">LEFT</option>
+                    <option value="RIGHT">RIGHT</option>
+                    <option value="SUCK" selected>SUCK</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <svg width="600" height="300"></svg>
+
+          <p>
+            In this simple example there's only one set of rules that
+            works well, but in more complex examples it won't be as
+            obvious what set of rules to use. How would we find the
+            rules?
+          </p>
+
+          <h2 id="performance-measures">Performance measures</h2>
+
+          <p>
+            We can choose a metric that evaluates how well the agent
+            performs on the given problem.
+          </p>
+
+          TODO: dirty/clean should be controlled automatically,
+          reproducibly (seeded RNG), and then display a line chart
+          with the performance measure
+
+          <h3>Evaluating multiple agents</h3>
+
+          TODO: many different agents on the same data sequence
+
+          <h3>Evaluating many data sets</h3>
+
+          TODO: one agent on many different data sequences (avoid overfitting)
+
+      </div>
     </div>
-  </div>
-</body>
+
+    <script type="text/javascript" src="./cleaningRobot.js"></script>
+    <script type="text/javascript" src="./c_cleaningRobot.js"></script>
+  </body>
 </html>

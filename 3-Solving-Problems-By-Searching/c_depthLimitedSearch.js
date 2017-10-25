@@ -14,8 +14,8 @@ $(document).ready(function() {
   }
 
 
-  $('#dlsExpanded').css('background-color', 'hsl(0,50%,75%)');
-  $('#dlsFrontier').css('background-color', 'hsl(200,50%,70%)');
+  $('#dlsExpanded').css('background-color', 'hsl(200,50%,70%)');
+  $('#dlsFrontier').css('background-color', 'hsl(0,50%,75%)');
   $('#dlsUnexplored').css('background-color', 'hsl(0, 2%, 76%)');
   init();
   $('#limitSelector').on('input change', function() {

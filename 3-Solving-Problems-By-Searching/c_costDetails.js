@@ -10,13 +10,8 @@ $(document).ready(function() {
   var colorPathInGraph = function(graphDrawAgent, path) {
       let nodeGroups = graphDrawAgent.nodeGroups;
       for (var i = 0; i < path.path.length; i++) {
-        nodeKey = path.path[i].node;;
-        for (var j = 0; j < nodeGroups.length; j++) {
-          if ($(nodeGroups[j]._renderer.elem).attr('nodeKey') == nodeKey) {
-            nodeGroups[j]._collection[0].fill = 'hsl(108, 96%, 80%)';
-            break;
-          }
-        }
+        nodeKey = path.path[i].node;
+        nodeGroups[nodeKey]._collection[0].fill = 'hsl(108, 96%, 80%)';
       }
       let edges = graphDrawAgent.edges;
       for (var i = 0; i < path.path.length - 1; i++) {
@@ -33,31 +28,30 @@ $(document).ready(function() {
         }
       }
       graphDrawAgent.two.update();
-
     }
     //Function to draw the cost path in the bottom of the graph
   var drawCostPath = function(two, path) {
     two.clear();
     path.path = path.path.reverse();
     let runningCost = 0;
-    var i, x1, x2, y = 20;
+    var i, x1, x2, y = 23;
     for (i = 0; i < path.path.length - 1; i++) {
-      x1 = i * 65 + 20;
-      x2 = (i + 1) * 65 + 20;
-      y = 20;
+      x1 = i * 65 + 30;
+      x2 = (i + 1) * 65 + 30;
+      y = 23;
       line = two.makeLine(x1, y, x2, y);
       line.stroke = 'hsla(202, 100%, 56%, 1)';
       line.linewidth = 5;
       edgeText = two.makeText(path.path[i + 1].cost, (x1 + x2) / 2, 10);
-      rect = two.makeRectangle(x1, y, 30, 30);
+      rect = two.makeCircle(x1, y, 20);
       rect.fill = 'hsl(108, 96%, 80%)';
       nodeText = two.makeText(path.path[i].node, x1, y);
       nodeCost = two.makeText(runningCost, x1, y + 40);
       nodeCost.size = 17;
       runningCost += path.path[i + 1].cost;
     }
-    x1 = i * 65 + 20;
-    rect = two.makeRectangle(x1, y, 40, 40);
+    x1 = i * 65 + 30;
+    rect = two.makeCircle(x1, y, 22);
     rect.fill = 'hsl(108, 96%, 80%)';
     nodeText = two.makeText(path.path[i].node, x1, y);
     nodeText.size = 22;
@@ -95,8 +89,14 @@ $(document).ready(function() {
       //Draw the cost path at the bottom
       drawCostPath(bfsTwo, bfsShortestPath);
       drawCostPath(ucsTwo, ucsShortestPath);
+
+      bfsGraphDrawAgent.highlight(nodeKey);
+      ucsGraphDrawAgent.highlight(nodeKey);
     };
     var onMouseLeave = function() {
+      let nodeKey = $(this).attr('nodeKey');
+      bfsGraphDrawAgent.unhighlight(nodeKey);
+      ucsGraphDrawAgent.unhighlight(nodeKey);
       //Clear everything when mouse leaves
       bfsGraphDrawAgent.iterate();
       ucsGraphDrawAgent.iterate();
@@ -116,6 +116,7 @@ $(document).ready(function() {
     options.nodes.next.onMouseLeave = onMouseLeave;
     options.edges.showCost = true;
     options.nodes.unexplored.clickHandler = function() {};
+    options.nodes.frontier.clickHandler = function() {};
     bfsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'no-costGraphCanvas', options, h, w);
     ucsGraphDrawAgent = new GraphDrawAgent(graphProblem, 'costGraphCanvas', options, h, w);
   };
