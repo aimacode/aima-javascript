@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('#form').submit(function() {
+    $('#ngram-form').submit(function(e) {
             var str = $('#phrase').val();
             var charUnigram;
             $('#character-level-unigram').empty();
@@ -20,6 +20,12 @@ $(document).ready(function() {
                 $('#character-level-trigram').append("<kbd>"+a+b+c+"</kbd>");
                 $('#character-level-trigram').append(",  ");
             }
-        return false;
+        
+        // prevent the form from submitting and refreshing the page 
+        e.preventDefault();
     });
+
+    $('#classification-form').submit(function(e){
+        e.preventDefault();
+    })
 });
