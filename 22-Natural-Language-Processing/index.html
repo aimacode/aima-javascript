@@ -7,6 +7,7 @@
   <script type="text/javascript" src="../main.js"></script>
   <script type="text/javascript" src="nGramModels.js"></script>
   <script type="text/javascript" src="textClassification.js"></script>
+  <script type="text/javascript" src="IRScore.js"></script>
 </head>
 <body>
 
@@ -53,6 +54,115 @@
         </div>
       <h2>Language : <span id="test_result"></span></h2>
       </form>
+
+      <h2 id="ir-score">IR scoring functions</h2><br>
+
+      <p>
+        A scoring function takes a document and a query and returns a numeric score; the most relevant documents have the highest scores.
+        In the BM25 function, the score is a linear weighted combination of scores for each of the words that make up the query.
+      </p>
+
+        <form id="form-IR">
+          <div class="form-group">
+            <label >Enter query</label>
+            <input type="text" class="form-control"  id="query"/>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="submit btn btn-success">Submit</button>
+          </div>
+        </form><br>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doc1">
+          Document 1
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doc2">
+          Document 2
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#doc3">
+          Document 3
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="doc1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Document 1</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="d1"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="doc2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Document 2</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="d2"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="doc3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Document 3</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="d3"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div><br><br><br>
+        <h5>k = 2.0</h5><br>
+        <h5>b = 0.75</h5><br><br>
+        <div class="col-md-8">
+          <h4>Term frequency TF(qi,dj)</h4>
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Doc 1</th>
+                <th scope="col">Doc 2</th>
+                <th scope="col">Doc 3</th>
+                <th scope="col">IDF(qi)</th>
+              </tr>
+            </thead>
+            <tbody id="tfTable">
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-4">
+          <h4>Document rank</h4>
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Doc length</th>
+                <th scope="col">Rank</th>
+              </tr>
+            </thead>
+            <tbody id="rankTable">
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
 
