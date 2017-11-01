@@ -33,32 +33,23 @@ $(document).ready(function() {
               for (var j = 0; j < doc1List.length; j++) {
                 if(doc1List[j]==word){
                   frequency++;
-                  console.log(word);
-                  console.log(frequency);
                 }
               }
               tfdoc1.push(frequency);
-              console.log(tfdoc1);
               frequency = 0;
               for (var j = 0; j < doc2List.length; j++) {
                 if(doc2List[j]==word){
                   frequency++;
-                  console.log(word);
-                  console.log(frequency);
                 }
               }
               tfdoc2.push(frequency);
-              console.log(tfdoc2);
               frequency = 0;
               for (var j = 0; j < doc3List.length; j++) {
                 if(doc3List[j]==word){
                   frequency++;
-                  console.log(word);
-                  console.log(frequency);
                 }
               }
               tfdoc3.push(frequency);
-              console.log(tfdoc3);
               frequency = 0;
             }
             for (var i = 0; i < queryList.length; i++) {
@@ -73,33 +64,21 @@ $(document).ready(function() {
                 count++;
               }
               df.push(count);
-              console.log(df);
             }
             for(var i = 0; i < queryList.length; i++){
               var temp;
               temp = Math.log((3-df[i]+0.5)/(df[i]+0.5));
-              console.log(temp);
               idf.push(temp);
             }
-            console.log("----");
             for(var i = 0; i < queryList.length; i++){
                 bm25doc1 = bm25doc1 + idf[i]*(tfdoc1[i]*(k+1))/(tfdoc1[i]+(k*(1-b+(b*(doc1Length/avgLength)))));
-                console.log(bm25doc1);
             }
-            console.log(bm25doc1);
-            console.log("----------");
             for(var i = 0; i < queryList.length; i++){
                 bm25doc2 = bm25doc2 + idf[i]*(tfdoc2[i]*(k+1))/(tfdoc2[i]+(k*(1-b+(b*(doc2Length/avgLength)))));
-                console.log(bm25doc2);
             }
-            console.log(bm25doc2);
-            console.log("---------");
             for(var i = 0; i < queryList.length; i++){
                 bm25doc3 = bm25doc3 + idf[i]*(tfdoc3[i]*(k+1))/(tfdoc3[i]+(k*(1-b+(b*(doc3Length/avgLength)))));
-                console.log(bm25doc3);
             }
-            console.log(bm25doc3);
-            console.log("----------");
             if(bm25doc1 > bm25doc2){
               if(bm25doc1 > bm25doc3){
                 doc1rank = 1;
@@ -136,9 +115,6 @@ $(document).ready(function() {
                  }
               }
             }
-            console.log(doc1rank);
-            console.log(doc2rank);
-            console.log(doc3rank);
             var docranks = [];
             docranks.push(doc1rank);
             docranks.push(doc2rank);
