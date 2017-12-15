@@ -1,9 +1,202 @@
+function P_MAX_DECISION(state, STEP) {
+	if (STEP == 0)
+		return [0,0];
+	var action_list = actions(state);
+	var final_action = 0;
+	var largest_value = 0;
+	for (var action = 0; action < action_list.length; action++){
+		var res = P_MIN_VALUE(RESULT(state, action_list[action]), STEP-1);
+		if (res[1] == 0)
+			return;
+		STEP = res[1];
+		if  (largest_value < res[0]) {
+			largest_value = res[0];
+			final_action = action;
+		}
+	}
+	STEP -= 1;
+	if (STEP == 0)
+		return;
+	mmTree.triangles[state].fill = 'red';
+	mmTree.values[state].value = largest_value;
+	mmTree.lines[final_action].stroke = '#ff33cc';
+	return final_action;
+}
+function P_MAX_VALUE(state, STEP) {
+	if (STEP == 0)
+		return [0,0];
+	if (terminal(state)) {
+		mmTree.triangles[state].fill = 'red';
+		return [utillity(state), STEP];
+	}
+	mmTree.triangles[state].fill = 'green';
+	var v = 0;
+	var al = actions(state);
+	for (var i = 0; i < al.length; i++) {
+		var r = P_MAX_VALUE(RESULT(state, al[i]), STEP-1);
+		if (r[1] == 0)
+			return [0,0];
+		STEP = r[1];
+		v = Math.max(v, r[0]);
+	}
+	STEP -= 1;
+	if (STEP == 0)
+		return [0,0];
+	mmTree.values[state].value = v;
+	mmTree.triangles[state].fill = 'red';
+	return [v, STEP];
+}
+function P_MIN_VALUE(state, STEP) {
+	if (STEP == 0)
+		return [0,0];
+	if (terminal(state)) {
+		mmTree.triangles[state].fill = 'red';
+		return [utillity(state), STEP];
+	}
+	mmTree.triangles[state].fill = 'green';
+	var v = Number.MAX_SAFE_INTEGER;
+	var al = actions(state);
+	for (var i = 0; i < al.length; i++) {
+		var r = P_MAX_VALUE(RESULT(state, al[i]), STEP-1);
+		if (r[1] == 0)
+			return [0,0];
+		STEP = r[1];
+		v = Math.min(v, r[0]);
+	}
+	STEP -= 1;
+	if (STEP == 0)
+		return [0,0];
+	mmTree.values[state].value = v;
+	mmTree.triangles[state].fill = 'red';
+	return [v, STEP];
+}
+function terminal(state) {
+	/*
+		checks to see if the children of the node is out of bounds
+		NOTE: the tree is implemented as an array for this example, as such it only works on full trees
+	*/
+	if (state*3+1 > mmTree.nodes.length-1)
+		return true;
+	else
+		return false;
+};
+function utillity(state) {
+	return (mmTree.nodes[state] == undefined ? 0 : mmTree.nodes[state]);
+};
+function actions(state) {
+	/*
+		returns a list of actions
+		NOTE: this implementation always has 3 actions, left, middle, right.
+	*/
+	return ["left", "middle", "right"];
+};
+function RESULT(s, a) {
+	switch(a) {
+		case "left": return s*3+1;
+		case "middle": return s*3+2;
+		case "right": return s*3+3;
+	}
+};
+var mmTree = {
+	slider : undefined,
+	two : undefined,
+	styles : {
+		family: 'proxima-nova, sans-serif',
+		size: 20,
+		leading: 50,
+		weight: 900
+	},
+	nodes : [],
+	triangles : [],
+	lines : [],
+	values : [],
+	input : undefined,
+	defaultNodes : undefined,
+	init : ()=> {
+		//bind the progress slider to function
+		mmTree.slider = document.getElementById("minimaxProgress");
+		mmTree.slider.oninput = mmTree.update;
+
+		//bind the input box to the array
+		mmTree.input = document.getElementById("input");
+		
+		var getInput = ()=> {
+			var dd = mmTree.input.value.match(/\d+/g);
+			var ddd = [];
+			for (var i = 0; i < 9; i++)
+				ddd.push(((dd == null) || (i >= dd.length)) ? 0 : dd[i]);
+			mmTree.defaultNodes = [undefined, undefined, undefined, undefined].concat(ddd);
+			mmTree.nodes = mmTree.defaultNodes;
+		};
+
+		getInput();
+
+		mmTree.input.onblur = ()=> {
+			getInput();
+			mmTree.fresh();
+			mmTree.two.update();
+		}; 
+
+		//set up and draw the graph
+		var elem = document.getElementById('minimaxCanvas');
+		var params = { width: 600, height: 400 };
+		mmTree.two = new Two(params).appendTo(elem);
+
+		var depth = 1;
+		var start = 0;
+		var depth_nodes = 1;
+		while(start < mmTree.nodes.length) {
+			for (var i = start; i < start + depth_nodes; i++) {
+				var tri_x = (params.width/depth_nodes)*(i-start) + (params.width/depth_nodes/2);
+				var tri_y = ((depth % 2 == 0) ? 100*depth-15 : 100*depth);
+				var line_x_1 = (params.width/depth_nodes)*(i-start) + (params.width/depth_nodes/2);
+				var line_y_1 = ((depth % 2 == 0) ? 100*depth-30 : 100*depth-30);
+				var line_x_2 = (params.width/(depth_nodes/3))*(Math.floor((i-start)/3)) + (params.width/(depth_nodes/3)/2);
+				var line_y_2 = line_y_1 - 55;
+				mmTree.triangles.push(mmTree.two.makePolygon(tri_x, tri_y, 30, 3));
+				if (depth != 1) mmTree.lines.push(mmTree.two.makeLine(line_x_1,line_y_1,line_x_2,line_y_2));
+				mmTree.values.push(mmTree.two.makeText(mmTree.nodes[i], tri_x, tri_y, mmTree.styles));
+
+				mmTree.triangles[mmTree.triangles.length-1].fill = '#FF8000';
+				mmTree.triangles[mmTree.triangles.length-1].stroke = 'orangered';
+				mmTree.triangles[mmTree.triangles.length-1].rotation = (depth-1) * Math.PI;
+			}
+			depth += 1;
+			start += depth_nodes;
+			depth_nodes *= 3;
+		}
+		mmTree.two.update();
+	},
+	fresh : ()=> {
+		var depth = 1;
+		var start = 0;
+		var depth_nodes = 1;
+		while(start < mmTree.nodes.length) {
+			for (var i = start; i < start + depth_nodes; i++) {
+				mmTree.values[i].value = mmTree.nodes[i];
+				mmTree.triangles[i].fill = '#FF8000';
+				mmTree.triangles[i].stroke = 'orangered';
+				if (depth != 1) mmTree.lines[i-1].stroke = 'black';
+			}
+			depth += 1;
+			start += depth_nodes;
+			depth_nodes *= 3;
+		}
+	},
+	update : ()=> {
+		mmTree.fresh();
+		P_MAX_DECISION(0, mmTree.slider.value);
+		mmTree.two.update();
+
+	}
+};
 $(document).ready(function(){
-  $.ajax({
-    url : "minimax.js",
-    dataType: "text",
-    success : function (data) {
-      $("#minimaxCode").html(data);
-    }
-  });
+	$.ajax({
+		url : "minimax.js",
+		dataType: "text",
+		success : function (data) {
+			$("#minimaxCode").html(data);
+		}
+	});
+	mmTree.init();
 });

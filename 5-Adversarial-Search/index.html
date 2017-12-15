@@ -3,10 +3,11 @@
 <head>
   <title>5 Adversarial Search</title>
   <link rel="stylesheet" href="../styles.css">
+   <meta charset="UTF-8"> 
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.js"></script>
   <script type="text/javascript" src="./minimax.js"></script>
   <script type="text/javascript" src="./alphabeta.js"></script>
   <script type="text/javascript" src="./c_minimax.js"></script>
@@ -23,15 +24,16 @@
         <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
       </ul>
       <h2 id="minimax">Minimax</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <div class = "canvas" id="minimaxCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
+      <input type="text" id="input" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"><br>
+      <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
+      <input type="range" min="1" max="17" value="1" id="minimaxProgress">
       <pre id="minimaxCode"></pre>
 
       <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <div class = "canvas" id="alphaBetaCanvas" height="300px"></div>
+      <input type="text" id="alphaBetaInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"><br>
+      <!-- <p>Click on the screen to restart the simulation.</p> -->
+      <div class="canvas" id="alphaBetaCanvas", width="300" height="400"></div>
+      <input type="range" min="1" max="14" value="1" id="alphaBetaProgress">
 
       <pre id="alphaBetaCode"></pre>
     </div>
