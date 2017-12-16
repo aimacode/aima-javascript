@@ -98,6 +98,8 @@ function RESULT(s, a) {
 	}
 };
 var mmTree = {
+	on : true,
+	toggle : undefined,
 	slider : undefined,
 	two : undefined,
 	styles : {
@@ -115,10 +117,37 @@ var mmTree = {
 	init : ()=> {
 		//bind the progress slider to function
 		mmTree.slider = document.getElementById("minimaxProgress");
-		mmTree.slider.oninput = mmTree.update;
+		mmTree.slider.oninput = ()=> {
+			mmTree.on = false;
+			mmTree.toggle.textContent = "Start Simulation";
+			mmTree.update();
+		}
+		mmTree.slider.value = 1;
+		setInterval(()=> {
+			if (mmTree.on == false)
+				return;
+			if (mmTree.slider.value == 17)
+				mmTree.slider.value = 1;
+			else
+				mmTree.slider.value = +mmTree.slider.value + 1;
+			mmTree.update();
+		}, 1000);
+
+		//bind the on/off buton
+		mmTree.toggle = document.getElementById("minimaxToggle");
+		mmTree.toggle.onclick = ()=> {
+			if (mmTree.on == true){
+				mmTree.on = false;
+				mmTree.toggle.textContent = "Start Simulation";
+			}
+			else {
+				mmTree.on = true;
+				mmTree.toggle.textContent = "Stop Simulation";
+			}
+		};
 
 		//bind the input box to the array
-		mmTree.input = document.getElementById("input");
+		mmTree.input = document.getElementById("minimaxInput");
 		
 		var getInput = ()=> {
 			var dd = mmTree.input.value.match(/\d+/g);
@@ -132,14 +161,14 @@ var mmTree = {
 		getInput();
 
 		mmTree.input.onblur = ()=> {
+			mmTree.slider.value = 1;
 			getInput();
-			mmTree.fresh();
 			mmTree.two.update();
 		}; 
 
 		//set up and draw the graph
 		var elem = document.getElementById('minimaxCanvas');
-		var params = { width: 600, height: 400 };
+		var params = { width: 800, height: 400 };
 		mmTree.two = new Two(params).appendTo(elem);
 
 		var depth = 1;
@@ -147,15 +176,15 @@ var mmTree = {
 		var depth_nodes = 1;
 		while(start < mmTree.nodes.length) {
 			for (var i = start; i < start + depth_nodes; i++) {
-				var tri_x = (params.width/depth_nodes)*(i-start) + (params.width/depth_nodes/2);
+				var tri_x = ((params.width-200)/depth_nodes)*(i-start) + ((params.width-200)/depth_nodes/2);
 				var tri_y = ((depth % 2 == 0) ? 100*depth-15 : 100*depth);
-				var line_x_1 = (params.width/depth_nodes)*(i-start) + (params.width/depth_nodes/2);
+				var line_x_1 = ((params.width-200)/depth_nodes)*(i-start) + ((params.width-200)/depth_nodes/2);
 				var line_y_1 = ((depth % 2 == 0) ? 100*depth-30 : 100*depth-30);
-				var line_x_2 = (params.width/(depth_nodes/3))*(Math.floor((i-start)/3)) + (params.width/(depth_nodes/3)/2);
+				var line_x_2 = ((params.width-200)/(depth_nodes/3))*(Math.floor((i-start)/3)) + ((params.width-200)/(depth_nodes/3)/2);
 				var line_y_2 = line_y_1 - 55;
 				mmTree.triangles.push(mmTree.two.makePolygon(tri_x, tri_y, 30, 3));
 				if (depth != 1) mmTree.lines.push(mmTree.two.makeLine(line_x_1,line_y_1,line_x_2,line_y_2));
-				mmTree.values.push(mmTree.two.makeText(mmTree.nodes[i], tri_x, tri_y, mmTree.styles));
+				mmTree.values.push(mmTree.two.makeText(((mmTree.nodes[i] != undefined) ? mmTree.nodes[i] : " "), tri_x, tri_y, mmTree.styles));
 
 				mmTree.triangles[mmTree.triangles.length-1].fill = '#FF8000';
 				mmTree.triangles[mmTree.triangles.length-1].stroke = 'orangered';
@@ -165,6 +194,8 @@ var mmTree = {
 			start += depth_nodes;
 			depth_nodes *= 3;
 		}
+		mmTree.two.makeText("maximize", 700, 100, mmTree.styles);
+		mmTree.two.makeText("minimize", 700, 200, mmTree.styles);
 		mmTree.two.update();
 	},
 	fresh : ()=> {
@@ -173,7 +204,7 @@ var mmTree = {
 		var depth_nodes = 1;
 		while(start < mmTree.nodes.length) {
 			for (var i = start; i < start + depth_nodes; i++) {
-				mmTree.values[i].value = mmTree.nodes[i];
+				mmTree.values[i].value = (mmTree.nodes[i] != undefined ? mmTree.nodes[i] : " ");
 				mmTree.triangles[i].fill = '#FF8000';
 				mmTree.triangles[i].stroke = 'orangered';
 				if (depth != 1) mmTree.lines[i-1].stroke = 'black';
@@ -191,12 +222,5 @@ var mmTree = {
 	}
 };
 $(document).ready(function(){
-	$.ajax({
-		url : "minimax.js",
-		dataType: "text",
-		success : function (data) {
-			$("#minimaxCode").html(data);
-		}
-	});
 	mmTree.init();
 });

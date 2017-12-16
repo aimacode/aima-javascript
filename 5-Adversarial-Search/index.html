@@ -24,18 +24,34 @@
         <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
       </ul>
       <h2 id="minimax">Minimax</h2>
-      <input type="text" id="input" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"><br>
-      <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
+      <p>
+        The algorithm will attempt to find the best action that an agent can take, assuming that an opposing force is trying to minimize its results.<br><br>
+        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
+        <br>
+      </p>
+      <input type="text" id="minimaxInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2">
+      <button type="button" id="minimaxToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Stop Simulation</button>
+      <br>
+      <br>
       <input type="range" min="1" max="17" value="1" id="minimaxProgress">
-      <pre id="minimaxCode"></pre>
+      <br>
+      <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
+      
 
       <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
-      <input type="text" id="alphaBetaInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"><br>
-      <!-- <p>Click on the screen to restart the simulation.</p> -->
+      <p>
+        A slight modification to minimax, Alpha Beta Pruning will try to improve performance by ignoring nodes that cannot possibly provide a better outcome.<br><br>
+        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
+        <br>
+      </p>
+      <input type="text" id="alphaBetaInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2">
+      <button type="button" id="alphaBetaToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Stop Simulation</button>
+      <br>
+      <br>
+      <input type="range" min="1" max="17" value="1" id="alphaBetaProgress">
+      <br>
       <div class="canvas" id="alphaBetaCanvas", width="300" height="400"></div>
-      <input type="range" min="1" max="14" value="1" id="alphaBetaProgress">
-
-      <pre id="alphaBetaCode"></pre>
+      
     </div>
   </div>
 
