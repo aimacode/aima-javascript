@@ -108,8 +108,9 @@ function abUtillity(state) {
 	return (abTree.nodes[state] == undefined ? 0 : abTree.nodes[state]);
 };
 var abTree = {
+	finishedInit : false,
 	running : false,
-	on : true,
+	on : false,
 	toggle : undefined,
 	slider : undefined,
 	range : 0,
@@ -129,7 +130,6 @@ var abTree = {
 	input : undefined,
 	defaultNodes : undefined,
 	init : ()=> {
-		abTree.running = true;
 		//bind the progress slider to function
 		abTree.slider = document.getElementById("alphaBetaProgress");
 		abTree.slider.oninput = ()=> {
@@ -221,6 +221,7 @@ var abTree = {
 
 		//set up the slider range based on how the thing will run
 		resetRange();
+		abTree.finishedInit = true;
 	},
 	fresh : ()=> {
 		var depth = 1;
@@ -248,8 +249,14 @@ var abTree = {
 	}
 };
 
+$(document).ready(function(){
+	abTree.init();
+});
+
 $(window).scroll(function() {
-    if(!abTree.running && $(window).scrollTop() > $(document).height() - $(window).height() - 100) {
-           abTree.init();
+    if(!abTree.running && $(window).scrollTop() > $(document).height() - $(window).height() - 200) {
+    	abTree.running = true;
+        abTree.on = true;
+		abTree.toggle.textContent = "Stop Simulation";
     }
 });
