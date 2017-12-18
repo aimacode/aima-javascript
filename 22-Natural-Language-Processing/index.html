@@ -7,6 +7,7 @@
   <script type="text/javascript" src="../main.js"></script>
   <script type="text/javascript" src="nGramModels.js"></script>
   <script type="text/javascript" src="textClassification.js"></script>
+  <script type="text/javascript" src="irScoring.js"></script>
 </head>
 <body>
 
@@ -17,6 +18,7 @@
       <ul class="content-table">
         <li><a href="#n-gram-character-models">N-gram character models</a></li>
         <li><a href="#text-classification">Text Classification</a></li>
+        <li><a href="#IR-scoring-functions">IR scoring functions</a></li>
       </ul>
 
       <h2 id="n-gram-character-models">N-gram character models</h2><br>
@@ -53,6 +55,77 @@
         </div>
       <h2>Language : <span id="test_result"></span></h2>
       </form>
+
+      <h2 id="IR-scoring-functions">IR scoring functions</h2><br>
+
+      <p>
+        A scoring function takes a document and a query and returns a numeric score; the most relevant documents have the highest scores.
+        In the BM25 function, the score is a linear weighted combination of scores for each of the words that make up the query. Three factors that affect the weight of a query term are:
+        term frequency, inverse document frequency and length of the document.
+      </p>
+
+      <div class="row">
+        <div class="col-md-6">
+          <form id="query-input">
+            <div class="form-group">
+              <label >Enter query:</label>
+              <input type="text" class="form-control"  id="query"/>
+            </div>
+            <div class="form-group">
+              <button type="input" class="btn btn-success" id="query-submit">Submit</button>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <form id="document-input">
+            <div class="form-group">
+              <label >New document:</label>
+              <input type="text" class="form-control"  id="document"/>
+            </div>
+            <div class="form-group">
+              <button type="input" class="btn btn-success" id="document-submit">Add</button>
+              <button type="input" class="btn btn-success" id="document-reset">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p>Query :</p><br>
+          <ul class="list-group" id="query-display"></ul>
+        </div>
+        <div class="col-md-6">
+          <p>Documents :</p><br>
+          <ul class="list-group" id="documents-list"></ul>
+        </div>
+      </div>
+      <button class="btn btn-success" id="ir-scoring-function">Get IR scoring</button>
+      <div class="tables">
+        <h4 id="BM25"></h4>
+        <table class="table">
+          <thead>
+            <tr id="bm25-table-header">
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="bm25-table-data">
+            </tr>
+            <tr id="length-documents">
+            </tr>
+          </tbody>
+        </table>
+      <h4 id="idf"></h4>
+      <table class="table">
+        <thead>
+          <tr id="idf-table-header">
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="idf-table-data">
+          </tr>
+        </tbody>
+      </div>
+
     </div>
   </div>
 
