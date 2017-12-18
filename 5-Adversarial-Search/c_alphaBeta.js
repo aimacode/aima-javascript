@@ -6,7 +6,7 @@ function P_ALPHA_BETA_SEARCH(state, STEP) {
 		return [-1,largest_value[1]];
 	for (var action = 0; action < action_list.length; action++) {
 		if  (largest_value[0] == abUtillity(RESULT(state, action_list[action]))) {
-			abTree.lines[action].linewidth = 3;
+			abTree.lines[action].stroke = '#ff9933';
 			return [action, largest_value[1]];
 		}
 	}
@@ -16,12 +16,13 @@ function P_MAX_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	if (terminal(state)) {
-		abTree.triangles[state].fill = 'red';
+		abTree.triangles[state].fill = '#194d33';
+		abTree.values[state].stroke = 'black';
 		abTree.values[state].fill = 'white';
 		return [abUtillity(state), STEP];
 	}
-	abTree.triangles[state].fill = '#33aa77';
-	abTree.values[state].value = '[' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ']';
+	abTree.triangles[state].fill = '#66cc99';
+	abTree.values[state].value = ' [ ' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ' ] ';
 	var v = 0;
 	var al = actions(state);
 	var a = 0;
@@ -32,9 +33,10 @@ function P_MAX_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 		STEP = r[1];
 		v = Math.max(v, r[0]);
 		if (v >= beta) {
-			abTree.lines[RESULT(state, al[i])-1].linewidth = 3;
-			abTree.values[state].value = '[' + v + ', inf]';
-			abTree.triangles[state].fill = 'red';
+			abTree.lines[RESULT(state, al[i])-1].stroke = '#ff9933';
+			abTree.values[state].value = ' [ ' + v + ', inf]';
+			abTree.triangles[state].fill = '#194d33';
+			abTree.values[state].stroke = 'black';
 			abTree.values[state].fill = 'white';
 			abTree.nodes[state] = v;
 			return [v, STEP];
@@ -44,15 +46,16 @@ function P_MAX_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 			a = i;
 		}
 		//alpha = Math.max(alpha, v);
-		abTree.values[state].value = '[' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ']';
+		abTree.values[state].value = ' [ ' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ' ] ';
 	}
 	STEP -= 1;
 	if (STEP == 0)
 		return [0,0];
-	abTree.lines[RESULT(state, al[a])-1].linewidth = 3;
-	abTree.values[state].value = '[' + alpha + ', ' + v + ']';;
+	abTree.lines[RESULT(state, al[a])-1].stroke = '#ff9933';
+	abTree.values[state].value = ' [ ' + alpha + ', ' + v + ' ] ';;
 	abTree.nodes[state] = v;
-	abTree.triangles[state].fill = 'red';
+	abTree.triangles[state].fill = '#194d33';
+	abTree.values[state].stroke = 'black';
 	abTree.values[state].fill = 'white';
 	return [v, STEP];
 }
@@ -60,11 +63,11 @@ function P_MIN_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	if (terminal(state)) {
-		abTree.triangles[state].fill = 'red';
+		abTree.triangles[state].fill = '#194d33';
 		return [abUtillity(state), STEP];
 	}
-	abTree.triangles[state].fill = '#33aa77';
-	abTree.values[state].value = '[' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ']';
+	abTree.triangles[state].fill = '#66cc99';
+	abTree.values[state].value = ' [ ' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ' ] ';
 	var v = Number.MAX_SAFE_INTEGER;
 	var al = actions(state);
 	var a = 0;
@@ -75,9 +78,10 @@ function P_MIN_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 		STEP = r[1];
 		v = Math.min(v, r[0]);
 		if (v <= alpha){
-			abTree.lines[RESULT(state, al[i])-1].linewidth = 3;
-			abTree.values[state].value = '[' + 0 + ', ' + v + ']';
-			abTree.triangles[state].fill = 'red';
+			abTree.lines[RESULT(state, al[i])-1].stroke = '#ff9933';
+			abTree.values[state].value = ' [ ' + 0 + ', ' + v + ' ] ';
+			abTree.triangles[state].fill = '#194d33';
+			abTree.values[state].stroke = 'black';
 			abTree.values[state].fill = 'white';
 			abTree.nodes[state] = v;
 			return [v, STEP];
@@ -87,14 +91,15 @@ function P_MIN_ALPHA_BETA_VALUE(state, alpha, beta, STEP) {
 			beta = v;
 			a = i;
 		}
-		abTree.values[state].value = '[' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ']';
+		abTree.values[state].value = ' [ ' + alpha + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ' ] ';
 	}
 	STEP -= 1;
 	if (STEP == 0)
 		return [0,0];
-	abTree.lines[RESULT(state, al[a])-1].linewidth = 3;
-	abTree.values[state].value = '[' + v + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ']';
-	abTree.triangles[state].fill = 'red';
+	abTree.lines[RESULT(state, al[a])-1].stroke = '#ff9933';
+	abTree.values[state].value = ' [ ' + v + ', ' + (beta == Number.MAX_SAFE_INTEGER ? 'inf' : beta) + ' ] ';
+	abTree.triangles[state].fill = '#194d33';
+	abTree.values[state].stroke = 'black';
 	abTree.values[state].fill = 'white';
 	abTree.nodes[state] = v;
 	return [v, STEP];
@@ -103,6 +108,7 @@ function abUtillity(state) {
 	return (abTree.nodes[state] == undefined ? 0 : abTree.nodes[state]);
 };
 var abTree = {
+	running : false,
 	on : true,
 	toggle : undefined,
 	slider : undefined,
@@ -113,7 +119,7 @@ var abTree = {
 		size: 20,
 		leading: 50,
 		weight: 900,
-		stroke: 'black',
+		stroke: 'none',
 		fill: 'black'
 	},
 	nodes : [],
@@ -123,6 +129,7 @@ var abTree = {
 	input : undefined,
 	defaultNodes : undefined,
 	init : ()=> {
+		abTree.running = true;
 		//bind the progress slider to function
 		abTree.slider = document.getElementById("alphaBetaProgress");
 		abTree.slider.oninput = ()=> {
@@ -200,8 +207,8 @@ var abTree = {
 				abTree.triangles.push(abTree.two.makePolygon(tri_x, tri_y, 30, 3));
 				if (depth != 1) abTree.lines.push(abTree.two.makeLine(line_x_1,line_y_1,line_x_2,line_y_2));
 				abTree.values.push(abTree.two.makeText(((abTree.nodes[i] != undefined) ? abTree.nodes[i] : " "), tri_x, tri_y, abTree.styles));
-
-				abTree.triangles[abTree.triangles.length-1].fill = '#FF8000';
+				abTree.triangles[abTree.triangles.length-1].stroke = "none";
+				abTree.triangles[abTree.triangles.length-1].fill = '#c6ecd9';
 				abTree.triangles[abTree.triangles.length-1].rotation = (depth-1) * Math.PI;
 			}
 			depth += 1;
@@ -224,8 +231,8 @@ var abTree = {
 			for (var i = start; i < start + depth_nodes; i++) {
 				abTree.values[i].value = (abTree.nodes[i] != undefined ? abTree.nodes[i] : " ");
 				abTree.values[i].fill = 'black';
-				abTree.values[i].stroke = 'black';
-				abTree.triangles[i].fill = '#FF8000';
+				abTree.values[i].stroke = 'none';
+				abTree.triangles[i].fill = '#c6ecd9';
 				if (depth != 1) abTree.lines[i-1].stroke = 'black';
 				if (depth != 1) abTree.lines[i-1].linewidth = 1;
 			}
@@ -240,6 +247,9 @@ var abTree = {
 		abTree.two.update();
 	}
 };
-$(document).ready(function(){
-	abTree.init();
+
+$(window).scroll(function() {
+    if(!abTree.running && $(window).scrollTop() > $(document).height() - $(window).height() - 100) {
+           abTree.init();
+    }
 });

@@ -17,21 +17,23 @@ function P_MAX_DECISION(state, STEP) {
 	STEP -= 1;
 	if (STEP == 0)
 		return;
-	mmTree.triangles[state].fill = 'red';
+	mmTree.triangles[state].fill = '#003399';
 	mmTree.values[state].value = largest_value;
+	mmTree.values[state].stroke = 'black';
 	mmTree.values[state].fill = 'white';
-	mmTree.lines[final_action].linewidth = 3;
+	mmTree.lines[final_action].stroke = '#ff5050';
 	return final_action;
 }
 function P_MAX_VALUE(state, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	if (terminal(state)) {
-		mmTree.triangles[state].fill = 'red';
+		mmTree.triangles[state].fill = '#003399';
+		mmTree.values[state].stroke = 'black';
 		mmTree.values[state].fill = 'white';
 		return [utillity(state), STEP];
 	}
-	mmTree.triangles[state].fill = '#33aa77';
+	mmTree.triangles[state].fill = '#80aaff';
 	var v = 0;
 	var al = actions(state);
 	for (var i = 0; i < al.length; i++) {
@@ -48,9 +50,10 @@ function P_MAX_VALUE(state, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	//mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff33cc';
-	mmTree.lines[RESULT(state, al[a])-1].linewidth = 3;
+	mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff5050';
 	mmTree.values[state].value = v;
-	mmTree.triangles[state].fill = 'red';
+	mmTree.triangles[state].fill = '	#003399';
+	mmTree.values[state].stroke = 'black';
 	mmTree.values[state].fill = 'white';
 	//mmTree.lines[state].stroke = '#ff33cc';
 	return [v, STEP];
@@ -59,11 +62,12 @@ function P_MIN_VALUE(state, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	if (terminal(state)) {
-		mmTree.triangles[state].fill = 'red';
+		mmTree.triangles[state].fill = '	#003399';
+		mmTree.values[state].stroke = 'black';
 		mmTree.values[state].fill = 'white';
 		return [utillity(state), STEP];
 	}
-	mmTree.triangles[state].fill = '#33aa77';
+	mmTree.triangles[state].fill = '#80aaff';
 	var v = Number.MAX_SAFE_INTEGER;
 	var al = actions(state);
 	var a = 0;
@@ -81,9 +85,10 @@ function P_MIN_VALUE(state, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	//mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff33cc';
-	mmTree.lines[RESULT(state, al[a])-1].linewidth = 3;
+	mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff5050';
 	mmTree.values[state].value = v;
-	mmTree.triangles[state].fill = 'red';
+	mmTree.triangles[state].fill = '	#003399';
+	mmTree.values[state].stroke = 'black';
 	mmTree.values[state].fill = 'white';
 	return [v, STEP];
 }
@@ -124,7 +129,7 @@ var mmTree = {
 		size: 20,
 		leading: 50,
 		weight: 900,
-		stroke: 'black',
+		stroke: 'none',
 		fill: 'black'
 	},
 	nodes : [],
@@ -205,7 +210,8 @@ var mmTree = {
 				if (depth != 1) mmTree.lines.push(mmTree.two.makeLine(line_x_1,line_y_1,line_x_2,line_y_2));
 				mmTree.values.push(mmTree.two.makeText(((mmTree.nodes[i] != undefined) ? mmTree.nodes[i] : " "), tri_x, tri_y, mmTree.styles));
 
-				mmTree.triangles[mmTree.triangles.length-1].fill = '#FF8000';
+				mmTree.triangles[mmTree.triangles.length-1].stroke = 'none';
+				mmTree.triangles[mmTree.triangles.length-1].fill = '#ccddff';
 				mmTree.triangles[mmTree.triangles.length-1].rotation = (depth-1) * Math.PI;
 			}
 			depth += 1;
@@ -224,8 +230,10 @@ var mmTree = {
 			for (var i = start; i < start + depth_nodes; i++) {
 				mmTree.values[i].value = (mmTree.nodes[i] != undefined ? mmTree.nodes[i] : " ");
 				mmTree.values[i].fill = 'black';
-				mmTree.triangles[i].fill = '#FF8000';
+				mmTree.values[i].stroke = 'none';
+				mmTree.triangles[i].fill = '#ccddff';
 				if (depth != 1) mmTree.lines[i-1].linewidth = 1;
+				if (depth != 1) mmTree.lines[i-1].stroke = 'black';
 			}
 			depth += 1;
 			start += depth_nodes;
