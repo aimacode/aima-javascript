@@ -1,7 +1,5 @@
 $(document).ready(function() {
-  var w = 600,
-    h = 350;
-
+  var w = 600, h = 350;
 
   function init() {
     var graph = new DefaultGraph();
@@ -25,6 +23,7 @@ $(document).ready(function() {
     options.nodes.frontier.clickHandler = clickHandler;
     options.nodes.next.clickHandler = clickHandler;
 
+    //Functions to detect when you hover over a node
     options.nodes.frontier.onMouseEnter = function() {
       let nodeKey = $(this).attr('nodeKey');
       frontierNodesAgent.highlight(nodeKey);
@@ -36,14 +35,15 @@ $(document).ready(function() {
       graphDrawAgent.unhighlight(nodeKey);
     };
 
+   	graphDrawAgent.nodeGroups['A']._renderer.elem.onmouseenter = options.nodes.frontier.onMouseEnter;
+    graphDrawAgent.nodeGroups['A']._renderer.elem.onmouseleave = options.nodes.frontier.onMouseLeave;
+
     graphDrawAgent.reset();
+    frontierNodesAgent.iterate();
   };
   $('#nodeRestartButton').click(init);
   init();
 });
-
-
-
 
 $(document).ready(function() {
   var w = 600,
@@ -84,7 +84,6 @@ $(document).ready(function() {
   init();
 });
 
-
 //Function to draw the frontier nodes
 function DrawFrontierAgent(selector, h, w, problem, options) {
   this.canvas = document.getElementById(selector);
@@ -108,9 +107,11 @@ function DrawFrontierAgent(selector, h, w, problem, options) {
       circle.fill = options.nodes.frontier.fill;
       var group = this.two.makeGroup(circle, text);
       this.two.update();
+      $(group._renderer.elem).attr('nodeKey', node.id);
+      group._renderer.elem.onmouseenter = options.nodes.frontier.onMouseEnter;
+      group._renderer.elem.onmouseleave = options.nodes.frontier.onMouseLeave;
       this.nodeDict[node.text] = group;
     }
-    this.two.update();
   }
 
   this.highlight = function(nodeKey) {
@@ -124,5 +125,4 @@ function DrawFrontierAgent(selector, h, w, problem, options) {
       this.two.update();
     }
   }
-  this.iterate();
 }
