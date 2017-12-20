@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="../styles.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../main.js"></script>
+    <script src="../third-party/canvasjs.min.js"></script>
+    
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <style>
@@ -64,7 +66,7 @@
             The robot will follow the rules you choose. Click on a rule in the table to change it.
           </p>
 
-          <table class="agent-actions"
+          <table class="agent-actions">
             <thead>
               <tr>
                 <th rowspan="2" valign="bottom">Percept</th>
@@ -120,17 +122,93 @@
             obvious what set of rules to use. How would we find the
             rules?
           </p>
+      </div>
 
+      <div id="performance-controlled-diagram">
+        
           <h2 id="performance-measures">Performance measures</h2>
 
           <p>
             We can choose a metric that evaluates how well the agent
             performs on the given problem.
           </p>
+          <p>
+            This is a case study of 2 agents:-
+                <ul>
+                  <li> Agent1 that cleans continously but is slow in learning the environment</li>
+                  <li> Agent2 that takes less time to clean but cleans at regular intervals</li>
+                </ul>
+          </p>
+          <p>
+            The performance measure of the agents would be a sum total of scores evaluted from:-
+                <ul>
+                  <li> The amount of time the agent is working( 10 points would be deducted from the total score for each move)</li>
+                  <li> The cleaniness of the environment( 50 points would be awarded for for cleaning the environment and 5 points would be deducted for each time interval the environment remains dirty)</li>  
+                </ul>
+          </p>
+          <p>
+            Following control the agent's performance in a given environment.
+          </p>
+          <table class="agent-actions">
+            <thead>
+              <tr>
+                <th colspan="7">Performance Factors</th>
+              </tr>
+               <tr>
+                <th data-input="dirt-freq">dirt-frequency</th>
+                <th data-input="left">speed-agent1</th>
+                <th data-input="right">speed-agent2</th>
+                <th data-input="left">interval-agent2</th>
+              </tr>
+              <tr>
+                <td data-action="dirt-freq">
+                  <select class="custom-select">
+                    <option value= 8 selected>8</option>
+                    <option value= 10>10</option>
+                    <option value= 12>12</option>
+                    <option value= 14>14</option>
+                  </select>
+                </td>
+                <td data-action="speed-agent1">
+                  <select class="custom-select">
+                    <option value=2 selected>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                  </select>
+                </td>
+                  <td data-action="speed-agent2">
+                  <select class="custom-select">
+                    <option value=1 selected>1</option>
+                    <option value=1.5>1.5</option>
+                    <option value=2>2</option>
+                    <option value=2.5>2.5</option>
+                  </select>
+                </td>
+                  <td data-action="interval-agent2">
+                  <select class="custom-select">
+                    <option value=5 selected>5</option>
+                    <option value=7.5>7.5</option>
+                    <option value=10>10</option>
+                    <option value=12.5>12.5</option>
+                  </select>
+                </td>
+              </tr>
+            </thead>
+          </table> 
 
-          TODO: dirty/clean should be controlled automatically,
-          reproducibly (seeded RNG), and then display a line chart
-          with the performance measure
+          <div id="performance-controlled-diagram-agent1">
+            <h4>Agent1</h4>
+            <svg width="600" height="300"></svg>
+          </div>
+
+          <div id="performance-controlled-diagram-agent2">
+            <h4>Agent2</h4>
+            <svg width="600" height="300"></svg>
+          </div>
+
+          <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+          <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
 
           <h3>Evaluating multiple agents</h3>
 
@@ -139,7 +217,6 @@
           <h3>Evaluating many data sets</h3>
 
           TODO: one agent on many different data sequences (avoid overfitting)
-
       </div>
     </div>
 
