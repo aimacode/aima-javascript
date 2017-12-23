@@ -240,114 +240,98 @@ is similar to the first agent controlled diagram but there is an
 additional table UI that lets the reader view the percepts and actions 
 being followed as well as change the rules followed by the agent.
 */
-function makePerformanceControlledDaigramAgent1(){
-    let diagram = makeDiagram('#performance-controlled-diagram-agent1 svg');
-    var dirt_freq = getRulesFromPage()[0];
+function makePerformanceControlledDaigram(){
+    //variable declarations for the agents
+    let diagram_agent1 = makeDiagram('#performance-controlled-diagram-agent1 svg');
+    let diagram_agent2 = makeDiagram('#performance-controlled-diagram-agent2 svg');
+    var parameters = getRulesFromPage(); //reader defined agent parameters
     var score_agent1 = 0;
-    var performance = [];
+    var score_agent2 = 0;
+    var performance_agent1 = [];
+    var performance_agent2 = [];
+    var agent2_interval;    
 
-    function update() {
-        let location = diagram.world.location;
-        let percept = diagram.world.floors[location].dirty;
+    //update agent1's environment
+    function update_agent1() {
+        let location = diagram_agent1.world.location;
+        let percept = diagram_agent1.world.floors[location].dirty;
         let table = getRulesFromPage();
-        dirt_freq = table[0];
-        let action = reflexVacuumAgent(diagram.world, table);
+        let action = reflexVacuumAgent(diagram_agent1.world, table);
         setTimeout(function(){  if(action=='SUCK'){ score_agent1 = score_agent1+50; }
                                 else{ score_agent1 = score_agent1-10; }
-                                if(diagram.world.floors[0].dirty || diagram.world.floors[1].dirty)
+                                if(diagram_agent1.world.floors[0].dirty || diagram_agent1.world.floors[1].dirty)
                                   { score_agent1 = score_agent1-5; }
-                                performance.push(score_agent1);      
-                                diagram.world.simulate(action);        
-                                renderWorld(diagram);
-                                renderAgentPercept(diagram, percept);
-                                renderAgentAction(diagram, action);},table[1]*1000);
-                                plotPerformance1(performance);                       
+                                performance_agent1.push(score_agent1);      
+                                diagram_agent1.world.simulate(action);        
+                                renderWorld(diagram_agent1);
+                                renderAgentPercept(diagram_agent1, percept);
+                                renderAgentAction(diagram_agent1, action);},table[1]*1000);
     }
+    
+    //update agent2's environment
+    function update_agent2() {
+        let location = diagram_agent2.world.location;
+        let percept = diagram_agent2.world.floors[location].dirty;
+        let table = getRulesFromPage();
+        let action = reflexVacuumAgent(diagram_agent2.world, table);
+        setTimeout(function(){  if(action=='SUCK'){ score_agent2 = score_agent2+50; }
+                                else{ score_agent2 = score_agent2-10; }
+                                if(diagram_agent2.world.floors[0].dirty || diagram_agent2.world.floors[1].dirty)
+                                  { score_agent2 = score_agent2-5-parseInt(parameters[0]); }
+                                // extra score reduction due to agent2 working for a shorter duration
+                                performance_agent2.push(score_agent2);
+                                diagram_agent2.world.simulate(action);
+                                renderWorld(diagram_agent2);
+                                renderAgentPercept(diagram_agent2, percept);
+                                renderAgentAction(diagram_agent2, action);},table[1]*1000);
+        }
 
-    function makefloordirty() {
-        floorNumber = Math.floor(Math.random() * 2);
-        diagram.world.markFloorDirty(floorNumber);
-        diagram.floors[floorNumber].attr('class', 'dirty floor');
-    }
+    //print performace scores
+    //setInterval(plotPerformance(performance_agent1, performance_agent2),STEP_TIME_MS);
+    setInterval(function(){ plotPerformance(performance_agent1, performance_agent2); },STEP_TIME_MS);
 
-
+    //get reader defined parameters
     function getRulesFromPage() {
         let table = d3.select("#performance-controlled-diagram table");
         let dirt_freq = table.select("[data-action=dirt-freq] select").node().value;
         let speed_agent1 = table.select("[data-action=speed-agent1] select").node().value;
-        return [dirt_freq, speed_agent1]
-    }
-
-    update();
-    setInterval(makefloordirty,dirt_freq[0]*1000);
-    setInterval(update, STEP_TIME_MS);
-
-}   
-
-
-function makePerformanceControlledDaigramAgent2(){
-    let diagram = makeDiagram('#performance-controlled-diagram-agent2 svg');
-    var stats_agent2 = getRulesFromPage();
-    var score_agent2 = 0;
-    var performance = [];
-
-    function update() {
-        let location = diagram.world.location;
-        let percept = diagram.world.floors[location].dirty;
-        let table = getRulesFromPage();
-        stats_agent2 = table;
-        let action = reflexVacuumAgent(diagram.world, table);
-        setTimeout(function(){  if(action=='SUCK'){ score_agent2 = score_agent2+50; }
-                                else{ score_agent2 = score_agent2-10; }
-                                if(diagram.world.floors[0].dirty || diagram.world.floors[1].dirty)
-                                  { score_agent2 = score_agent2-5-2*parseInt(stats_agent2[0]); }
-                                // extra score reduction due to agent2 working for a shorter duration
-                                performance.push(score_agent2);
-                                diagram.world.simulate(action);
-                                renderWorld(diagram);
-                                renderAgentPercept(diagram, percept);
-                                renderAgentAction(diagram, action);},table[1]*1000);
-                                plotPerformance2(performance);
-    }
-
-    function getRulesFromPage() {
-        let table = d3.select("#performance-controlled-diagram table");
-        let dirt_freq = table.select("[data-action=dirt-freq] select").node().value;
         let speed_agent2 = table.select("[data-action=speed-agent2] select").node().value;
         let interval_agent2 = table.select("[data-action=interval-agent2] select").node().value;
-        return [dirt_freq, speed_agent2, interval_agent2];
+        return [dirt_freq, speed_agent1, speed_agent2, interval_agent2]
     }
 
     function makefloordirty() {
         floorNumber = Math.floor(Math.random() * 2);
-        diagram.world.markFloorDirty(floorNumber);
-        diagram.floors[floorNumber].attr('class', 'dirty floor');
+        diagram_agent1.world.markFloorDirty(floorNumber);
+        diagram_agent1.floors[floorNumber].attr('class', 'dirty floor');
+        diagram_agent2.world.markFloorDirty(floorNumber);
+        diagram_agent2.floors[floorNumber].attr('class', 'dirty floor');
     }
+    setInterval(makefloordirty,parameters[0]*1000);
+    
+    //control agent1's state
+    update_agent1();
+    setInterval(update_agent1, STEP_TIME_MS);
 
-    var agent2_interval;    
-
-    function run(){
-        agent2_interval = setInterval(update,1000);
-    }    
-
-    //stats_agent2[2] is the inteval in which the agent works which can be set up by the reader.
-    function executeAgent2(){     
+    //control agent2's state
+    function controlAgent2(){     
         clearInterval(agent2_interval);
-        setTimeout(run,5000);
+        setTimeout(function(){ agent2_interval = setInterval(update_agent2,1000); },5000);
             
     }
-    executeAgent2();
-    setInterval(makefloordirty,stats_agent2[0]*1000);
-    setInterval(executeAgent2,5000+stats_agent2[2]*1000)
-}
+    controlAgent2();
+    setInterval(controlAgent2,5000+parameters[3]*1000) //parameter[3] defines the working interval of agent2
 
+}   
 
 //Plotting the performance of the agents on a dynamic line chart
 //--TODO-- DRY code may be prevented by declaring the variables with proper scope.
-function plotPerformance1(performance){
-    var performance = performance;
+function plotPerformance(performanceAgent1, performanceAgent2){
+    var performance_agent1 = performanceAgent1;
+    var performance_agent2 = performanceAgent2;
 
-    var dps = []; // dataPoints
+    var dps1 = []; // dataPoints
+    var dps2 = []; // dataPoints
     var chart = new CanvasJS.Chart("chartContainer", {
         title :{
             text: "Performance of Agent1"
@@ -357,94 +341,52 @@ function plotPerformance1(performance){
         },      
         data: [{
             type: "line",
-            dataPoints: dps
-        }]
-        });
-
-    var xVal = 0;
-    var yVal = 0; 
-    var updateInterval = STEP_TIME_MS;
-    var dataLength = performance.length; // number of dataPoints visible at any point
-
-    var updateChart = function (count) {
-
-    count = count || 1;
-
-    for (var j = 0; j < count; j++) {
-        yVal = performance[j];
-        dps.push({
-            x: xVal,
-            y: yVal
-        });
-        xVal++;
-    }
-
-    if (dps.length > dataLength) {
-        dps.shift();
-    }
-
-    chart.render();
-    dps = [];
-    };
-
-    updateChart(dataLength);
-    setInterval(function(){updateChart()}, updateInterval);
-
-    
-}
-
-
-function plotPerformance2(performance){
-    var performance = performance;
-    
-    var dps = []; // dataPoints
-    var chart = new CanvasJS.Chart("chartContainer2", {
-        title :{
-            text: "Performance of Agent2"
+            dataPoints: dps1
         },
-        axisY: {
-            includeZero: false
-        },      
-        data: [{
+        {
             type: "line",
-            dataPoints: dps
+            color: "#F08080",
+            dataPoints: dps2
         }]
         });
 
     var xVal = 0;
     var yVal = 0; 
     var updateInterval = STEP_TIME_MS;
-    var dataLength = performance.length; // number of dataPoints visible at any point
+    var dataLength1 = performance_agent1.length; // number of dataPoints visible at any point
+    var dataLength2 = performance_agent2.length; // number of dataPoints visible at any point
 
-    var updateChart = function (count) {
-
+    var updateChart1 = function (count) {
     count = count || 1;
-
     for (var j = 0; j < count; j++) {
-        yVal = performance[j];
-        dps.push({
+        yVal = performance_agent1[j];
+        dps1.push({
             x: xVal,
             y: yVal
         });
+        if(count <= dataLength2){
+            yVal = performance_agent2[j];
+        }
+        dps2.push({
+            x:xVal,
+            y:yVal
+        })
         xVal++;
     }
-
-    if (dps.length > dataLength) {
-        dps.shift();
+    if (dps1.length > dataLength1 || dps2.length > dataLength2) {
+        dps1.shift();
+        dps2.shift();
     }
-
     chart.render();
-    dps= [];
+    dps1 = [];
+    dps2 = [];
     };
 
-    updateChart(dataLength);
-    setInterval(function(){updateChart()}, updateInterval);
-
+    updateChart1(dataLength1);
     
 }
 
 makeAgentControlledDiagram();
 makeReaderControlledDiagram();
 makeTableControlledDiagram();
-makePerformanceControlledDaigramAgent1();
-makePerformanceControlledDaigramAgent2();
+makePerformanceControlledDaigram();

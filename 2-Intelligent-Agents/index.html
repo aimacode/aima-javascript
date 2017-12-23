@@ -156,9 +156,9 @@
               </tr>
                <tr>
                 <th data-input="dirt-freq">dirt-frequency</th>
-                <th data-input="left">speed-agent1</th>
-                <th data-input="right">speed-agent2</th>
-                <th data-input="left">interval-agent2</th>
+                <th data-input="speed-agent1">speed-agent1</th>
+                <th data-input="speed-agent2">speed-agent2</th>
+                <th data-input="interval-agent2">interval-agent2</th>
               </tr>
               <tr>
                 <td data-action="dirt-freq">
@@ -171,26 +171,26 @@
                 </td>
                 <td data-action="speed-agent1">
                   <select class="custom-select">
-                    <option value=2 selected>2</option>
-                    <option value=3>3</option>
+                    <option value=3 selected>3</option>
                     <option value=4>4</option>
                     <option value=5>5</option>
+                    <option value=6>6</option>
                   </select>
                 </td>
                   <td data-action="speed-agent2">
                   <select class="custom-select">
-                    <option value=1 selected>1</option>
+                    <option value=.5 selected>.5</option>
+                    <option value=1>1</option>
                     <option value=1.5>1.5</option>
                     <option value=2>2</option>
-                    <option value=2.5>2.5</option>
                   </select>
                 </td>
                   <td data-action="interval-agent2">
                   <select class="custom-select">
-                    <option value=5 selected>5</option>
-                    <option value=7.5>7.5</option>
-                    <option value=10>10</option>
-                    <option value=12.5>12.5</option>
+                    <option value=10 selected>10</option>
+                    <option value=15>15</option>
+                    <option value=20>20</option>
+                    <option value=25>25</option>
                   </select>
                 </td>
               </tr>
@@ -208,8 +208,7 @@
           </div>
 
           <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-          <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
-
+          
           <h3>Evaluating multiple agents</h3>
 
           TODO: many different agents on the same data sequence
