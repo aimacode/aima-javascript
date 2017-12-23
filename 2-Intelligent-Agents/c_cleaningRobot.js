@@ -334,7 +334,7 @@ function plotPerformance(performanceAgent1, performanceAgent2){
     var dps2 = []; // dataPoints
     var chart = new CanvasJS.Chart("chartContainer", {
         title :{
-            text: "Performance of Agent1"
+            text: "Performance of Agents"
         },
         axisY: {
             includeZero: false
