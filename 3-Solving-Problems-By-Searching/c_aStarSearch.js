@@ -108,6 +108,32 @@ AStarSearchRenderer.prototype.attachEventListeners = function() {
     this.onClickStepForward.bind(this)
   );
   this.dom.reset.addEventListener("click", this.onClickReset.bind(this));
+
+  this.options.nodes.frontier.onMouseEnter = function() {
+    let nodeKey = $(this).attr('nodeKey');
+    astar.graphDrawAgent.highlight(nodeKey);
+    $("#" + nodeKey + "a").css('background-color', 'red');
+    $("#" + nodeKey + "p").css('background-color', 'red');
+  };
+  this.options.nodes.frontier.onMouseLeave = function() {
+    let nodeKey = $(this).attr('nodeKey');
+    astar.graphDrawAgent.unhighlight(nodeKey);
+    let node = astar.graphProblem.nodes;
+    var backgroundObject = AStarSearchRenderer.helpers.getNodeStyle(astar.graphProblem, astar.options, node[nodeKey]);
+    var backgroundColor = backgroundObject["backgroundColor"];
+
+    $("#" + nodeKey + "a").css('background-color', backgroundColor);
+    $("#" + nodeKey + "p").css('background-color', backgroundColor);
+  };
+
+  this.options.nodes.next.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.next.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
+
+  this.options.nodes.explored.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.explored.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
+
+  this.options.nodes.unexplored.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.unexplored.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
 };
 AStarSearchRenderer.prototype.onChangeStartNode = function() {
   var el = this.dom.startNode;
@@ -266,6 +292,21 @@ AStarSearchRenderer.prototype.render = function() {
     this
   );
   this.dom.exploredNodesContainer.innerHTML = exploredNodesInnerHtml;
+
+  for (node in this.graphProblem.frontier){
+    let ele = document.getElementById(this.graphProblem.frontier[node]+"p");
+    if (ele != null) {
+      ele.onmouseenter = this.options.nodes.frontier.onMouseEnter;
+      ele.onmouseleave = this.options.nodes.frontier.onMouseLeave;
+    }
+  }
+  for (key in this.graphProblem.nodes) {
+    let ele = document.getElementById(key+"a");
+    if (ele != null) {
+      ele.onmouseenter = this.options.nodes.frontier.onMouseEnter;
+      ele.onmouseleave = this.options.nodes.frontier.onMouseLeave;
+    }
+  }
 };
 AStarSearchRenderer.helpers = {
   /**
@@ -348,8 +389,12 @@ AStarSearchRenderer.templates = {
       'style="margin: 16px 16px 0 0; background-color:' +
       backgroundColor +
       ' ;"' +
-      'class="graph-node pull-left">' +
+      'class="graph-node pull-left" nodeKey="' + 
       node.id +
+      '" id="' +
+      node.id +
+      'a">' +
+      node.id + 
       "</li>"
     );
   },
@@ -362,7 +407,11 @@ AStarSearchRenderer.templates = {
       '<td><span style="background-color:' +
       backgroundColor +
       ' ;" ' +
-      'class="graph-node">' +
+      'class="graph-node" id="' +
+      node.id +
+      'p" nodeKey="' + 
+      node.id +
+      '">' +
       node.id +
       "</span></td>" +
       "<td><span>" +
@@ -382,4 +431,4 @@ AStarSearchRenderer.templates = {
   }
 };
 
-new AStarSearchRenderer();
+var astar = new AStarSearchRenderer();

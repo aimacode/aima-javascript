@@ -380,11 +380,6 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.reset();
 };
 
-
-
-
-
-
 // An agent to draw queues for bfs and dfs
 function QueueDrawAgent(selector, h, w, problem, options) {
   this.canvas = document.getElementById(selector);
@@ -397,22 +392,39 @@ function QueueDrawAgent(selector, h, w, problem, options) {
   this.nodeRadius = options.nodes.nodeRadius;
   this.options = options;
 
+  this.highlight = function(nodeKey) {
+    this.nodeDict[nodeKey]._collection[0].scale = 1.2;
+    this.two.update();
+  }
+  this.unhighlight = function(nodeKey) {
+    if (this.nodeDict[nodeKey]) {
+      this.nodeDict[nodeKey]._collection[0].scale = 1;
+      this.two.update();
+    }
+  }
   this.iterate = function() {
     this.two.clear();
+    this.nodeDict = {};
     var frontier = this.problem.frontier;
     for (var i = 0; i < frontier.length; i++) {
       node = this.problem.nodes[frontier[i]];
       var x = (i) * (this.nodeRadius+20) + 40;
       var y = 20;
-      var rect = this.two.makeCircle(x, y, this.nodeRadius);
-      rect.fill = options.nodes.frontier.fill;
+      var circle = this.two.makeCircle(x, y, this.nodeRadius);
+      circle.fill = options.nodes.frontier.fill;
       if (frontier[i] == this.problem.nextToExpand) {
-        rect.fill = options.nodes.next.fill;
+        circle.fill = options.nodes.next.fill;
       }
       var text = this.two.makeText(node.text, x, y);
       if (this.options.showCost) {
         t = this.two.makeText(node.cost, x, y + 30);
       }
+      var group = this.two.makeGroup(circle, text);
+      this.two.update();
+      $(group._renderer.elem).attr('nodeKey', node.id);
+      group._renderer.elem.onmouseenter = options.nodes.frontier.onMouseEnter;
+      group._renderer.elem.onmouseleave = options.nodes.frontier.onMouseLeave;
+      this.nodeDict[node.text] = group;
     }
     this.two.update();
   }

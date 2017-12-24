@@ -52,9 +52,34 @@ $(document).ready(function() {
           break;
         }
       }
+  
+      options.nodes.frontier.onMouseEnter = function() {
+        let nodeKey = $(this).attr('nodeKey');
+        //console.log(nodes);
+        //console.log(nodeKey);
+        graphDrawAgent.highlight(nodeKey);
+        nodes[nodeKey]._collection[0].scale = 1.2;
+        priorityTwo.update();
+        exploredTwo.update();
+      };
+      options.nodes.frontier.onMouseLeave = function() {
+        let nodeKey = $(this).attr('nodeKey');
+        graphDrawAgent.unhighlight(nodeKey);
+        nodes[nodeKey]._collection[0].scale = 1;
+        priorityTwo.update();
+        exploredTwo.update();
+      };
+
+      options.nodes.next.onMouseEnter = options.nodes.frontier.onMouseEnter;
+      options.nodes.next.onMouseLeave = options.nodes.frontier.onMouseLeave;
+
+      options.nodes.explored.onMouseEnter = options.nodes.frontier.onMouseEnter;
+      options.nodes.explored.onMouseLeave = options.nodes.frontier.onMouseLeave;
+
       graphDrawAgent.iterate();
-      drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
-      drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
+      var frontier = drawList(priorityTwo, graphProblem.frontier, graphProblem, options, costMap);
+      var explored = drawList(exploredTwo, graphProblem.explored, graphProblem, options, costMap);
+      var nodes = Object.assign({}, frontier, explored);
       //Draw it in the front end
       $('.ucsSeparation').html(maxCost);
     }
@@ -75,6 +100,7 @@ $(document).ready(function() {
 //Function to draw the list of nodes for both canvas
 function drawList(two, list, problem, options, costMap) {
   two.clear();
+  var nodeDict = {};
   for (var i = 0; i < list.length; i++) {
     let node = problem.nodes[list[i]];
     let state = node.state;
@@ -87,6 +113,12 @@ function drawList(two, list, problem, options, costMap) {
     let text = two.makeText(costMap[node.id], x, y);
     let fillColor = options.nodes[state].fill;
     circle.fill = fillColor;
+    var group = two.makeGroup(circle, text);
+    two.update();
+    $(group._renderer.elem).attr('nodeKey', node.id);
+    group._renderer.elem.onmouseenter = options.nodes.frontier.onMouseEnter;
+    group._renderer.elem.onmouseleave = options.nodes.frontier.onMouseLeave;
+    nodeDict[node.id] = group;
   }
-  two.update();
+  return nodeDict;
 }
