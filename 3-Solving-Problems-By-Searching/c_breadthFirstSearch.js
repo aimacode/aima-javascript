@@ -30,11 +30,15 @@ $(document).ready(function() {
 
       options.nodes.next.onMouseEnter = options.nodes.frontier.onMouseEnter;
       options.nodes.next.onMouseLeave = options.nodes.frontier.onMouseLeave;
+      
+      let nextNode = breadthFirstSearch(graphProblem);
+      graphProblem.nodes[nextNode].state = "next";
 
       while (n--) {
         if (graphProblem.frontier.length > 0) {
-          var nextNode = breadthFirstSearch(graphProblem);
           graphAgent.expand(nextNode);
+          nextNode = breadthFirstSearch(graphProblem);
+          graphProblem.nodes[nextNode].state = "next";
           //If frontier is still present, find the next node to be expanded so it
           //could be colored differently
           if (graphProblem.frontier.length > 0) {

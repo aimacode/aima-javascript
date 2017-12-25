@@ -115,14 +115,17 @@ function DrawFrontierAgent(selector, h, w, problem, options) {
   }
 
   this.highlight = function(nodeKey) {
-    this.nodeDict[nodeKey]._collection[0].scale = 1.2;
+    this.nodeDict[nodeKey]._collection[0].fill = options.nodes.highlighted.fill;
     this.two.update();
   }
 
   this.unhighlight = function(nodeKey) {
-    if (this.nodeDict[nodeKey]) {
-      this.nodeDict[nodeKey]._collection[0].scale = 1;
-      this.two.update();
-    }
+    let node = this.nodeDict[nodeKey];
+    if (node == this.problem.nextToExpand)
+     node._collection[0].fill = options.nodes.next.fill;  
+    else
+      node._collection[0].fill = options.nodes.frontier.fill;
+
+    this.two.update();
   }
 }

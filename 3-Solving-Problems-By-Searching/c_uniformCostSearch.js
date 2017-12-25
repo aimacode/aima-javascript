@@ -36,10 +36,15 @@ $(document).ready(function() {
 
       var graphDrawAgent = new GraphDrawAgent(graphProblem, 'uniformCostSearchCanvas', options, h, w);
       var maxCost;
+
+      var nextNode = uniformCostSearch(graphProblem);
+      graphProblem.nodes[nextNode].state = "next";
+
       while (n--) {
         if (graphProblem.frontier.length > 0) {
-          var nextNode = uniformCostSearch(graphProblem);
           graphAgent.expand(nextNode);
+          var nextNode = uniformCostSearch(graphProblem);
+          graphProblem.nodes[nextNode].state = "next";
           //If frontier is still present, find the next node to be expanded so it
           //could be colored differently
           if (graphProblem.frontier.length > 0) {
@@ -55,17 +60,23 @@ $(document).ready(function() {
   
       options.nodes.frontier.onMouseEnter = function() {
         let nodeKey = $(this).attr('nodeKey');
-        //console.log(nodes);
-        //console.log(nodeKey);
         graphDrawAgent.highlight(nodeKey);
-        nodes[nodeKey]._collection[0].scale = 1.2;
+        nodes[nodeKey]._collection[0].fill = options.nodes.highlighted.fill;;
         priorityTwo.update();
         exploredTwo.update();
       };
       options.nodes.frontier.onMouseLeave = function() {
         let nodeKey = $(this).attr('nodeKey');
         graphDrawAgent.unhighlight(nodeKey);
-        nodes[nodeKey]._collection[0].scale = 1;
+
+        switch(graphProblem.nodes[nodeKey].state) {
+          case "next": nodes[nodeKey]._collection[0].fill = options.nodes.next.fill; break;
+          case "explored": nodes[nodeKey]._collection[0].fill = options.nodes.explored.fill; break;
+          case "unexplored": nodes[nodeKey]._collection[0].fill = options.nodes.unexplored.fill; break;
+          case "highlighted": nodes[nodeKey]._collection[0].fill = options.nodes.highlighted.fill; break;
+          case "frontier": nodes[nodeKey]._collection[0].fill = options.nodes.frontier.fill; break;
+        }
+        
         priorityTwo.update();
         exploredTwo.update();
       };

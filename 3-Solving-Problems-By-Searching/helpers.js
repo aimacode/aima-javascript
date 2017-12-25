@@ -51,6 +51,14 @@ var DefaultOptions = function() {
         onMouseEnter: null,
         onMouseLeave: null
       },
+      highlighted: {
+        fill: 'Crimson',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
       next: {
         fill: 'hsl(200,50%,70%)',
         stroke: 'black',
@@ -290,11 +298,11 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
       if (this.problem.nextToExpand == key) {
         state = 'next';
       }
+
       let currentOptions = nodeOptions[state];
       var circle = this.two.makeCircle(currentNode.x, currentNode.y, nodeOptions.nodeRadius);
       circle.fill = currentOptions.fill;
       circle.stroke = currentOptions.stroke;
-
       var text = this.two.makeText(currentNode.text, currentNode.x, currentNode.y);
       var group = this.two.makeGroup(circle, text);
 
@@ -370,11 +378,17 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     this.iterateNodes();
   }
   this.highlight = function(nodeKey) {
-    this.nodeGroups[nodeKey]._collection[0].scale = 1.2;
+    this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.highlighted.fill;
     this.two.update();
   }
   this.unhighlight = function(nodeKey) {
-    this.nodeGroups[nodeKey]._collection[0].scale = 1;
+    switch(this.problem.nodes[nodeKey].state) {
+      case "next": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.next.fill; break;
+      case "explored": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.explored.fill; break;
+      case "unexplored": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.unexplored.fill; break;
+      case "highlighted": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.highlighted.fill; break;
+      case "frontier": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.frontier.fill; break;
+    }
     this.two.update();
   }
   this.reset();
@@ -393,14 +407,18 @@ function QueueDrawAgent(selector, h, w, problem, options) {
   this.options = options;
 
   this.highlight = function(nodeKey) {
-    this.nodeDict[nodeKey]._collection[0].scale = 1.2;
+    this.nodeDict[nodeKey]._collection[0].fill = this.options.nodes.highlighted.fill;
     this.two.update();
   }
   this.unhighlight = function(nodeKey) {
-    if (this.nodeDict[nodeKey]) {
-      this.nodeDict[nodeKey]._collection[0].scale = 1;
-      this.two.update();
+    switch(this.problem.nodes[nodeKey].state) {
+      case "next": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.next.fill; break;
+      case "explored": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.explored.fill; break;
+      case "unexplored": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.unexplored.fill; break;
+      case "highlighted": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.highlighted.fill; break;
+      case "frontier": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.frontier.fill; break;
     }
+    this.two.update();
   }
   this.iterate = function() {
     this.two.clear();
