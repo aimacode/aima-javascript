@@ -110,3 +110,6 @@ svg .highlight-dot {
 .assignment-table * {
   text-align: center;
 }
+#board{
+  padding-bottom: 20px;
+}

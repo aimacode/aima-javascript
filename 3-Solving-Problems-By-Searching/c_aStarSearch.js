@@ -108,6 +108,33 @@ AStarSearchRenderer.prototype.attachEventListeners = function() {
     this.onClickStepForward.bind(this)
   );
   this.dom.reset.addEventListener("click", this.onClickReset.bind(this));
+
+  this.options.nodes.frontier.onMouseEnter = function() {
+    let nodeKey = $(this).attr('nodeKey');
+    astar.graphDrawAgent.highlight(nodeKey);
+    $("#" + nodeKey + "a").css('background-color', astar.options.nodes.highlighted.fill);
+    $("#" + nodeKey + "p").css('background-color', astar.options.nodes.highlighted.fill);
+    $("#" + nodeKey + "e").css('background-color', astar.options.nodes.highlighted.fill);
+  };
+  this.options.nodes.frontier.onMouseLeave = function() {
+    let nodeKey = $(this).attr('nodeKey');
+    astar.graphDrawAgent.unhighlight(nodeKey);
+    let node = astar.graphProblem.nodes[nodeKey];
+    var backgroundObject = AStarSearchRenderer.helpers.getNodeStyle(astar.graphProblem, astar.options, node);
+    var backgroundColor = backgroundObject.backgroundColor;
+    $("#" + nodeKey + "a").css('background-color', backgroundColor);
+    $("#" + nodeKey + "p").css('background-color', backgroundColor);
+    $("#" + nodeKey + "e").css('background-color', backgroundColor);
+  };
+
+  this.options.nodes.next.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.next.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
+
+  this.options.nodes.explored.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.explored.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
+
+  this.options.nodes.unexplored.onMouseEnter = this.options.nodes.frontier.onMouseEnter;
+  this.options.nodes.unexplored.onMouseLeave = this.options.nodes.frontier.onMouseLeave;
 };
 AStarSearchRenderer.prototype.onChangeStartNode = function() {
   var el = this.dom.startNode;
@@ -154,6 +181,9 @@ AStarSearchRenderer.prototype.reset = function() {
   this.state.maxIterationsCount = this.graphAgent.solve();
   // We have to reset graphProblem because it is already solved in the line above
   this.graphProblem.reset();
+  this.graphProblem.initialKey = this.state.initialKey;
+  this.graphProblem.nextToExpand = this.state.initialKey;
+  this.graphProblem.goalKey = this.state.goalKey;
 };
 /**
  * Renders some state of graphProblem
@@ -205,6 +235,10 @@ AStarSearchRenderer.prototype.render = function() {
 
   // -------------------
   this.graphProblem.reset();
+  this.graphProblem.initialKey = this.state.initialKey;
+  this.graphProblem.nextToExpand = this.state.initialKey;
+  this.graphProblem.goalKey = this.state.goalKey;
+  this.graphProblem.nodes[this.state.initialKey].state = "next";
   this.graphAgent.solve(this.state.iterationsCount);
   // It renders the graph (Two.js)
   this.graphDrawAgent.iterate();
@@ -257,7 +291,7 @@ AStarSearchRenderer.prototype.render = function() {
   helpers.forEach(
     helpers.exploredNodes(this.graphProblem),
     function(node) {
-      exploredNodesInnerHtml += templates.renderNodeToString(
+      exploredNodesInnerHtml += templates.renderExploredNodeToString(
         this.graphProblem,
         this.options,
         node
@@ -266,6 +300,28 @@ AStarSearchRenderer.prototype.render = function() {
     this
   );
   this.dom.exploredNodesContainer.innerHTML = exploredNodesInnerHtml;
+
+  for (node in this.graphProblem.explored){
+    let ele = document.getElementById(this.graphProblem.explored[node]+"e");
+    if (ele != null) {
+      ele.onmouseenter = this.options.nodes.frontier.onMouseEnter;
+      ele.onmouseleave = this.options.nodes.frontier.onMouseLeave;
+    }
+  }
+  for (node in this.graphProblem.frontier){
+    let ele = document.getElementById(this.graphProblem.frontier[node]+"p");
+    if (ele != null) {
+      ele.onmouseenter = this.options.nodes.frontier.onMouseEnter;
+      ele.onmouseleave = this.options.nodes.frontier.onMouseLeave;
+    }
+  }
+  for (key in this.graphProblem.nodes) {
+    let ele = document.getElementById(key+"a");
+    if (ele != null) {
+      ele.onmouseenter = this.options.nodes.frontier.onMouseEnter;
+      ele.onmouseleave = this.options.nodes.frontier.onMouseLeave;
+    }
+  }
 };
 AStarSearchRenderer.helpers = {
   /**
@@ -348,8 +404,30 @@ AStarSearchRenderer.templates = {
       'style="margin: 16px 16px 0 0; background-color:' +
       backgroundColor +
       ' ;"' +
-      'class="graph-node pull-left">' +
+      'class="graph-node pull-left" nodeKey="' + 
       node.id +
+      '" id="' +
+      node.id +
+      'a">' +
+      node.id + 
+      "</li>"
+    );
+  },
+  renderExploredNodeToString: function(graphProblem, options, node) {
+    var helpers = AStarSearchRenderer.helpers;
+    var backgroundObject = helpers.getNodeStyle(graphProblem, options, node);
+    var backgroundColor = backgroundObject["backgroundColor"];
+    return (
+      "<li " +
+      'style="margin: 16px 16px 0 0; background-color:' +
+      backgroundColor +
+      ' ;"' +
+      'class="graph-node pull-left" nodeKey="' + 
+      node.id +
+      '" id="' +
+      node.id +
+      'e">' +
+      node.id + 
       "</li>"
     );
   },
@@ -362,7 +440,11 @@ AStarSearchRenderer.templates = {
       '<td><span style="background-color:' +
       backgroundColor +
       ' ;" ' +
-      'class="graph-node">' +
+      'class="graph-node" id="' +
+      node.id +
+      'p" nodeKey="' + 
+      node.id +
+      '">' +
       node.id +
       "</span></td>" +
       "<td><span>" +
@@ -382,4 +464,4 @@ AStarSearchRenderer.templates = {
   }
 };
 
-new AStarSearchRenderer();
+var astar = new AStarSearchRenderer();
