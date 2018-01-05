@@ -215,7 +215,7 @@ class GraphAgentAStarSearch extends GraphAgent {
     ) {
       // Expands next node
       this.expand(this.problem.frontier[0]);
-
+      this.problem.nextToExpand = this.problem.frontier[0];
       // Highlights a node which will be expanded at next iteration
       const nextIterationNodeKey = this.problem.frontier[0];
       const nextIterationNode = this.problem.nodes[nextIterationNodeKey];

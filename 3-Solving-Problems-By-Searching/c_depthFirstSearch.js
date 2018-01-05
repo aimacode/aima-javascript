@@ -16,10 +16,30 @@ $(document).ready(function() {
       var graphDrawAgent = new GraphDrawAgent(graphProblem, 'depthFirstSearchCanvas', options, h, w);
       var queueDrawAgent = new QueueDrawAgent('lifoQueueCanvas', h, w, graphProblem, options);
 
+       //Functions to detect when you hover over a node
+      options.nodes.frontier.onMouseEnter = function() {
+        let nodeKey = $(this).attr('nodeKey');
+        graphDrawAgent.highlight(nodeKey);
+        queueDrawAgent.highlight(nodeKey);
+      };
+      options.nodes.frontier.onMouseLeave = function() {
+        let nodeKey = $(this).attr('nodeKey');
+        graphDrawAgent.unhighlight(nodeKey);
+        queueDrawAgent.unhighlight(nodeKey);
+        
+      };
+
+      options.nodes.next.onMouseEnter = options.nodes.frontier.onMouseEnter;
+      options.nodes.next.onMouseLeave = options.nodes.frontier.onMouseLeave;
+
+      let nextNode = breadthFirstSearch(graphProblem);
+      graphProblem.nodes[nextNode].state = "next";
+
       while (n--) {
         if (graphProblem.frontier.length > 0) {
-          var nextNode = depthFirstSearch(graphProblem);
           graphAgent.expand(nextNode);
+          nextNode = depthFirstSearch(graphProblem);
+          graphProblem.nodes[nextNode].state = "next";
           //If frontier is still present, find the next node to be expanded so it
           //could be colored differently
           if (graphProblem.frontier.length > 0) {

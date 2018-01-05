@@ -90,13 +90,13 @@ $(document).ready(function() {
       drawCostPath(bfsTwo, bfsShortestPath);
       drawCostPath(ucsTwo, ucsShortestPath);
 
-      bfsGraphDrawAgent.highlight(nodeKey);
-      ucsGraphDrawAgent.highlight(nodeKey);
+      //bfsGraphDrawAgent.highlight(nodeKey);
+      //ucsGraphDrawAgent.highlight(nodeKey);
     };
     var onMouseLeave = function() {
       let nodeKey = $(this).attr('nodeKey');
-      bfsGraphDrawAgent.unhighlight(nodeKey);
-      ucsGraphDrawAgent.unhighlight(nodeKey);
+      //bfsGraphDrawAgent.unhighlight(nodeKey);
+      //ucsGraphDrawAgent.unhighlight(nodeKey);
       //Clear everything when mouse leaves
       bfsGraphDrawAgent.iterate();
       ucsGraphDrawAgent.iterate();
