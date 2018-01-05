@@ -325,65 +325,51 @@ function makePerformanceControlledDaigram(){
 }   
 
 //Plotting the performance of the agents on a dynamic line chart
-//--TODO-- DRY code may be prevented by declaring the variables with proper scope.
+var label = [0,1,2,3]; 
+var index = 3;
 function plotPerformance(performanceAgent1, performanceAgent2){
     var performance_agent1 = performanceAgent1;
     var performance_agent2 = performanceAgent2;
 
-    var dps1 = []; // dataPoints
-    var dps2 = []; // dataPoints
-    var chart = new CanvasJS.Chart("chartContainer", {
-        title :{
-            text: "Performance of Agents"
-        },
-        axisY: {
-            includeZero: false
-        },      
-        data: [{
-            type: "line",
-            dataPoints: dps1
-        },
-        {
-            type: "line",
-            color: "#F08080",
-            dataPoints: dps2
-        }]
+    if(performance_agent1.length != 0  && performance_agent2.length != 0){
+        var ctx = document.getElementById('chartContainer').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            
+            data: {
+                labels: label,
+                datasets: [{
+                    label: "Performance Agent1",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: performance_agent1,
+                    fill: false,
+                },
+                {
+                    label: "Performance Agent2",
+                    backgroundColor: 'rgb(0, 99, 132)',
+                    borderColor: 'rgb(0, 99, 132)',
+                    data: performance_agent2,
+                    fill: false,
+                }
+                ]
+            },
+
+        
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
         });
-
-    var xVal = 0;
-    var yVal = 0; 
-    var updateInterval = STEP_TIME_MS;
-    var dataLength1 = performance_agent1.length; // number of dataPoints visible at any point
-    var dataLength2 = performance_agent2.length; // number of dataPoints visible at any point
-
-    var updateChart1 = function (count) {
-    count = count || 1;
-    for (var j = 0; j < count; j++) {
-        yVal = performance_agent1[j];
-        dps1.push({
-            x: xVal,
-            y: yVal
-        });
-        if(count <= dataLength2){
-            yVal = performance_agent2[j];
-        }
-        dps2.push({
-            x:xVal,
-            y:yVal
-        })
-        xVal++;
+        index++;
+        label.push(index);
     }
-    if (dps1.length > dataLength1 || dps2.length > dataLength2) {
-        dps1.shift();
-        dps2.shift();
-    }
-    chart.render();
-    dps1 = [];
-    dps2 = [];
-    };
 
-    updateChart1(dataLength1);
-    
 }
 
 makeAgentControlledDiagram();

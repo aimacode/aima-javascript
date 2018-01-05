@@ -4,10 +4,9 @@
     <title>2 Intelligent Agents</title>
     <link rel="stylesheet" href="../styles.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
     <script type="text/javascript" src="../main.js"></script>
-    <script src="../third-party/canvasjs.min.js"></script>
     
-
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <style>
         .floor:hover { cursor: pointer; }
@@ -206,8 +205,8 @@
             <h4>Agent2</h4>
             <svg width="600" height="300"></svg>
           </div>
-
-          <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+          <h4>Agent's Performance Plot</h3>
+          <canvas id="chartContainer" style="height: 300px; width: 100%;"></canvas>
           
           <h3>Evaluating multiple agents</h3>
 
