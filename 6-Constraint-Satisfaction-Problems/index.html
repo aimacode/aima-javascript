@@ -146,26 +146,54 @@
       <h2 id="min-conflicts">Min Conflicts</h2>
       <p>Local search algorithms use a complete-state formulation: the initial state assigns a value to every variable, and the search changes the value of one variable at a time. In choosing the new value for the variable, the most common heuristic is minimum number of conflicts with other variables- <strong>min-conflicts</strong> heuristic</p>
       <p>Min-Conflict heuristic is efficient in solving 8 Queen Problem.</p>
+      <p>The fisrt board randomly selects a column and a row to choose the next state whereas the 2nd board uses Min-Conflict algorithm to select the next state. The no. of steps required for solving with both the algorithms helps in visualizing why Min-Conflict is a better heuristic for solving such search problems.</p>
       <p>In the daigram below order of selection of rows and column is fixed in order to depict the algorithm in a limited and constant no. of step. The <b>next</b> button changes the state of the board which is described in the "Min-Conflicts window".</p>
       <p>The <b>reset</b> button resets the board to the initail state.</p>
-      <ul class="list-inline">
-        <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="minConflicts()">Next</div></li>
-        <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="reset()">Reset</div></li>
-      </ul>
-      <h3 id="status"></h3>
-      <div class="container" style="display: inline-flex;">
-        <div id="board" style="width: 400px; margin-right: 50px;"></div>
-        <div class="display" style="width: 500px; height: 350px; background-color:rgb(212, 212, 212);">
-          <h3>Min-Conflicts</h3>
-          <ul>
-            <li>Selected Column: <span id="col"></span> </li>
-            <li>Conflicts Per Row: <span id="conflicts"></span> </li>
-            <li>Min-Conflicts: <span id="min-conflict"></span> </li>
-            <li>New Row Selected: <span id="row"></span> </li>
-            <li>Previous Row: <span id="row-prev"></span> </li>
+      
+      <div class="container" style="display: inline-flex; justify-content: space-around;">
+        <div class="random-board">
+          <h3><b>Random Function Board</b></h3>
+          <ul class="list-inline">
+            <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="animateRandomConflicts()">Animate</div></li>
+            <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="resetRandomConflict()">Reset</div></li>
           </ul>
+          <h3 id="status-random"></h3>
+          <div id="board-random" style="width: 400px; margin-right: 50px;"></div>
+            <div class="display" style="width: 400px; height: 250px; background-color:rgb(212, 212, 212);">
+             <h3>Random-Conflicts</h3>
+             <ul>
+                <li>Selected Column: <span id="col-r"></span> </li>
+                <li>Conflicts Per Row: <span id="conflicts-r"></span> </li>
+                <li>Min-Conflicts: <span id="min-conflict-r"></span> </li>
+                <li>New Row Selected: <span id="row-r"></span> </li>
+                <li>Previous Row: <span id="row-prev-r"></span> </li>
+                <li><h5 id="count"></h5></li>
+              </ul>
+            </div>
+        </div>
+        
+        <div class="random-board">
+          <h3><b>Min-Coflict Function Board</b></h3>
+          <ul class="list-inline">
+            <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="animateMinConflicts()">Animate</div></li>
+            <li><div class='btn btn-primary restart-button' style="margin-left:2%" onclick="resetMinConflict()">Reset</div></li>
+          </ul>
+          <h3 id="status-minConflict"></h3>
+          <div id="board-minConflict" style="width: 400px; margin-right: 50px;"></div>
+            <div class="display" style="width: 400px; height: 250px; background-color:rgb(212, 212, 212);">
+              <h3>Min-Conflicts</h3>
+              <ul>
+                <li>Selected Column: <span id="col"></span> </li>
+                <li>Conflicts Per Row: <span id="conflicts"></span> </li>
+                <li>Min-Conflicts: <span id="min-conflict"></span> </li>
+                <li>New Row Selected: <span id="row"></span> </li>
+                <li>Previous Row: <span id="row-prev"></span> </li>
+                <li><h5 id="index"></h5></li>
+              </ul>
+            </div>
         </div>
       </div>
+
       <h2 id="tree-csp">Tree CSP</h2>
       <p>Tree CSP Stuff</p>
       <div class="canvas" id="treeCspCanvas" height="300px">
