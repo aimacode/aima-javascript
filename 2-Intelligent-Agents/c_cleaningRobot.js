@@ -330,9 +330,8 @@ var index = 3;
 function plotPerformance(performanceAgent1, performanceAgent2){
     var performance_agent1 = performanceAgent1;
     var performance_agent2 = performanceAgent2;
-
-    if(performance_agent1.length != 0  && performance_agent2.length != 0){
-        var ctx = document.getElementById('chartContainer').getContext('2d');
+    var ctx = document.getElementById('chartContainer').getContext('2d');
+    if(performance_agent1.length != 0  || performance_agent2.length != 0){
         var chart = new Chart(ctx, {
             type: 'line',
             
