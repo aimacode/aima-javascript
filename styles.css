@@ -33,3 +33,7 @@ pre{
 body > div.row {
     margin-right: 0px;
 }
+
+body{
+ overflow-x: hidden;
+}
