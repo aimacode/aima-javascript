@@ -234,63 +234,62 @@ function makeTableControlledDiagram() {
     }
 }
 
-/*Control the daigram based on the performance parameters set 
+/*Control the diagram based on the performance parameters set 
 by the reader that the AI is supposed to follow.The animation flow 
 is similar to the first agent controlled diagram but there is an 
 additional table UI that lets the reader view the percepts and actions 
 being followed as well as change the rules followed by the agent.
 */
 function makePerformanceControlledDaigram(){
-    //variable declarations for the agents
+    // variable declarations for the agents
     let diagram_agent1 = makeDiagram('#performance-controlled-diagram-agent1 svg');
     let diagram_agent2 = makeDiagram('#performance-controlled-diagram-agent2 svg');
-    var parameters = getRulesFromPage(); //reader defined agent parameters
-    var score_agent1 = 0;
-    var score_agent2 = 0;
-    var performance_agent1 = [];
-    var performance_agent2 = [];
-    var agent2_interval;    
-
-    //update agent1's environment
-    function update_agent1() {
-        let location = diagram_agent1.world.location;
-        let percept = diagram_agent1.world.floors[location].dirty;
-        let table = getRulesFromPage();
-        let action = reflexVacuumAgent(diagram_agent1.world, table);
-        setTimeout(function(){  if(action=='SUCK'){ score_agent1 = score_agent1+50; }
-                                else{ score_agent1 = score_agent1-10; }
-                                if(diagram_agent1.world.floors[0].dirty || diagram_agent1.world.floors[1].dirty)
-                                  { score_agent1 = score_agent1-5; }
-                                performance_agent1.push(score_agent1);      
-                                diagram_agent1.world.simulate(action);        
-                                renderWorld(diagram_agent1);
-                                renderAgentPercept(diagram_agent1, percept);
-                                renderAgentAction(diagram_agent1, action);},table[1]*1000);
-    }
+    let parameters = getRulesFromPage(); //reader defined agent parameters
+    let score_agent1 = 0;
+    let score_agent2 = 0;
+    let agent2_interval;
+    let performance_agent1 = [];
+    let performance_agent2 = [];
     
-    //update agent2's environment
-    function update_agent2() {
-        let location = diagram_agent2.world.location;
-        let percept = diagram_agent2.world.floors[location].dirty;
-        let table = getRulesFromPage();
-        let action = reflexVacuumAgent(diagram_agent2.world, table);
-        setTimeout(function(){  if(action=='SUCK'){ score_agent2 = score_agent2+50; }
-                                else{ score_agent2 = score_agent2-10; }
-                                if(diagram_agent2.world.floors[0].dirty || diagram_agent2.world.floors[1].dirty)
-                                  { score_agent2 = score_agent2-5-parseInt(parameters[0]); }
-                                // extra score reduction due to agent2 working for a shorter duration
-                                performance_agent2.push(score_agent2);
-                                diagram_agent2.world.simulate(action);
-                                renderWorld(diagram_agent2);
-                                renderAgentPercept(diagram_agent2, percept);
-                                renderAgentAction(diagram_agent2, action);},table[1]*1000);
+
+    // update agent1's environment
+    function update_agent(agent_number) {
+        let agent = 0;
+        let agent_score = 0;
+        let performance_agent = 0;
+        let speed_agent = 0;
+
+        if(agent_number==0){
+            agent = diagram_agent1;
+            agent_score = score_agent1;
+            performance_agent = performance_agent1;
+            speed_agent = 1;
         }
+        if(agent_number==1){
+            agent = diagram_agent2;
+            agent_score = score_agent1; 
+            performance_agent = performance_agent2;
+            speed_agent = 2;
+        }
+        
+        let location = agent.world.location;
+        let percept = agent.world.floors[location].dirty;
+        let table = getRulesFromPage();
+        let action = reflexVacuumAgent(agent.world, table);
+        setTimeout(function(){  if(action=='SUCK'){ agent_score = agent_score+50; }
+                                else{ agent_score = agent_score-10; }
+                                if(agent.world.floors[0].dirty || agent.world.floors[1].dirty)
+                                  { agent_score = agent_score-5; }
+                                performance_agent.push(agent_score);      
+                                agent.world.simulate(action);        
+                                renderWorld(agent);
+                                renderAgentPercept(agent, percept);
+                                renderAgentAction(agent, action);},table[speed_agent]*1000);
+    }
+  
+    setInterval(function(){plotPerformance(performance_agent1, performance_agent2);} ,STEP_TIME_MS);
 
-    //print performace scores
-    //setInterval(plotPerformance(performance_agent1, performance_agent2),STEP_TIME_MS);
-    setInterval(function(){ plotPerformance(performance_agent1, performance_agent2); },STEP_TIME_MS);
-
-    //get reader defined parameters
+    // get reader defined parameters
     function getRulesFromPage() {
         let table = d3.select("#performance-controlled-diagram table");
         let dirt_freq = table.select("[data-action=dirt-freq] select").node().value;
@@ -301,7 +300,7 @@ function makePerformanceControlledDaigram(){
     }
 
     function makefloordirty() {
-        floorNumber = Math.floor(Math.random() * 2);
+        let floorNumber = Math.floor(Math.random() * 2);
         diagram_agent1.world.markFloorDirty(floorNumber);
         diagram_agent1.floors[floorNumber].attr('class', 'dirty floor');
         diagram_agent2.world.markFloorDirty(floorNumber);
@@ -310,33 +309,31 @@ function makePerformanceControlledDaigram(){
     setInterval(makefloordirty,parameters[0]*1000);
     
     //control agent1's state
-    update_agent1();
-    setInterval(update_agent1, STEP_TIME_MS);
+    update_agent(0);
+    setInterval(function(){update_agent(0);}, STEP_TIME_MS);
 
     //control agent2's state
     function controlAgent2(){     
         clearInterval(agent2_interval);
-        setTimeout(function(){ agent2_interval = setInterval(update_agent2,1000); },5000);
+        setTimeout(function(){ agent2_interval = setInterval(function(){update_agent(1)},1000); },5000);
             
     }
     controlAgent2();
-    setInterval(controlAgent2,5000+parameters[3]*1000) //parameter[3] defines the working interval of agent2
+    setInterval(controlAgent2,5000+parameters[3]*1000) // parameter[3] defines the working interval of agent2
 
 }   
 
 //Plotting the performance of the agents on a dynamic line chart
-var label = [0,1,2,3]; 
-var index = 3;
-function plotPerformance(performanceAgent1, performanceAgent2){
-    var performance_agent1 = performanceAgent1;
-    var performance_agent2 = performanceAgent2;
+var label = ['', '', ''] // create a empty array to print on x-axis
+var iter = ''
+function plotPerformance(performance_agent1,performance_agent2){
     var ctx = document.getElementById('chartContainer').getContext('2d');
     if(performance_agent1.length != 0  || performance_agent2.length != 0){
         var chart = new Chart(ctx, {
             type: 'line',
             
             data: {
-                labels: label,
+                labels:label,
                 datasets: [{
                     label: "Performance Agent1",
                     backgroundColor: 'rgb(255, 99, 132)',
@@ -362,11 +359,13 @@ function plotPerformance(performanceAgent1, performanceAgent2){
                             beginAtZero:true
                         }
                     }]
-                }
+                },
+                 animation: {
+        duration: 0
+    }
             }
         });
-        index++;
-        label.push(index);
+        label.push(iter);
     }
 
 }

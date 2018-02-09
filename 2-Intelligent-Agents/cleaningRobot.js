@@ -35,7 +35,7 @@ class World {
 function reflexVacuumAgent(world) {
     if (world.floors[world.location].dirty) { return 'SUCK'; }                                                                
     else if (world.location == 0)           { return 'RIGHT'; }
-    else if (world.location == 1)           { return'LEFT'; }
+    else if (world.location == 1)           { return 'LEFT'; }
     return action;
 }
 
