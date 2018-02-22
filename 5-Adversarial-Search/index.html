@@ -12,7 +12,8 @@
   <script type="text/javascript" src="./alphaBeta.js"></script>
   <script type="text/javascript" src="./c_minimax.js"></script>
   <script type="text/javascript" src="./c_alphaBeta.js"></script>
-</head>
+  <script type="text/javascript" src="./c_expectiminimax.js"></script>
+  </head>
 <body>
 
   <div class="row">
@@ -22,6 +23,7 @@
       <ul class="content-table">
         <li><a href="#minimax">Minimax</a></li>
         <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
+        <li><a href="#expectiminimax">Expectiminimax</a></li>
       </ul>
       <h2 id="minimax">Minimax</h2>
       <p>
@@ -37,7 +39,6 @@
       <br>
       <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
       
-
       <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
       <p>
         A slight modification to minimax, Alpha Beta Pruning will try to improve performance by ignoring nodes that cannot possibly provide a better outcome.<br><br>
@@ -52,9 +53,29 @@
       <br>
       <div class="canvas" id="alphaBetaCanvas", width="300" height="400"></div>
       
+      <h2 id="expectiminimax">Expectiminimax</h2>
+      <p>
+        Minimax algorithm applied in situations with an unpredictability by including a random chance element. The minimax search tree now contains chance nodes at each decision level which stores the expected value of the children nodes.<br><br>
+        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
+        <br>
+        Provide the probabilities for the tree branches to see how the algorithm will solve different problems.
+        <br>
+      </p>
+      <input type="text" id="expectiminimaxInput" size="60" value="2, 2, 3, 3, 1, 1, 4, 4">
+      <br>
+      Provide the probabilities for the tree branches to see how the algorithm will solve different problems. 
+      The darker branches are where chances are evaluated. The value of the chance is the expected value of its child nodes calculated on the bases of the input probabilities.
+      <br>
+      <input type="text" id="expectiminimaxChanceInput" size="60" value=".9, .1, .9, .1">
+      <button type="button" id="expectiminimaxToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Start Simulation</button>
+      <br>
+      <br>
+      <input type="range" min="1" max="22" value="1" id="expectiminimaxProgress">
+      <br>
+      <div class="canvas" id="expectiminimaxCanvas", width="300" height="400" style="position: relative;bottom: 30px;"></div>
+      
     </div>
   </div>
 
-</div>
 </body>
 </html>

@@ -49,20 +49,18 @@ function P_MAX_VALUE(state, STEP) {
 	STEP -= 1;
 	if (STEP == 0)
 		return [0,0];
-	//mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff33cc';
 	mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff5050';
 	mmTree.values[state].value = v;
-	mmTree.triangles[state].fill = '	#003399';
+	mmTree.triangles[state].fill = '#003399';
 	mmTree.values[state].stroke = 'black';
 	mmTree.values[state].fill = 'white';
-	//mmTree.lines[state].stroke = '#ff33cc';
 	return [v, STEP];
 }
 function P_MIN_VALUE(state, STEP) {
 	if (STEP == 0)
 		return [0,0];
 	if (terminal(state)) {
-		mmTree.triangles[state].fill = '	#003399';
+		mmTree.triangles[state].fill = '#003399';
 		mmTree.values[state].stroke = 'black';
 		mmTree.values[state].fill = 'white';
 		return [utillity(state), STEP];
@@ -87,7 +85,7 @@ function P_MIN_VALUE(state, STEP) {
 	//mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff33cc';
 	mmTree.lines[RESULT(state, al[a])-1].stroke = '#ff5050';
 	mmTree.values[state].value = v;
-	mmTree.triangles[state].fill = '	#003399';
+	mmTree.triangles[state].fill = '#003399';
 	mmTree.values[state].stroke = 'black';
 	mmTree.values[state].fill = 'white';
 	return [v, STEP];
