@@ -343,11 +343,13 @@ class LocalizationDiagram {
               .attr('height',0)
               .attr('width',0)
               .remove();
-      this.mazeDiagram.robots.splice(obj.wrongRobotsIndices[i],1)
     }
-    if(this.mazeDiagram.robots.length == 1) {
-      this.success();
-    }
+    this.mazeDiagram.robots = this.mazeDiagram.robots.filter(function(robot,index){
+      return obj.wrongRobotsIndices.indexOf(index) == -1;
+    });
+    this.mazeDiagram.robotDiagrams = this.mazeDiagram.robotDiagrams.filter(function(robot,index){
+      return obj.wrongRobotsIndices.indexOf(index) == -1;
+    });
   }
 
   success() {
