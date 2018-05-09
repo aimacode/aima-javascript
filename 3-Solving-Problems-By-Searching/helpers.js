@@ -6,6 +6,8 @@ var GraphNode = function(x, y, id, text) {
   this.text = text;
   this.state = 'unexplored';
   this.cost = Number.POSITIVE_INFINITY;
+  this.estimatedCost = Number.POSITIVE_INFINITY; // It requires for the aStarSearch
+  this.totalCost = Number.POSITIVE_INFINITY; // It requires for the aStarSearch
   this.parent = null;
   this.depth = Number.POSITIVE_INFINITY;
 };
@@ -43,6 +45,14 @@ var DefaultOptions = function() {
       },
       frontier: {
         fill: 'hsl(0,50%,75%)',
+        stroke: 'black',
+        opacity: 1,
+        clickHandler: null,
+        onMouseEnter: null,
+        onMouseLeave: null
+      },
+      highlighted: {
+        fill: 'Crimson',
         stroke: 'black',
         opacity: 1,
         clickHandler: null,
@@ -114,8 +124,10 @@ var DefaultGraph = function() {
     ['N', 'O', 2]
   ];
 };
+
+
 // Structure for the graph problem for the simulations
-var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
+function GraphProblem(nodes, edges, initialKey, nextToExpand) {
   this.nodes = nodes;
   this.edges = edges;
   this.nodes[initialKey].state = 'frontier';
@@ -128,98 +140,96 @@ var GraphProblem = function(nodes, edges, initialKey, nextToExpand) {
   //Used for BFS,DFS,UCS etc where it is important to show the next node which
   //will be expanded from the graph before actually expanding it.
   this.nextToExpand = nextToExpand;
-  //Takes a node and returns a list of its adjacent nodes
-  this.getAdjacent = function(nodeKey) {
-    var edges = this.edges.filter((edge) => edge[0] == nodeKey || edge[1] == nodeKey);
-    var adjacent = [];
-    for (var i = 0; i < edges.length; i++) {
-      if (edges[i][0] == nodeKey) {
-        adjacent.push({
-          nodeKey: edges[i][1],
-          cost: edges[i][2]
-        });
-      } else {
-        adjacent.push({
-          nodeKey: edges[i][0],
-          cost: edges[i][2]
-        });
-      }
+}
+//Takes a node and returns a list of its adjacent nodes
+GraphProblem.prototype.getAdjacent = function(nodeKey) {
+  var edges = this.edges.filter((edge) => edge[0] == nodeKey || edge[1] == nodeKey);
+  var adjacent = [];
+  for (var i = 0; i < edges.length; i++) {
+    if (edges[i][0] == nodeKey) {
+      adjacent.push({
+        nodeKey: edges[i][1],
+        cost: edges[i][2]
+      });
+    } else {
+      adjacent.push({
+        nodeKey: edges[i][0],
+        cost: edges[i][2]
+      });
     }
-    return adjacent;
-  };
-  //Check if an edge is already visited
-  this.ifEdgeVisited = function(edge) {
-    return this.nodes[edge[0]].state == 'explored' || this.nodes[edge[1]].state == 'explored';
+  }
+  return adjacent;
+}
+//Check if an edge is already visited
+GraphProblem.prototype.ifEdgeVisited = function(edge) {
+  return this.nodes[edge[0]].state == 'explored' || this.nodes[edge[1]].state == 'explored';
+}
+GraphProblem.prototype.removeFromFrontier = function(nodeKey) {
+  this.frontier = this.frontier.filter(function(e) {
+    return e != nodeKey;
+  });
+}
+GraphProblem.prototype.addToFrontier = function(nodeKey) {
+  this.frontier.push(nodeKey);
+  this.nodes[nodeKey].state = 'frontier';
+}
+GraphProblem.prototype.addToExplored = function(nodeKey) {
+  this.explored.push(nodeKey);
+  this.nodes[nodeKey].state = 'explored';
+}
+GraphProblem.prototype.reset = function() {
+  //Reset nodes
+  for (i in this.nodes) {
+    this.nodes[i].state = 'unexplored';
+    this.nodes[i].cost = Number.POSITIVE_INFINITY;
+    this.nodes[i].parent = null;
+    this.nodes[i].depth = Number.POSITIVE_INFINITY;
   }
 
-  this.removeFromFrontier = function(nodeKey) {
-    this.frontier = this.frontier.filter(function(e) {
-      return e != nodeKey;
-    });
-  };
-  this.addToFrontier = function(nodeKey) {
-    this.frontier.push(nodeKey);
-    this.nodes[nodeKey].state = 'frontier';
-  };
-  this.addToExplored = function(nodeKey) {
-    this.explored.push(nodeKey);
-    this.nodes[nodeKey].state = 'explored';
-  };
+  //Initialize first node
+  this.nodes[this.initialKey].state = 'frontier';
+  this.nodes[this.initialKey].cost = 0;
+  this.nodes[this.initialKey].parent = null;
+  this.nodes[this.initialKey].depth = 0;
 
-  this.reset = function() {
-    //Reset nodes
-    for (i in this.nodes) {
-      this.nodes[i].state = 'unexplored';
-      this.nodes[i].cost = Number.POSITIVE_INFINITY;
-      this.nodes[i].parent = null;
-      this.nodes[i].depth = Number.POSITIVE_INFINITY;
-    }
+  this.frontier = [this.initialKey];
+  this.explored = [];
+}
 
-    //Initialize first node
-    this.nodes[this.initialKey].state = 'frontier';
-    this.nodes[this.initialKey].cost = 0;
-    this.nodes[this.initialKey].parent = null;
-    this.nodes[this.initialKey].depth = 0;
-
-    this.frontier = [this.initialKey];
-    this.explored = [];
-  };
-
-};
 //An agent that can work on the graph by expanding nodes
-var GraphAgent = function(problem, algo) {
-    this.problem = problem;
-    this.algo = algo;
-    //The function that expands a node from the graph
-    this.expand = function(nodeKey) {
-      this.problem.removeFromFrontier(nodeKey);
-      this.problem.addToExplored(nodeKey);
-      let adjacent = this.problem.getAdjacent(nodeKey);
-      for (var i = 0; i < adjacent.length; i++) {
-        //For every adjacent node
-        let nextNodeKey = adjacent[i].nodeKey;
-        let nextNode = this.problem.nodes[nextNodeKey];
-        if (nextNode.state == 'unexplored') {
-          //If the adjacent node is unexplored,
-          this.problem.addToFrontier(nextNodeKey);
-          //Add it to frontier and update its properties
-          nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
-          nextNode.parent = nodeKey;
-          nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
-        }
-        //In UCS, Some extra logic is involved
-        if (this.algo == 'ucs') {
-          //If the node which is in frontier has cost lower than the new cost,
-          if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
-            //Assign the lower cost
-            nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
-            nextNode.parent = nodeKey;
-          }
-        }
-      }
-    };
 
+function GraphAgent (problem, algo) {
+  this.problem = problem;
+  this.algo = algo;
+}
+GraphAgent.prototype.expand = function (nodeKey) {
+  this.problem.removeFromFrontier(nodeKey);
+  this.problem.addToExplored(nodeKey);
+  let adjacent = this.problem.getAdjacent(nodeKey);
+  for (var i = 0; i < adjacent.length; i++) {
+    //For every adjacent node
+    let nextNodeKey = adjacent[i].nodeKey;
+    let nextNode = this.problem.nodes[nextNodeKey];
+    if (nextNode.state == 'unexplored') {
+      //If the adjacent node is unexplored,
+      this.problem.addToFrontier(nextNodeKey);
+      //Add it to frontier and update its properties
+      nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+      nextNode.parent = nodeKey;
+      nextNode.depth = this.problem.nodes[nodeKey].depth + 1;
+    }
+    //In UCS, Some extra logic is involved
+    if (this.algo == 'ucs') {
+      //If the node which is in frontier has cost lower than the new cost,
+      if (nextNode.state == 'frontier' && nextNode.cost > adjacent[i].cost + this.problem.nodes[nodeKey].cost) {
+        //Assign the lower cost
+        nextNode.cost = adjacent[i].cost + this.problem.nodes[nodeKey].cost;
+        nextNode.parent = nodeKey;
+      }
+    }
   }
+}
+
   // An agent which draws the graphs to the page
 var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.canvas = document.getElementById(selector);
@@ -227,10 +237,11 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
   this.h = h;
   this.w = w;
   this.two = new Two({
-    height: h,
-    width: w
+    width: '100%',
+    height: '100%'
   }).appendTo(this.canvas);
   this.problem = graphProblem;
+  this.two.renderer.domElement.setAttribute("viewBox","0 0 " + String(w) + " " + String(h));
 
   this.options = options;
   this.nodeGroups = {};
@@ -287,11 +298,11 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
       if (this.problem.nextToExpand == key) {
         state = 'next';
       }
+
       let currentOptions = nodeOptions[state];
       var circle = this.two.makeCircle(currentNode.x, currentNode.y, nodeOptions.nodeRadius);
       circle.fill = currentOptions.fill;
       circle.stroke = currentOptions.stroke;
-
       var text = this.two.makeText(currentNode.text, currentNode.x, currentNode.y);
       var group = this.two.makeGroup(circle, text);
 
@@ -367,20 +378,21 @@ var GraphDrawAgent = function(graphProblem, selector, options, h, w) {
     this.iterateNodes();
   }
   this.highlight = function(nodeKey) {
-    this.nodeGroups[nodeKey]._collection[0].scale = 1.2;
+    this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.highlighted.fill;
     this.two.update();
   }
   this.unhighlight = function(nodeKey) {
-    this.nodeGroups[nodeKey]._collection[0].scale = 1;
+    switch(this.problem.nodes[nodeKey].state) {
+      case "next": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.next.fill; break;
+      case "explored": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.explored.fill; break;
+      case "unexplored": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.unexplored.fill; break;
+      case "highlighted": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.highlighted.fill; break;
+      case "frontier": this.nodeGroups[nodeKey]._collection[0].fill = options.nodes.frontier.fill; break;
+    }
     this.two.update();
   }
   this.reset();
 };
-
-
-
-
-
 
 // An agent to draw queues for bfs and dfs
 function QueueDrawAgent(selector, h, w, problem, options) {
@@ -394,22 +406,43 @@ function QueueDrawAgent(selector, h, w, problem, options) {
   this.nodeRadius = options.nodes.nodeRadius;
   this.options = options;
 
+  this.highlight = function(nodeKey) {
+    this.nodeDict[nodeKey]._collection[0].fill = this.options.nodes.highlighted.fill;
+    this.two.update();
+  }
+  this.unhighlight = function(nodeKey) {
+    switch(this.problem.nodes[nodeKey].state) {
+      case "next": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.next.fill; break;
+      case "explored": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.explored.fill; break;
+      case "unexplored": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.unexplored.fill; break;
+      case "highlighted": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.highlighted.fill; break;
+      case "frontier": this.nodeDict[nodeKey]._collection[0].fill = options.nodes.frontier.fill; break;
+    }
+    this.two.update();
+  }
   this.iterate = function() {
     this.two.clear();
+    this.nodeDict = {};
     var frontier = this.problem.frontier;
     for (var i = 0; i < frontier.length; i++) {
       node = this.problem.nodes[frontier[i]];
       var x = (i) * (this.nodeRadius+20) + 40;
       var y = 20;
-      var rect = this.two.makeCircle(x, y, this.nodeRadius);
-      rect.fill = options.nodes.frontier.fill;
+      var circle = this.two.makeCircle(x, y, this.nodeRadius);
+      circle.fill = options.nodes.frontier.fill;
       if (frontier[i] == this.problem.nextToExpand) {
-        rect.fill = options.nodes.next.fill;
+        circle.fill = options.nodes.next.fill;
       }
       var text = this.two.makeText(node.text, x, y);
       if (this.options.showCost) {
         t = this.two.makeText(node.cost, x, y + 30);
       }
+      var group = this.two.makeGroup(circle, text);
+      this.two.update();
+      $(group._renderer.elem).attr('nodeKey', node.id);
+      group._renderer.elem.onmouseenter = options.nodes.frontier.onMouseEnter;
+      group._renderer.elem.onmouseleave = options.nodes.frontier.onMouseLeave;
+      this.nodeDict[node.text] = group;
     }
     this.two.update();
   }
@@ -441,4 +474,10 @@ var dlsDrawAgent = function(selector) {
     }
     this.graphDrawAgent.iterate();
   }
+}
+
+// Function to calculate euclidean distance
+// It is used by bi-directional and a-star algorithms
+function euclideanDistance(point1, point2) {
+  return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2));
 }

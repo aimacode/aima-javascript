@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="../styles.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../main.js"></script>
-    
+
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <style>
         .floor:hover { cursor: pointer; }
@@ -17,7 +17,7 @@
         .floor { fill: white; }
         .floor.clean { fill: hsl(240,10%,90%); transition: fill 2.0s; }
         .floor.dirty { fill: hsl(0,50%,50%); transition: fill 0.1s; }
-        
+
     </style>
   </head>
   <body>
@@ -25,8 +25,15 @@
     <div class="row">
       <div class="col-sm-6 col-md-offset-3" id="content">
         <h1>Intelligent Agents</h1>
+        <h3>Table of contents</h3>
+        <ul class="content-table">
+          <li><a href="#vacuum-cleaner-problem">Vacuum cleaner problem</a></li>
+          <li><a href="#simple-cleaning-robot">Simple cleaning robot</a></li>
+          <li><a href="#rules-to-follow">Rules for the agent to follow</a></li>
+          <li><a href="#performance-measures">Performance measures</a></li>
+        </ul>
 
-        <h2>Vacuum cleaner problem</h2>
+        <h2 id="vacuum-cleaner-problem">Vacuum cleaner problem</h2>
 
         <p>
           Choose an action for the robot. Click on a box to make it dirty.
@@ -36,11 +43,11 @@
           <div class="buttons" style="position:relative"></div>
           <svg width="600" height="300"></svg>
         </div>
-        
-        <h2>Simple cleaning robot</h2>
+
+        <h2 id="simple-cleaning-robot">Simple cleaning robot</h2>
 
         <div id="agent-controlled-diagram">
-          
+
           <p>
             The robot will choose its own actions based on simple rules. Click on a box to make it dirty.
           </p>
@@ -49,7 +56,7 @@
 
         </div>
 
-        <h2>Rules for the agent to follow</h2>
+        <h2 id="rules-to-follow">Rules for the agent to follow</h2>
 
         <div id="table-controlled-diagram">
 
@@ -114,7 +121,7 @@
             rules?
           </p>
 
-          <h2>Performance measures</h2>
+          <h2 id="performance-measures">Performance measures</h2>
 
           <p>
             We can choose a metric that evaluates how well the agent
@@ -132,7 +139,7 @@
           <h3>Evaluating many data sets</h3>
 
           TODO: one agent on many different data sequences (avoid overfitting)
-          
+
       </div>
     </div>
 

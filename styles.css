@@ -25,3 +25,11 @@ pre{
 	margin-top:20px;
 	margin-bottom:20px;
 }
+
+.navbar-inverse{
+  border-radius: 0;
+}
+
+body > div.row {
+    margin-right: 0px;
+}

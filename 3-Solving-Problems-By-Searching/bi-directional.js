@@ -2,10 +2,6 @@
 function cloneObject(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-//Function to calculate euclidean distance
-function distance(point1, point2) {
-  return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2));
-}
 
 class Node {
   constructor(id, x, y, adjacent) {
@@ -32,7 +28,7 @@ function randomPlanarGraph(height, width, totalNodes) {
   let minDistance = 1.6 * Math.sqrt(height * width / totalNodes)
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
-      if (distance([nodes[i].x, nodes[i].y], [nodes[j].x, nodes[j].y]) < minDistance) {
+      if (euclideanDistance([nodes[i].x, nodes[i].y], [nodes[j].x, nodes[j].y]) < minDistance) {
         nodes[i].adjacent.push(j);
         nodes[j].adjacent.push(i);
         edges.push([i, j]);
@@ -93,7 +89,7 @@ class BidirectionalProblem {
     this.initial = 0;
     //Force the initial node to be around the middle of the canvas.
     for (let i = 0; i < this.graph.nodes.length; i++) {
-      if (distance([this.graph.width / 2, this.graph.height / 2], [this.graph.nodes[i].x, this.graph.nodes[i].y]) < 50) {
+      if (euclideanDistance([this.graph.width / 2, this.graph.height / 2], [this.graph.nodes[i].x, this.graph.nodes[i].y]) < 50) {
         this.initial = i;
         break;
       }

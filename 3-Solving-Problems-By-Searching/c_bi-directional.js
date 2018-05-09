@@ -7,7 +7,8 @@ class BidirectionalDiagram {
     this.root = this.selector
       .append('canvas')
       .attr('height', this.h)
-      .attr('width', this.w);
+      .attr('width', this.w)
+      .style('width','100%');
     this.context = this.root.node().getContext("2d");
     this.context.clearRect(0, 0, this.w, this.h);
     this.delay = 4;

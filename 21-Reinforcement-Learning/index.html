@@ -6,24 +6,24 @@
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
+
   <!-- D3 -->
   <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
-  
+
   <!-- Helpers -->
   <script type="text/javascript" src="./mdp.js"></script>
   <script type="text/javascript" src="./policyEvaluation.js"></script>
-  
+
   <!-- Model -->
   <script type="text/javascript" src="./pe_model.js"></script>
-  
+
   <!-- View -->
   <script type="text/javascript" src="./pe_view.js"></script>
 
   <!-- Controller -->
   <script type="text/javascript" src="./interactive.js"></script>
   <script type="text/javascript" src="./pe_controller.js"></script>
-  
+
   <!-- Main -->
   <script type="text/javascript" src="./main.js"></script>
   <link rel="stylesheet" href="state.css">
@@ -35,8 +35,12 @@
   <div class="row">
     <div class="col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3" id="content">
       <h1>Reinforcement Learning</h1>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#policy-evaluation">Policy Evaluation</a></li>
+      </ul>
       <h2>Policy Evaluation</h2>
-      
+
       <ul>
         <li>The intensity of the blue bar shows the influence of the state value in the weighted average</li>
         <li>The state value history gets visualized as a bar chart in each state</li>
@@ -44,7 +48,7 @@
         <li>Red indicates negative state value</li>
         <li>Dark gray indicates the terminal states</li>
       </ul>
-      
+
       <div>
         <div id='canvas'></div>
         <div  class="text-center">

@@ -26,7 +26,8 @@
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",
     "gulp-watch": "^4.3.5",
-    "jspm": "^0.16.31"
+    "jspm": "^0.16.31",
+    "prettier": "^1.7.0"
   },
   "jspm": {
     "dependencies": {

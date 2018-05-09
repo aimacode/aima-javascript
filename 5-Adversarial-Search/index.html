@@ -3,33 +3,55 @@
 <head>
   <title>5 Adversarial Search</title>
   <link rel="stylesheet" href="../styles.css">
+   <meta charset="UTF-8"> 
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
   <script type="text/javascript" src="../main.js"></script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.js"></script>
   <script type="text/javascript" src="./minimax.js"></script>
-  <script type="text/javascript" src="./alphabeta.js"></script>
+  <script type="text/javascript" src="./alphaBeta.js"></script>
   <script type="text/javascript" src="./c_minimax.js"></script>
-  <script type="text/javascript" src="./c_alphabeta.js"></script>
+  <script type="text/javascript" src="./c_alphaBeta.js"></script>
 </head>
 <body>
 
   <div class="row">
     <div class="col-sm-6 col-md-offset-3" id="content">
       <h1>Adversarial Search</h1>
+      <h3>Table of contents</h3>
+      <ul class="content-table">
+        <li><a href="#minimax">Minimax</a></li>
+        <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
+      </ul>
+      <h2 id="minimax">Minimax</h2>
+      <p>
+        The algorithm will attempt to find the best action that an agent can take, assuming that an opposing force is trying to minimize its results.<br><br>
+        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
+        <br>
+      </p>
+      <input type="text" id="minimaxInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2">
+      <button type="button" id="minimaxToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Stop Simulation</button>
+      <br>
+      <br>
+      <input type="range" min="1" max="17" value="1" id="minimaxProgress">
+      <br>
+      <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
+      
 
-      <h2>Minimax</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <div class = "canvas" id="minimaxCanvas" height="300px" style="background: rgb(154, 255, 255);">
-      </div>
-
-      <pre id="minimaxCode"></pre>
-
-      <h2>Alpha Beta Pruning</h2>
-      <p>Click on the screen to restart the simulation.</p>
-      <div class = "canvas" id="alphaBetaCanvas" height="300px"></div>
-
-      <pre id="alphaBetaCode"></pre>
+      <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
+      <p>
+        A slight modification to minimax, Alpha Beta Pruning will try to improve performance by ignoring nodes that cannot possibly provide a better outcome.<br><br>
+        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
+        <br>
+      </p>
+      <input type="text" id="alphaBetaInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2">
+      <button type="button" id="alphaBetaToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Start Simulation</button>
+      <br>
+      <br>
+      <input type="range" min="1" max="17" value="1" id="alphaBetaProgress">
+      <br>
+      <div class="canvas" id="alphaBetaCanvas", width="300" height="400"></div>
+      
     </div>
   </div>
 

@@ -4,14 +4,46 @@
   <title>7 Logical Agents </title>
   <link rel="stylesheet" href="../styles.css">
   <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
   <script type="text/javascript" src="../main.js"></script>
+  <script type="text/javascript" src="./logicalAgent.js"></script>
+  <script type="text/javascript" src="./c_logicalAgent.js"></script>
+  <script type="text/javascript" src="../third-party/mousetrap.min.js"></script>
+  <script> 
+   $(function(){
+      $('header').load("../header.html"); 
+   });
+   </script>
+
+   <style type="text/css">
+   #wumpus_world .info {
+    fill: #ddd;
+   }
+   #wumpus_world rect.square {
+    fill: #ddd;
+    stroke-width: 1px;
+    stroke: black;
+   }
+   #wumpus_world circle.player {
+    fill: green;
+   }
+   #wumpus_world circle.wumpus {
+    fill: red;
+   }
+   #wumpus_world circle.gold {
+    fill: gold;
+   }
+   </style>
 </head>
 <body>
 
   <div class="row">
     <div class="col-sm-6 col-md-offset-3" id="content">
       <h1>Logical Agents</h1>
-      <p>TODO</p>
+      <h2>Wumpus World</h2>
+      <div id="wumpus_world"></div>
+
+
 
       
     </div>
