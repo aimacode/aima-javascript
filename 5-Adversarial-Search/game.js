@@ -1,12 +1,14 @@
+let tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100)
+
 function game(){
-	let tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100)
 	
 	let clickable = true
-	let cross_marks = []
-	let circle_marks = []
+	let cross_marks = [] // Gamestate: List of positions where crosses are
+	let circle_marks = [] // Gamestate: List of positions where circles are
 	let scale = 100
 	let bc1 = 'hsl(0,0%,20%)'
 	let width = 2
+	// Draw the Game Board on the Canvas
 	let div = document.getElementById("gameCanvas")
 	let canvas = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
 	canvas.setAttribute('style', 'width: 40%; float: right; margin: 0% 5% 5% 5%;')
@@ -47,6 +49,7 @@ function game(){
 		})
 	}
 
+	// Loop over each of the moves unless the game ends early
 	for(let i = 0; i < 9; i++) {
 		let button = document.createElementNS("http://www.w3.org/2000/svg", 'rect')
 		canvas.appendChild(button)
@@ -57,7 +60,7 @@ function game(){
 		button.setAttribute('stroke', 'none')
 		button.setAttribute('fill', 'hsl(60,5%,95%)')
 		button.setAttribute('style', 'cursor:pointer;')
-
+		// Initialize Circle and Cross Objects
 		let circle = document.createElementNS("http://www.w3.org/2000/svg", 'path')
 		canvas.appendChild(circle)
 		let r = scale/8
@@ -77,6 +80,7 @@ function game(){
 		cross.setAttribute('style', 'stroke-dasharray: 1000; stroke-dashoffset: 1000;  pointer-events: none;')
 		cross.setAttribute('stroke-width', width)
 		cross_marks.push(cross)
+		// The Click Event Listener on the board
 		button.onclick = async ()=> {
 			if (tree.board.tiles[i] != 0 || clickable == false) {
 				return;
@@ -91,12 +95,11 @@ function game(){
 			}
 			circle.setAttribute('class','gameapp')
 			tree = tree.children[count];
-			//console.log(tree.board.gameState)
 			if(tree.board.gameState != 0) {
 				await reset()
 				return
 			}
-			let move = tree.best();
+			let move = tree.best(); // Call to find the optimal move
 
 			let location = 0
 			count = -1;
@@ -111,7 +114,7 @@ function game(){
 			await sleep(1000)
 			cross_marks[location].setAttribute('class','gameapp')
 			tree = tree.children[move];
-			//console.log(tree.board.gameState);
+			// Reset the board for the next game
 			if(tree.board.gameState != 0) {
 				await reset()
 			}

@@ -1,5 +1,6 @@
 function gameTree() {
 	let tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100);
+
 	let div = document.getElementById("gameTreeCanvas");
 	let canvas = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 	div.appendChild(canvas);
