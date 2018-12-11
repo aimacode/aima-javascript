@@ -34,7 +34,7 @@ function game(){
 
 	async function reset() {
 		return new Promise(async (resolve) => {
-			textnode.nodeValue = (tree.board.gameState == 2 ? "X Wins" : "Draw")
+			textnode.nodeValue = (tree.board.gameState == 2 ? "X Wins" : tree.board.gameState == 1 ? "O wins" : "Draw")
 			await sleep(2000)
 			tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100)
 			for(let i = 0; i < 9; i++) {
