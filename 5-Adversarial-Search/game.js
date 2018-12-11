@@ -1,6 +1,5 @@
-let tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100)
-
 function game(){
+	let tree = new Tree(new Board([0,0,0,0,0,0,0,0,0], 1), 100)
 	
 	let clickable = true
 	let cross_marks = [] // Gamestate: List of positions where crosses are
