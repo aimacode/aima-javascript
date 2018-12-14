@@ -1,2 +1,0 @@
-var logicalAgent = function(){
-};

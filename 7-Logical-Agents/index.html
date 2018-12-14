@@ -1,53 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>7 Logical Agents </title>
-  <link rel="stylesheet" href="../styles.css">
-  <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script type="text/javascript" src="../main.js"></script>
-  <script type="text/javascript" src="./logicalAgent.js"></script>
-  <script type="text/javascript" src="./c_logicalAgent.js"></script>
-  <script type="text/javascript" src="../third-party/mousetrap.min.js"></script>
-  <script> 
-   $(function(){
-      $('header').load("../header.html"); 
-   });
-   </script>
-
-   <style type="text/css">
-   #wumpus_world .info {
-    fill: #ddd;
-   }
-   #wumpus_world rect.square {
-    fill: #ddd;
-    stroke-width: 1px;
-    stroke: black;
-   }
-   #wumpus_world circle.player {
-    fill: green;
-   }
-   #wumpus_world circle.wumpus {
-    fill: red;
-   }
-   #wumpus_world circle.gold {
-    fill: gold;
-   }
-   </style>
+    <title>7 Logical Agents </title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="../main.js"></script>
 </head>
 <body>
 
-  <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Logical Agents</h1>
-      <h2>Wumpus World</h2>
-      <div id="wumpus_world"></div>
-
-
-
-      
+    <div class="row">
+        <div class="col-sm-6 col-md-offset-3" id="content">
+            <h1>Logical Agents</h1>
+            <h2>Wumpus World</h2>
+            <p>The Wumpus world is a cave with a Monster and Deep Pits. But a huge pile of Gold lights up
+            the cave and entices Logical Agents to pursue a journey of great risks to find the Gold.
+            Take this journey with me and help me reason out the world, won't you?</p>
+            <ul>
+                <li><strong>Reward: Gold</strong> - There is a pile of gold - Game ends with +1000 to score.</li>
+                <li><strong>Penalty: Wumpus</strong> - There is one monster - Game ends with -1000 from score.</li>
+                <li><strong>Penalty: Pit</strong> - There are many pits in grid - Game ends with -1000 from score.</li>
+                <li><strong>Sensor: Breeze</strong> - There is a pit in an adjacent tile.</li>
+                <li><strong>Sensor: Stench</strong> - There is Wumpus in an adjacent tile.</li>
+                <li><strong>Time Evolution: All Moves</strong> - -1 from score after every move.</li>
+                <li><strong>Time Evolution: Up Move</strong> - -10 from score after every move.</li>
+            </ul>
+            <div id="drawing" style="margin: 50px;"></div>
+        </div>
     </div>
-  </div>
-
+    <script src="svg.min.js"></script>
+    <script src="grid.js"></script>
+    <script> $(function() { $('header').load("../header.html"); }); </script>
 </body>
 </html>
