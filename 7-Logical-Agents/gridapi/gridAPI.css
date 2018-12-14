@@ -1,0 +1,23 @@
+:root {
+    --container-width: 500px;
+    --row-height: 50px;
+    --square-margin-right: 10px;
+}
+
+.grid-container {
+    table-layout: fixed;
+    width: var(--container-width);
+}
+
+.grid-row {
+    height: var(--row-height);
+    width: 100%;
+}
+
+.grid-square {
+    height: 100%;
+    padding: 5px;
+    font-size: 15px;
+    vertical-align: middle;
+    text-align: center;
+}
