@@ -3,13 +3,12 @@
 <head>
     <title>7 Logical Agents </title>
     <link rel="stylesheet" href="../styles.css">
-    <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="jquery.min.js"></script>
     <script type="text/javascript" src="../main.js"></script>
 </head>
 <body>
-
-    <div class="row">
-        <div class="col-sm-6 col-md-offset-3" id="content">
+    <div class="container">
+        <div class="row" id="content">
             <h1>Logical Agents</h1>
             <h2>Wumpus World</h2>
             <p>The Wumpus world is a cave with a Monster and Deep Pits. But a huge pile of Gold lights up
@@ -24,7 +23,45 @@
                 <li><strong>Time Evolution: All Moves</strong> - -1 from score after every move.</li>
                 <li><strong>Time Evolution: Up Move</strong> - -10 from score after every move.</li>
             </ul>
+            <h4>Use <kbd>w</kbd>, <kbd>a</kbd>, <kbd>s</kbd>, and <kbd>d</kbd> to play this game.</h4>
+            <table class="table table-bordered table-dark text-center">
+                <thead>
+                <tr>
+                    <th class="text-center" scope="col" colspan="2">Color</th>
+                    <th class="text-center" scope="col">Measurement</th>
+                    <th class="text-center" scope="col">Meaning</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th class="text-center" scope="row">Green</th>
+                    <td style="background-color: #55ff66; min-width: 30px"></td>
+                    <td>Nothing</td>
+                    <td>Feels like fresh safe air, doesn't it!</td>
+                </tr>
+                <tr>
+                    <th class="text-center" scope="row">Red</th>
+                    <td style="background-color: #ff0000;">        </td>
+                    <td>Breeze</td>
+                    <td>There is a Pit in one of the Adjacent cells</td>
+                </tr>
+                <tr>
+                    <th class="text-center" scope="row">Black</th>
+                    <td style="background-color: #000000;">        </td>
+                    <td>Stench</td>
+                    <td>Wumpus is close by, adjacent to your cell</td>
+                </tr>
+                <tr>
+                    <th class="text-center" scope="row">Brown</th>
+                    <td style="background-color: #660000;">        </td>
+                    <td>Stenchy Breeze</td>
+                    <td>This is dangerous. You feel both a pit and the Wumpus.</td>
+                </tr>
+                </tbody>
+            </table>
+
             <div id="drawing" style="margin: 50px;"></div>
+
         </div>
     </div>
     <script src="svg.min.js"></script>

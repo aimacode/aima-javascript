@@ -7,26 +7,27 @@ class Grid {
   public tiles: Tile[][] = [];
   protected canvas: any;
   protected GRID_SIZE: number = 4;
-  protected UX_SIZE: number = 400;
+  protected UX_SIZE: number = 600;
 
   constructor() {
     for (let i = 0; i < this.GRID_SIZE; i++) {
       this.tiles[i] = [];
       for (let j = 0; j < this.GRID_SIZE; j++) {
-        this.tiles[i][j] = new Tile(i + 1, this.GRID_SIZE - j);
+        this.tiles[i][j] = new Tile(i + 1, this.GRID_SIZE - j,
+          this.UX_SIZE / this.GRID_SIZE);
       }
     }
     this.render();
     this.agent = new Agent(this);
     // Binding the Keypress Event
     $("html").on("keydown", (e: any) => {
-      if (e.which === 37) {
+      if (e.which === 37 || e.which === "A".charCodeAt(0)) {
         this.agent.move(Move.Left);
-      } else if (e.which === 38) {
+      } else if (e.which === 38 || e.which === "W".charCodeAt(0)) {
         this.agent.move(Move.Up);
-      } else if (e.which === 39) {
+      } else if (e.which === 39 || e.which === "D".charCodeAt(0)) {
         this.agent.move(Move.Right);
-      } else if (e.which === 40) {
+      } else if (e.which === 40 || e.which === "S".charCodeAt(0)) {
         this.agent.move(Move.Down);
       }
     });
@@ -78,8 +79,18 @@ class Grid {
     }
   }
 
-  protected render() {
-    this.canvas = SVG("drawing").size(400, 400);
+  public reset(): void {
+    for (let i = 0; i < this.GRID_SIZE; i++) {
+      for (let j = 0; j < this.GRID_SIZE; j++) {
+        this.tiles[i][j].reset();
+      }
+    }
+    this.getTile(1, 1).measured = true;
+    this.agent.reset();
+  }
+
+  public render() {
+    this.canvas = SVG("drawing").size(this.UX_SIZE, this.UX_SIZE);
     const BLOCK_SIZE: number = this.UX_SIZE / this.GRID_SIZE;
     for (let i = 0; i < this.GRID_SIZE; i++) {
       for (let j = 0; j < this.GRID_SIZE; j++) {
@@ -103,13 +114,12 @@ class Tile {
   private mMeasurement: Measurement;
   private mMeasured: boolean;
 
-  constructor(x, y, gold = false, wumpus = false, pit = false,
-              stench = false, breeze = false, blockSize = 100) {
+  constructor(x, y, blockSize = 100) {
     this.mX = x;
     this.mY = y;
-    this.mWumpus = wumpus;
-    this.mPit = pit;
-    this.mGold = gold;
+    this.mWumpus = false;
+    this.mPit = false;
+    this.mGold = false;
     this.BLOCK_SIZE = blockSize;
     this.mMeasurement = Measurement.Safe;
     this.mMeasured = false;
@@ -134,32 +144,38 @@ class Tile {
     this.render();
   }
 
+  public reset() {
+    this.measured = false;
+  }
+
   public render(): void {
-    const rOut = this.mCanvas.rect(this.BLOCK_SIZE, this.BLOCK_SIZE);
-    const rInn = this.mCanvas.rect(this.BLOCK_SIZE * 0.8, this.BLOCK_SIZE * 0.8);
+    const rOut = this.mCanvas.rect(this.BLOCK_SIZE * 0.98, this.BLOCK_SIZE * 0.98);
+    const rInn = this.mCanvas.rect(this.BLOCK_SIZE * 0.75, this.BLOCK_SIZE * 0.75);
     if (this.mMeasured) {
       rOut.fill({ color: this.mMeasurement });
     } else {
       rOut.fill({ color: "#ccc" });
     }
     rInn.fill({ color: "#ddd" });
+    rOut.center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
     rInn.center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
   }
 }
 
 enum Measurement {
-  Stench = "#fd6",
-  Breeze = "#7af",
-  StenchyBreeze = "#8d6",
-  Safe = "#f06",
+  Stench = "#ff0000",
+  Breeze = "#000000",
+  StenchyBreeze = "#660000",
+  Safe = "#55ff66",
 }
 
 class Agent {
 
-  public ux;
   protected mX;
   protected mY;
   private mGame;
+  private ux;
+  private mScore;
 
   constructor(grid: Grid) {
     this.mX = 1;
@@ -195,26 +211,75 @@ class Agent {
     return this.mGame.getTile(this.x, this.y).measurement;
   }
 
+  public score(): void {
+    const tile = this.mGame.getTile(this.mX, this.mY);
+    if (tile.hasWumpus) {
+      // Add text and a Rectangle behind it
+      this.ux.animate().fill("#000000").radius(5);
+      const rect = this.mGame.canvas
+        .rect(this.mGame.UX_SIZE, this.mGame.UX_SIZE / this.mGame.GRID_SIZE)
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2).fill("#000000");
+      const text = this.mGame.canvas.text("Wumpus ate you.")
+        .font({ family: "Helvetica", size: 60, fill: "white" })
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2);
+      // Reset the game 2 seconds later
+      setTimeout(() => {
+        this.mGame.reset();
+        rect.remove();
+        text.remove();
+      }, 2500);
+    } else if (tile.hasPit) {
+      this.ux.animate().fill("#000000").radius(5);
+      // Add text and a Rectangle behind it
+      const rect = this.mGame.canvas
+        .rect(this.mGame.UX_SIZE, this.mGame.UX_SIZE / this.mGame.GRID_SIZE)
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2).fill("#000000");
+      const text = this.mGame.canvas.text("Oops, you fell in a Pit.")
+        .font({ family: "Helvetica", size: 60, fill: "white" })
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2);
+      // Reset the game 2 seconds later
+      setTimeout(() => {
+        this.mGame.reset();
+        rect.remove();
+        text.remove();
+      }, 2500);
+    } else if (tile.hasGold) {
+      this.ux.animate().fill("#FFD000").radius(25);
+      // Add text and a Rectangle behind it
+      const rect = this.mGame.canvas
+        .rect(this.mGame.UX_SIZE, this.mGame.UX_SIZE / this.mGame.GRID_SIZE)
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2).fill("#FFD000");
+      const text = this.mGame.canvas.text("You Won GOLD!.")
+        .font({ family: "Helvetica", size: 60, fill: "black" })
+        .center(this.mGame.UX_SIZE / 2, this.mGame.UX_SIZE / 2);
+      // Reset the game 2 seconds later
+      setTimeout(() => {
+        this.mGame.reset();
+        rect.remove();
+        text.remove();
+      }, 2500);
+    }
+  }
+
+  public reset(): void {
+    this.mX = 1;
+    this.mY = 1;
+    this.render();
+    this.ux.finish();
+    this.ux.fill("#f06");
+    this.ux.radius(10);
+  }
+
   public render(): void {
     this.ux.finish();
     const BLOCK_SIZE = this.mGame.UX_SIZE / this.mGame.GRID_SIZE;
     this.ux.animate().center(BLOCK_SIZE * this.mX - BLOCK_SIZE / 2,
       this.mGame.UX_SIZE - BLOCK_SIZE * this.mY + BLOCK_SIZE / 2);
   }
-
-  public score(): void {
-    if (this.mGame.getTile(this.mX, this.mY).hasWumpus) {
-      this.ux.animate().fill("#000000");
-    } else if (this.mGame.getTile(this.mX, this.mY).hasPit) {
-      this.ux.animate().fill("#000000");
-    } else if (this.mGame.getTile(this.mX, this.mY).hasGold) {
-      this.ux.animate().fill("#FFD700");
-    }
-  }
 }
 
 enum Move {
-  Left, Right, Up, Down, Reset,
+  Left, Right, Up, Down,
 }
 
 const game: Grid = new Grid();
