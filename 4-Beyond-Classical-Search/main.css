@@ -64,3 +64,27 @@
 .done-move {
   color: green;
 }
+
+.clickable {
+  cursor: pointer;
+}
+.localization .cell{
+  fill : hsla(360, 0%, 90%, 1);
+  stroke-width : 1;
+  stroke : hsla(360, 0%, 50%, 1);
+}
+.localization .cell.highlighted{
+  fill : hsla(250, 100%, 80%, 1);
+}
+
+.localization .cell.blocked {
+  fill : hsla(360, 0%, 50%, 1);
+  stroke-width : 0;
+}
+.localization .boundary {
+  fill : none;
+  stroke : hsla(360, 0%, 60%, 1);
+}
+.localization .sidePanel1 {
+  margin-top: 15%;
+}

@@ -1,59 +1,344 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <title>5 Adversarial Search</title>
-  <link rel="stylesheet" href="../styles.css">
-   <meta charset="UTF-8"> 
-  <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
-  <script type="text/javascript" src="../main.js"></script>
+	<meta charset="UTF-8">
+	<title>Adversarial Search</title>
+	<script src="banner.js"></script>
+	<script src="tree.js"></script>
+	<script src="draw.js"></script> 
+	<script src="game.js"></script>
+	<script src="gameTree.js"></script>
+	<script src="parallax1.js"></script>
+	<script src="recursive.js"></script>
+	<script src="states.js"></script>
+	<script src="bigtree.js"></script>
+	<script src="transition.js"></script>
+	<script src="parallax2.js"></script>
+	<script src="nalphabeta.js"></script>
+	<script src="badtree.js"></script>
+	<script src="deepening.js"></script>
+	<script src="comparison.js"></script>
+	<script src="main.js"></script>
+	<style>
+		
+		* {
+			padding: 0px;
+			margin: 0px;
+		}
+		body {
+			font-family: arial;
+			background-color: hsl(60,5%,95%);
+			min-width: 800;
+		}
+		#banner-container {
+			width: 100%;
+			background-color: hsl(0, 0%, 10%);
+			text-align: center;
+			margin-bottom: 10vh;
+		}
+		#banner {
+			background-color: hsl(0, 0%, 10%);;
+			width: 80%;
+			
+		}
+		#wintext {
+			font-size: 0.83em;	
+			fill:hsl(0,0%,90%);
+			stroke: hsl(0, 0%, 0%);
+			stroke-width: 0.05em;
+			pointer-events: none;
+			font-weight: 900;
+			animation: pulse 3s infinite;
+		}
+		@keyframes pulse {
+    		0% {font-size: 0.83em;}
+    		50% {font-size: 0.79em;}
+			100% {font-size: 0.83em;}
+		}
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.6.0/two.js"></script>
-  <script type="text/javascript" src="./minimax.js"></script>
-  <script type="text/javascript" src="./alphaBeta.js"></script>
-  <script type="text/javascript" src="./c_minimax.js"></script>
-  <script type="text/javascript" src="./c_alphaBeta.js"></script>
+		#wintextgt {
+			font-size: 0.6em;	
+			fill:hsl(0,0%,100%);
+			stroke: hsl(0, 0%, 0%);
+			stroke-width: 0.6;
+			pointer-events: none;
+			font-weight: 900;
+		}
+		#htext {
+			font-size: 0.8em;	
+			fill:hsl(0,0%,70%);
+			stroke: hsl(0, 0%, 0%);
+			stroke-width: 0.7;
+			pointer-events: none;
+			text-shadow: 5px 5px (0, 0%, 100%);
+			font-weight: 900;
+		}
+		.content-container {
+			background-color: hsl(60,5%,95%);
+			width: 60%;
+			margin: auto;
+		}
+		.text {	
+			line-height: 5vh;
+			font-size: 120%;
+		}
+		
+		#footer {
+			width: 100%;
+			height: 10vh;
+			background-color: hsl(0, 0%, 25%);
+		}
+		.figures {
+			text-align: center;
+		}
+		.node {
+			/*animation: nodeframes 2s infinite;*/
+			fill:hsl(0,0%,30%);
+		}
+		.parallax_active {
+		}
+		.parallax_inactive {
+			opacity: 0.2;
+		}
+		@keyframes nodeframes {
+			0% {fill: black;}
+			50%   {fill: white;}
+			100% {fill: black;}
+		}
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			min-width: 400px;
+		}
+		.gameapp {
+			stroke-dasharray: 1000;
+			stroke-dashoffset: 1000;
+			animation: dash 2s forwards;
+		}
+
+		@keyframes dash {
+			from {
+				stroke-dashoffset: 1000;
+			}
+			to {
+				stroke-dashoffset: 0;
+			}
+		}
+		.recursive_button {
+			animation: flash 2s infinite;
+		}
+		@keyframes flash {
+			0% { opacity: 0; }
+			50% { opacity: 1; }
+			100% { opacity: 0; }
+		}
+		#parallax1Text div {
+			min-height: 30vh;
+		}
+		#parallax2Text div {
+			min-height: 30vh;
+		}
+		.para_label {
+			font-size: 0.4em;
+		}
+		.draw_status {
+			stroke-width: 0.04em;
+			stroke: black;
+			fill: hsl(240,50%,70%);
+			font-weight: 900;
+			font-size: 0.65em;
+			display: none;
+		}
+		.cross_status {
+			stroke-width: 0.04em;
+			stroke: black;
+			fill: hsl(0,50%,70%);
+			font-weight: 900;
+			font-size: 0.65em;
+			display: none;
+		}
+		.circle_status {
+			stroke-width: 0.04em;
+			stroke: black;
+			fill: hsl(120,50%,70%);
+			font-weight: 900;
+			font-size: 0.65em;
+			display: none;
+		}
+		.undecided_status {
+			stroke-width: 0.05em;
+			stroke: black;
+			fill: hsl(270,50%,70%);
+			font-weight: 900;
+			font-size: 0.5em;
+			display: none;
+		}
+		.board_status {
+			stroke-width: 0.03em;
+			stroke: black;
+			fill: white;
+			font-weight: 900;
+			font-size: 0.4em;
+			display: none;
+		}
+		.board_status_active {
+			display:inherit;
+			animation: board_status_animation 1s forwards;
+		}
+		@keyframes board_status_animation {
+			0% { transform: translate(0px, 0px); }
+			50% { transform: translate(0px, -5px); }
+			100% { transform: translate(0px, 0px); }
+		}
+		#transitionButton {
+			background-color: hsl(0,50%,50%);
+			box-shadow: 2px 2px;
+			border-radius: 3px;
+			padding: 3px;
+		}
+		#transitionButton:hover {
+			box-shadow: 0px 0px;
+		}
+		.abp {
+			stroke-width: 0.04em;
+			stroke: black;
+			fill: hsl(240,50%,70%);
+			font-weight: 900;
+			font-size: 0.5em;
+		}
+	</style>
 </head>
-<body>
+<body onload="main()">
+	<div id="banner-container">
+		<svg id="banner" viewBox="0 0 300 90"></svg>
+	</div>
+	<div class="content-container">
+		<div class="figures" id="gameCanvas"></div>
+		<div class="text">
+			Tic-tac-toe is a fairly simple game. Each player takes a turn marking a square, and the first player to claim 3 in a line wins. A computer is very good at this game, and won’t ever get anything worse than a draw. Give it a try!
+			<br>
+			<br>
+			But how does it do it? We need a way to represent this problem before we can try to have a computer solve it. Trees can work well because we can enumerate every move and its resulting state. Make a move to see how we traverse the tree.
+		</div>
 
-  <div class="row">
-    <div class="col-sm-6 col-md-offset-3" id="content">
-      <h1>Adversarial Search</h1>
-      <h3>Table of contents</h3>
-      <ul class="content-table">
-        <li><a href="#minimax">Minimax</a></li>
-        <li><a href="#alpha-beta-pruning">Alpha Beta Pruning</a></li>
-      </ul>
-      <h2 id="minimax">Minimax</h2>
-      <p>
-        The algorithm will attempt to find the best action that an agent can take, assuming that an opposing force is trying to minimize its results.<br><br>
-        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
-        <br/>
-      </p>
-      <input type="text" id="minimaxInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"/>
-      <button type="button" id="minimaxToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Stop Simulation</button>
-      <br/>
-      <br/>
-      <input type="range" min="1" max="17" value="1" id="minimaxProgress"/>
-      <br/>
-      <div class="canvas" id="minimaxCanvas", width="300" height="400"></div>
-      
+		<div class="figures" id="gameTreeCanvas"></div>
+		
+		<div class="text">In addition to this we’re going to use an evaluation function, a heuristic, to help us solve this problem. Our evaluation function will assign states that X wins a value of 1, draw states a value of 0, and states that O wins a value of -1. Our goal is to choose the state with the highest value.</div>
+		
+		
+		<div class="grid">
+			<div id='parallax1Text' class="text">
+				<div></div>
+				<div id="parallax_text1">Using this evaluation function, can you decide what X should pick here?</div>
+				<div id="parallax_text2">First we'll look at the bottom left node.</div>
+				<div id="parallax_text3">We find that the node has a value of 0.</div>
+				<div id="parallax_text4">We return to the parent node, but we find that there's still options that we have not considered.</div>
+				<div id="parallax_text5">We find that the right child is a win!</div>
+				<div id="parallax_text6">Because all of the children are now evaluated, we can now pick a move with confidence.</div>
+				<div id="parallax_text7">Our goal as X is to maximize the value, so we pick the child with the highest value.</div>
+				We can peek into all possible futures by looking at the current state's children, and using our evaluation function, we can assign a value to the states we see. This will allow us to choose the most valuable move.
+			</div>
+			<div id="parallax1Canvas"></div>
+		</div>
+		
+		
+		<div id='recursiveText' class="text">
+			Our choice was correct in the last example, but it isn’t hard to imagine a situation where this method of choosing moves could lead us astray. Look at the next example: all of the children are inconclusive, so the states have a value of 0. Does this mean all of them are equally viable moves? As we can see, we yield the choice for the next state to O. Of course we don’t know what O will pick, but if we want any kind of guarantee about the worst case scenario for a move, we should assume that our opponent will play perfectly. If we’re willing to look deeper into the tree, we’re able to reevaluate a state’s value based on where we think it will lead us.	
+		</div>
 
-      <h2 id="alpha-beta-pruning">Alpha Beta Pruning</h2>
-      <p>
-        A slight modification to minimax, Alpha Beta Pruning will try to improve performance by ignoring nodes that cannot possibly provide a better outcome.<br><br>
-        Provide the leafs nodes for the tree to see how the algorithm will solve different problems.
-        <br/>
-      </p>
-      <input type="text" id="alphaBetaInput" size="60" value="6, 13, 8, 1, 99, 100, 14, 5, 2"/>
-      <button type="button" id="alphaBetaToggle" style="background-color: white; border: 1px solid black; font-size: 16px;">Start Simulation</button>
-      <br/>
-      <br/>
-      <input type="range" min="1" max="17" value="1" id="alphaBetaProgress"/>
-      <br/>
-      <div class="canvas" id="alphaBetaCanvas", width="300" height="400"></div>
-      
-    </div>
-  </div>
+		<div class="figures" id="recursiveCanvas"></div>
 
+
+		
+		<div id='bigtreeText' class="text">
+			When O tries to decide what move to make, O can also assume that X will pick the best option for themselves. But what is the best move for X? Now we're back to the same place we started, searching for the best move X can make, only deeper into the tree. We could stop any time, but our results will be more reliable the deeper we go. Here is the same tree, but we evaluate each node in order.
+		</div>
+	</div>
+	<div id="bigtreeContainer" style="height: 200em;">
+		<div class="figures" id="bigtreeCanvas"></div>
+	</div>
+	<div class="content-container">
+		<div id='transitionText' class="text">
+			This is the essence of the Minimax algorithm, which is the foundation of many powerful techniques. It is a very exhaustive algorithm, so it will try to evaluate every node in a tree if you allow it to. This can be a problem, as trees can have explosive growth. Depending on a game’s branching factor(possible plays in a turn) and how many layers(turns) deep into the tree you want to look, the problem can quickly become unmanageable.
+			<br><br>
+			Luckily, there are many ways we can improve the performance of Minimax
+			<br><br>
+			I want to draw your attention to a specific moment in the middle of evaluation for our last diagram. At this point we should be able to tell that the best-case scenario for this move is worse than another option we already found. So why keep looking into <span id="transitionButton"> the branch?</span>
+		</div>
+		<div class="figures" id="transitionCanvas"></div>
+	
+		<div class="text">We can account for this by keeping track of the best and worst case scenario.
+			</div>
+		<div class="grid">
+			<div id='parallax2Text' class="text">
+				<div></div>
+				<div id="parallax2_text1">
+					We store the best and worst options we find in α and β. We start by filling them with two extreme values so that we don't discard our first options. 
+				</div>
+				<div id="parallax2_text2">
+					The first option has a value of 1!
+				</div>
+				<div id="parallax2_text3">
+					Now we return to our parent. It's the root player's choice so we compare it with α and find that the value we found is better, so we update it.
+				</div>
+				<div id="parallax2_text4">
+					Now we start looking at the next child. We pass the current node's α and β to it.
+				</div>
+				<div id="parallax2_text5">
+					This node isn't a leaf/terminal node, so we look at it's children as well. We find that the first one has a value of 0!
+				</div>
+				<div id="parallax2_text6">
+					Because the opposing player picks the move on this node, we compare it with β, and find it to be better(worse for us), so we update it. However we notice that α is now greater than β. This means that in the best case for us, this branch is already worse(0) than another option(1) that we've already found. We now have no reason to keep looking into this branch.
+				</div>
+			</div>
+			<div id="parallax2Canvas"></div>
+		</div>
+
+		<div class="text" id="alphabetaText">
+			This will give us identical results to Minimax, but can give us vastly better performance.
+		</div>
+	</div>
+
+		<div id="abparaContainer" style="height: 200em;">
+			<div class="figures" id="alphabetaCanvas"></div>
+		</div>
+
+	<div class="content-container">
+		<div style="text-align: center; display: none;">
+			<input style="width: 60%;" type="range" min="0" max="141" value="0" class="slider" id="alphabetaRange"></div>
+		<div class="text">
+			One thing to keep in mind is that alpha beta cannot guarantee that we’ll get better performance. The order in which things are evaluated makes a huge difference. We're lucky because the most valueable move is found first, but it's perfectly plausible that we'll evaluate moves in increasing value, meaning that we could see little to no performance increase.
+		</div>
+	</div>
+	<div id="badtreeContainer" style="height: 200em;">
+		<div class="figures" id="badtreeCanvas"></div>
+	</div>
+	<div class="content-container">
+		<div class="text">
+
+			Luckily there are a few things that we use to help us avoid this problems. One solution is to pick a random move each turn. Doing that can help us avoid falling into obvious patterns, which may have helped us in the above example. Heuristics can also help us. For example, in chess, moves that lead to captures will often be a good indicator of which branch to pick. Finally, we can also employ iterative deepening, choosing to expand the path leading to the most valuable state first, as previous states are a good indicator of future valuable states. This encours a slight overhead, but it’s often worth it in larger trees. Here is an example of it in action:
+
+		</div>
+	</div>
+	<div id="deepeningContainer" style="height: 200em;">
+		<div class="figures" id="deepeningCanvas"></div>
+	</div>
+	<div class="content-container">
+
+	<div class="text">
+		Here is a comparison of techniques used!
+	</div>
+	
+	<canvas id="comparisonCanvas"></canvas>
+
+	<div class="text">
+		Like we mentioned before, iterative deepening has an overhead, but it prunes branches far more aggressively, allowing for us to go far deeper in large trees. There is almost no reason not to use alpha beta pruning over minimax, but your choice of branch ordering can have a massive effect on the outcome. Which one is best depends on your specific game.
+	</div>
+
+
+	</div>
+
+	
+	<div id="footer"></div>
 </body>
 </html>
