@@ -8,9 +8,10 @@ export class Grid {
 
   public readonly GRID_SIZE: number = 4;
   public readonly UX_SIZE: number = 600;
+  public readonly ELEMENT: string = "drawing";
+  public canvas: any;
   public agent: Agent;
   public tiles: Tile[][] = [];
-  public canvas: any;
 
   constructor() {
     for (let i = 0; i < this.GRID_SIZE; i++) {

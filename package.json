@@ -27,12 +27,14 @@
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",
     "gulp-typescript": "^5.0.0",
+    "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.5",
     "jspm": "^0.16.31",
     "prettier": "^1.7.0",
     "tsify": "^4.0.1",
     "typescript": "^3.2.2",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "watchify": "^3.11.0"
   },
   "jspm": {
     "dependencies": {

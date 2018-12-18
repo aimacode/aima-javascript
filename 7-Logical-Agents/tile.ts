@@ -1,5 +1,3 @@
-import { Grid } from "./grid";
-
 export class Tile {
 
   protected mWumpus: boolean;
@@ -40,6 +38,36 @@ export class Tile {
   set measured(measured: boolean) {
     this.mMeasured = measured;
     this.render();
+  }
+  set hasBreeze(breeze: boolean) {
+    if (breeze && this.mMeasurement === Measurement.Stench) {
+      this.mMeasurement = Measurement.StenchyBreeze;
+    } else if (breeze && this.mMeasurement === Measurement.Safe) {
+      this.mMeasurement = Measurement.Breeze;
+    } else if (!breeze && this.mMeasurement === Measurement.StenchyBreeze) {
+      this.mMeasurement = Measurement.Stench;
+    } else if (!breeze && this.mMeasurement === Measurement.Breeze) {
+      this.mMeasurement = Measurement.Safe;
+    }
+  }
+  get hasBreeze(): boolean {
+    return this.mMeasurement === Measurement.Breeze
+      || this.mMeasurement === Measurement.StenchyBreeze;
+  }
+  set hasBreeze(stench: boolean) {
+    if (stench && this.mMeasurement === Measurement.Breeze) {
+      this.mMeasurement = Measurement.StenchyBreeze;
+    } else if (stench && this.mMeasurement === Measurement.Safe) {
+      this.mMeasurement = Measurement.Stench;
+    } else if (!stench && this.mMeasurement === Measurement.StenchyBreeze) {
+      this.mMeasurement = Measurement.Stench;
+    } else if (!stench && this.mMeasurement === Measurement.Stench) {
+      this.mMeasurement = Measurement.Safe;
+    }
+  }
+  get hasStench(): boolean {
+    return this.mMeasurement === Measurement.Stench
+      || this.mMeasurement === Measurement.StenchyBreeze;
   }
 
   public reset() {
