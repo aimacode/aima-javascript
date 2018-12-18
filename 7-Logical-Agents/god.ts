@@ -7,6 +7,7 @@ export class GodSight {
   private readonly BLOCK_SIZE: number;
   private readonly GRID_SIZE: number;
   private tiles: Tile[][] = [];
+  private displayed: boolean = false;
 
   constructor(game: Grid) {
     this.canvas = game.canvas.nested();
@@ -19,6 +20,9 @@ export class GodSight {
   }
 
   public render(): void {
+    if (this.displayed) {
+      return;
+    }
     for (let i = 0; i < this.GRID_SIZE; i++) {
       for (let j = 0; j < this.GRID_SIZE; j++) {
         if (this.tiles[i][j].hasStench) {
@@ -63,9 +67,11 @@ export class GodSight {
         }
       }
     }
+    this.displayed = true;
   }
 
   public hide(): void {
     this.canvas.clear();
+    this.displayed = false;
   }
 }

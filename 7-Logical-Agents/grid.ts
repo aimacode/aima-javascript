@@ -94,7 +94,7 @@ export class Grid {
   }
 
   public render() {
-    this.canvas = SVG("drawing").size(this.UX_SIZE, this.UX_SIZE);
+    this.canvas = SVG(this.ELEMENT).size(this.UX_SIZE, this.UX_SIZE);
     const BLOCK_SIZE: number = this.UX_SIZE / this.GRID_SIZE;
     for (let i = 0; i < this.GRID_SIZE; i++) {
       for (let j = 0; j < this.GRID_SIZE; j++) {

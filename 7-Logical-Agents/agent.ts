@@ -7,12 +7,14 @@ export class Agent {
   protected mY: number;
   private mGame: Grid;
   private ux: any;
+  private disabled: boolean = false;
 
   constructor(grid: Grid) {
     this.mX = 1;
     this.mY = 1;
     this.mGame = grid;
     this.measure();
+    this.disabled = false;
     this.ux = this.mGame.canvas.circle(20);
     this.ux.fill("#f06");
     this.ux.center(this.mGame.UX_SIZE / (2 * this.mGame.GRID_SIZE),
@@ -23,6 +25,9 @@ export class Agent {
   get y(): number { return this.mY; }
 
   public move(move: Move): void {
+    if (this.disabled) {
+      return;
+    }
     if (move === Move.Up && this.mY < this.mGame.GRID_SIZE) {
       this.mY += 1;
     } else if (move === Move.Down && this.mY > 1) {
@@ -59,6 +64,7 @@ export class Agent {
         rect.remove();
         text.remove();
       }, 2500);
+      this.disabled = true;
     } else if (tile.hasPit) {
       this.ux.animate().fill("#000000").radius(5);
       // Add text and a Rectangle behind it
@@ -74,6 +80,7 @@ export class Agent {
         rect.remove();
         text.remove();
       }, 2500);
+      this.disabled = true;
     } else if (tile.hasGold) {
       this.ux.animate().fill("#FFD000").radius(25);
       // Add text and a Rectangle behind it
@@ -89,6 +96,7 @@ export class Agent {
         rect.remove();
         text.remove();
       }, 2500);
+      this.disabled = true;
     }
   }
 
@@ -99,6 +107,7 @@ export class Agent {
     this.ux.finish();
     this.ux.fill("#f06");
     this.ux.radius(10);
+    this.disabled = false;
   }
 
   public render(): void {
@@ -106,6 +115,24 @@ export class Agent {
     const BLOCK_SIZE = this.mGame.UX_SIZE / this.mGame.GRID_SIZE;
     this.ux.animate().center(BLOCK_SIZE * this.mX - BLOCK_SIZE / 2,
       this.mGame.UX_SIZE - BLOCK_SIZE * this.mY + BLOCK_SIZE / 2);
+    this.console();
+  }
+
+  private console(): void {
+    const pos = this.mGame.getTile(this.mX, this.mY);
+    if (pos.hasGold) {
+      $("#agent-console").html("Thank you for helping me find all this gold");
+    } else if (pos.hasPit || pos.hasWumpus) {
+      $("#agent-console").html("You were supposed to help me, I am dead now.");
+    } else if (pos.hasStench && pos.hasBreeze) {
+      $("#agent-console").html("There is a <strong>stench</strong> and there is a <strong>breeze</strong>!!!");
+    } else if (pos.hasStench) {
+      $("#agent-console").html("What's that <strong>stench?</strong> Wumpus must be around.");
+    } else if (pos.hasBreeze) {
+      $("#agent-console").html("There is a <strong>breeze</strong>. Careful not to fall in a pit.");
+    } else {
+      $("#agent-console").html("I feel <strong>safe</strong> here, nothing around.");
+    }
   }
 }
 
