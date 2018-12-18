@@ -29,7 +29,7 @@ gulp.task('copy', function() {
  * watchCH7 and bundleCH7
  * Compile all TypeScript files to a bundled.js file for Chapter 7
  */
-let watchedBrowserify = watchify(browserify({
+let watchCh7 = watchify(browserify({
   basedir: '7-Logical-Agents',
   debug: true,
   entries: ['main.ts'],
@@ -37,8 +37,8 @@ let watchedBrowserify = watchify(browserify({
   packageCache: {}
 }).plugin(tsify));
 
-function bundle() {
-  return watchedBrowserify
+function bundleCh7() {
+  return watchCh7
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(gulp.dest("7-Logical-Agents"));
@@ -49,9 +49,14 @@ function bundle() {
  * Compile and Watch files
  */
 
-gulp.task('dev', bundle);
-watchedBrowserify.on("update", bundle);
-watchedBrowserify.on("log", gutil.log);
+function bundle() {
+  bundleCh7();
+}
+gulp.task('devCh7', () => {
+  watchCh7.on("update", bundleCh7);
+  watchCh7.on("log", gutil.log);
+});
+gulp.task('dev', ['devCh7'] , bundle);
 
 /**
  * Gulp Task: default - Development
