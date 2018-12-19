@@ -25,7 +25,44 @@ export class Filtering {
   }
 
   public render(): void {
+    const curX = this.game.agent.x;
+    const curY = this.game.agent.y;
     for (let x = 0; x < 8; x++) {
+      // delete the old grid
+      this.canvas[x].clear();
+      // generating the index of the next tile
+      let posX = curX;
+      let posY = curY;
+      if ((x === 0 || x === 4) && (curX < this.game.GRID_SIZE)) {
+        posX++;
+      } else if ((x === 1 || x === 5) && (curY < this.game.GRID_SIZE)) {
+        posY++;
+      } else if ((x === 2 || x === 6) && (curX > 1)) {
+        posX--;
+      } else if ((x === 3 || x === 7) && (curY > 1)) {
+        posY--;
+      }
+      // Quit if there are no valid moves
+      if (curX === posX && curY === posY) {
+        this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE)
+          .fill({ color: "#ddd", opacity: "0.5" })
+        this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE * 0.2)
+          .fill({ color: "#f00", opacity: "0.5" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+        this.canvas[x].text("Invalid Move")
+          .font({ weight: "bold" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+        continue;
+      }
+      // finding the neighbors after the move
+      const list: boolean[] = [];
+      for (let i = 0; i < this.game.GRID_SIZE * this.game.GRID_SIZE; i++) {
+        list[i] = false;
+      }
+      for (const tile of this.game.getNeighbors(this.game.getTile(posX, posY))) {
+        list[this.game.GRID_SIZE * (tile.x - 1) + (tile.y - 1)] = true;
+      }
+      // creating the full grid
       for (let i = 1; i <= 4; i++) {
         for (let j = 1; j <= 4; j++) {
           // Generate the tile
@@ -41,8 +78,19 @@ export class Filtering {
           } else {
             r.fill({ color: "#dddddd" });
           }
-          // Inner measurement color
-          s.fill({ color: "#ffffff" });
+          if (x < 4) {
+            if (list[this.game.GRID_SIZE * (i - 1) + (j - 1)]) {
+              s.fill({ color: "#b40000" });
+            } else {
+              s.fill({ color: "#176900" });
+            }
+          } else {
+            if (list[this.game.GRID_SIZE * (i - 1) + (j - 1)]) {
+              s.fill({ color: "#646464" });
+            } else {
+              s.fill({ color: "#ffffff" });
+            }
+          }
         }
       }
     }
