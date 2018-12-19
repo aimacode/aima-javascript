@@ -23,18 +23,6 @@ export class Grid {
     }
     this.render();
     this.agent = new Agent(this);
-    // Binding the Keypress Event
-    $("html").on("keydown", (e: any) => {
-      if (e.which === 37 || e.which === "A".charCodeAt(0)) {
-        this.agent.move(Move.Left);
-      } else if (e.which === 38 || e.which === "W".charCodeAt(0)) {
-        this.agent.move(Move.Up);
-      } else if (e.which === 39 || e.which === "D".charCodeAt(0)) {
-        this.agent.move(Move.Right);
-      } else if (e.which === 40 || e.which === "S".charCodeAt(0)) {
-        this.agent.move(Move.Down);
-      }
-    });
   }
 
   public getTile(i: number, j: number): Tile {

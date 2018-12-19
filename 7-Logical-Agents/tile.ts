@@ -35,9 +35,15 @@ export class Tile {
     this.mMeasurement = measurement;
     this.render();
   }
+  get measurement(): Measurement {
+    return this.mMeasurement;
+  }
   set measured(measured: boolean) {
     this.mMeasured = measured;
     this.render();
+  }
+  get measured(): boolean {
+    return this.mMeasured;
   }
   set hasBreeze(breeze: boolean) {
     if (breeze && this.mMeasurement === Measurement.Stench) {
