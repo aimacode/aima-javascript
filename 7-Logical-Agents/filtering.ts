@@ -10,26 +10,76 @@ export class Filtering {
   private readonly ELEMENT = "drawing-models";
   private readonly UX_SIZE = 250;
 
+  /**
+   * Generates a new analysis space, makes 8 boards, and 2 text-outputs
+   * and stores them as nested SVG in this.canvas[].
+   *
+   * @param game
+   *
+   * @notes
+   *
+   * The space on the X-axis of canvas is allotted as follows:
+   *  1.00 * UX_SIZE * 4: Models for Each possible move
+   *  0.01 * UX_SIZE * 4: separator space
+   *  =======================================================
+   *  TOTAL: 4.04 * UX_SIZE on the Y Axis
+   *
+   * The space on the Y-axis of canvas is allotted as follows:
+   *  0.25 * UX_SIZE: Banner of what move it is
+   *  1.00 * UX_SIZE: Models for Wumpus
+   *  0.01 * UX_SIZE: separator space
+   *  0.25 * UX_SIZE: Banner of what move it is
+   *  1.00 * UX_SIZE: Models for Pit
+   *  0.04 * UX_SIZE: separator space
+   *  0.25 * UX_SIZE: Conclusions for the move
+   *  =======================================================
+   *  TOTAL: 2.80 * UX_SIZE on the Y Axis
+   */
   constructor(game: Grid) {
     this.game = game;
     // Initializing the 8 nested SVG canvases for each future move
-    this.canvasParent = SVG(this.ELEMENT).size(this.UX_SIZE * 4.04, this.UX_SIZE * 2.02);
+    this.canvasParent = SVG(this.ELEMENT).size(this.UX_SIZE * 4.04, this.UX_SIZE * 2.77);
+    const moveTexts = ["Right", "Up", "Left", "Down"];
     for (let i = 0; i < 4; i++) {
+      // Generate the Banner for Wumpus
+      this.canvasParent.rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+        .center((i * 1.01 + 0.5) * this.UX_SIZE, 0.125 * this.UX_SIZE)
+        .fill({ color: "#000000" });
+      this.canvasParent.text("Move " + moveTexts[i] + ", Check Wumpus")
+        .center((i * 1.01 + 0.5) * this.UX_SIZE, 0.125 * this.UX_SIZE)
+        .font({ fill: "#ffffff" });
+      // Generate Models for Wumpus
       this.canvas[i] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE);
-      this.canvas[i].center((i + 0.5) * this.UX_SIZE * 1.01, (0.5) * this.UX_SIZE * 1.01);
-    }
-    for (let i = 0; i < 4; i++) {
+      this.canvas[i].center((i * 1.01 + 0.5) * this.UX_SIZE, 0.75 * this.UX_SIZE);
+      // Generate the Banner for Pits
+      this.canvasParent.rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+        .center((i * 1.01 + 0.5) * this.UX_SIZE, 1.385 * this.UX_SIZE)
+        .fill({ color: "#000000" });
+      this.canvasParent.text("Move " + moveTexts[i] + ", Check Pit")
+        .center((i * 1.01 + 0.5) * this.UX_SIZE, 1.385 * this.UX_SIZE)
+        .font({ fill: "#ffffff" });
+      // Generate Models for Pits
       this.canvas[i + 4] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE);
-      this.canvas[i + 4].center((i + 0.5) * this.UX_SIZE * 1.01, (1.5) * this.UX_SIZE * 1.01);
+      this.canvas[i + 4].center((i * 1.01 + 0.5) * this.UX_SIZE, 2.01 * this.UX_SIZE);
+      // Generate the Results
+      this.canvas[i + 8] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE * 0.25);
+      this.canvas[i + 8].center((i * 1.01 + 0.5) * this.UX_SIZE, 2.675 * this.UX_SIZE);
     }
+    this.render();
   }
 
+  /**
+   * Renders all possible models of the future and why they hold true or false.
+   * Currently tries to filter utilizing the features of this space.
+   */
   public render(): void {
     const curX = this.game.agent.x;
     const curY = this.game.agent.y;
+    const valid: boolean[] = [];
     for (let x = 0; x < 8; x++) {
-      // delete the old grid
+      // delete the old grid and assume model is valid
       this.canvas[x].clear();
+      valid[x] = true;
       // generating the index of the next tile
       let posX = curX;
       let posY = curY;
@@ -45,14 +95,18 @@ export class Filtering {
       // Quit if there are no valid moves
       if (curX === posX && curY === posY) {
         this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE)
-          .fill({ color: "#ddd", opacity: "0.5" })
+          .fill({ color: "#ddd", opacity: "0.5" });
         this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE * 0.2)
-          .fill({ color: "#f00", opacity: "0.5" })
+          .fill({ color: "#f00", opacity: "0.2" })
           .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
         this.canvas[x].text("Invalid Move")
           .font({ weight: "bold" })
           .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
         continue;
+      }
+      // check if model contradicts the current knowledge base
+      if (this.game.getTile(posX, posY).measured) {
+        valid[x] = false;
       }
       // finding the neighbors after the move
       const list: boolean[] = [];
@@ -79,19 +133,74 @@ export class Filtering {
             r.fill({ color: "#dddddd" });
           }
           if (x < 4) {
+            // Dealing with Wumpus here
             if (list[this.game.GRID_SIZE * (i - 1) + (j - 1)]) {
-              s.fill({ color: "#b40000" });
+              s.fill({ color: "#ff3837" });
+              if (this.game.getTile(i, j).measured && !this.game.getTile(i, j).hasStench) {
+                valid[x] = false;
+                this.canvas[x].text("x").font({ fill: "#ffffff", weight: "bold", size: "large" })
+                  .center((i - 0.5) * this.UX_SIZE / 4, (4.5 - j) * this.UX_SIZE / 4);
+              }
             } else {
-              s.fill({ color: "#176900" });
+              s.fill({ color: "#4e9d36" });
+              if (this.game.getTile(i, j).measured && this.game.getTile(i, j).hasStench) {
+                valid[x] = false;
+                this.canvas[x].text("x").font({ fill: "#ffffff", weight: "bold", size: "large" })
+                  .center((i - 0.5) * this.UX_SIZE / 4, (4.5 - j) * this.UX_SIZE / 4);
+              }
             }
-          } else {
+          } else if (x < 8) {
+            // Dealing with Pits here
             if (list[this.game.GRID_SIZE * (i - 1) + (j - 1)]) {
               s.fill({ color: "#646464" });
+              if (this.game.getTile(i, j).measured && !this.game.getTile(i, j).hasBreeze) {
+                valid[x] = false;
+                this.canvas[x].text("x").font({ fill: "#ffffff", weight: "bold", size: "large" })
+                  .center((i - 0.5) * this.UX_SIZE / 4, (4.5 - j) * this.UX_SIZE / 4);
+              }
             } else {
               s.fill({ color: "#ffffff" });
             }
           }
+          // Render the agent itself
+          if (posX === i && posY === j) {
+            this.canvas[x].circle(10).fill({ color: "#ff0066" })
+              .center((i - 0.5) * this.UX_SIZE / 4, (4.5 - j) * this.UX_SIZE / 4);
+          }
         }
+      }
+      // Check and label if the model was valid or not
+      if (!valid[x]) {
+        this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE * 0.2)
+          .fill({ color: "#f00", opacity: "0.2" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+        this.canvas[x].text("Model Invalid, Square Safe")
+          .font({ weight: "bold" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+      } else if (valid[x]) {
+        this.canvas[x].rect(this.UX_SIZE, this.UX_SIZE * 0.2)
+          .fill({ color: "#00ff00", opacity: "0.2" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+        this.canvas[x].text("Model is Correct, Move is Risky.")
+          .font({ weight: "bold" })
+          .center(this.UX_SIZE / 2, this.UX_SIZE / 2);
+      }
+    }
+    // Label for each move whether it should be played or not
+    for (let i = 0; i < 4; i++) {
+      this.canvas[i + 8].clear();
+      if (valid[i] || valid[i + 4]) {
+        this.canvas[i + 8].rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+          .fill({ color: "#ff7b69" });
+        this.canvas[i + 8].text("We ain't doing this.")
+          .center(this.UX_SIZE * 0.5, this.UX_SIZE * 0.125)
+          .font({ weight: "bold" });
+      } else {
+        this.canvas[i + 8].rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+          .fill({ color: "#89ff4f" });
+        this.canvas[i + 8].text("This is Safe, Good to Go.")
+          .center(this.UX_SIZE * 0.5, this.UX_SIZE * 0.125)
+          .font({ weight: "bold" });
       }
     }
   }

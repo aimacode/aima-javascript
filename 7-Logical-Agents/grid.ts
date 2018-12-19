@@ -1,5 +1,6 @@
 import { Agent, Move } from "./agent";
 import { Measurement, Tile } from "./tile";
+import { Filtering } from "./filtering";
 
 declare var $: any;
 declare var SVG: any;
@@ -11,6 +12,7 @@ export class Grid {
   public readonly ELEMENT: string = "drawing";
   public canvas: any;
   public agent: Agent;
+  public modelFilter: Filtering;
   public tiles: Tile[][] = [];
 
   constructor() {
@@ -23,6 +25,7 @@ export class Grid {
     }
     this.render();
     this.agent = new Agent(this);
+    this.modelFilter = new Filtering(this);
   }
 
   public getTile(i: number, j: number): Tile {
@@ -79,6 +82,7 @@ export class Grid {
     }
     this.getTile(1, 1).measured = true;
     this.agent.reset();
+    this.modelFilter.render();
   }
 
   public render() {

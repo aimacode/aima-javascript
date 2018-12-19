@@ -81,7 +81,31 @@
             </div>
             <div class="col-lg-12">
                 <h3>Model Filtering</h3>
-                <div class="col-lg-12" id="drawing-models"></div>
+                <p style="padding-left: 30px; padding-right: 30px;">
+                When going through the grid, the agent develops models of the world, of where the dangers might lie
+                and tries to find the safe moves by contradicting these models using its knowledge base, which it
+                has collected from the measurements it makes. Our visualization for this is the following.
+                <ul>
+                    <li>The agent constructs two models for each possible move, one for Wumpus and one for a Pit
+                        being in the square it's trying to go to. All models are labelled at the top.</li>
+                    <li>When checking a model, the agent puts itself in the square it would have been in after the
+                        move, and assumes that Wumpus/Pit is there. (<strong>The agent is the pink dot</strong>)</li>
+                    <li>If checking for Wumpus, it labels all squares that would have a stench with
+                        <strong>red</strong>, and all other squared with <strong>green</strong>, for they would never
+                        have stench (only one Wumpus)</li>
+                    <li>If checking for Pits, it labels all the square where a breeze is expected with
+                        <strong>grey</strong> and lets be all other squares cause they provide no usable information.</li>
+                    <li>Finally, it validates whether the measurements (shown on the rim,
+                        <strong>see legend above</strong>) are consistant with what it expected for the model.</li>
+                    <li>If there is an incosistancy, that square is marked with a <strong>White X</strong>, and
+                        the model is declared invalid (red-band). Otherwise the models is valid (green-band).</li>
+                    <li>If either the model with a Pit, or the one with Wumpus cannot be refuted, then the move
+                        is unsafe to make, more exploration is needed to expand knowledge base.</li>
+                    <li>The agent should keep executing all the possible moves that are safe and unexplored
+                        to eventually find the gold!</li>
+                </ul>
+                </p>
+                <div class="col-lg-12" id="drawing-models" style="margin-top: 20px; margin-bottom: 20px;"></div>
             </div>
         </div>
     </div>
