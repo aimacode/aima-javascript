@@ -1,15 +1,21 @@
-import { Grid } from "./grid";
-import { Measurement } from "./tile";
+import { GameGrid } from "./GameGrid";
+import { Measurement } from "./GameTile";
 
-export class Agent {
+export class UserAgent {
 
   protected mX: number;
   protected mY: number;
-  private mGame: Grid;
+  private mGame: GameGrid;
   private ux: any;
   private disabled: boolean = false;
 
-  constructor(grid: Grid) {
+  /**
+   * Initialize the UserAgent in the game.
+   * @constructor
+   *
+   * @param {GameGrid} grid - game to which the agent belongs
+   */
+  constructor(grid: GameGrid) {
     this.mX = 1;
     this.mY = 1;
     this.mGame = grid;
@@ -21,9 +27,27 @@ export class Agent {
       this.mGame.UX_SIZE - (this.mGame.UX_SIZE / (2 * this.mGame.GRID_SIZE)));
   }
 
+  /**
+   * Get the current position along X.
+   *
+   * @returns {number} - x coordinate
+   */
   get x(): number { return this.mX; }
+
+  /**
+   * Get the current position along Y.
+   *
+   * @returns {number} - y coordinate
+   */
   get y(): number { return this.mY; }
 
+  /**
+   * Moves the UserAgent Up, Down, Left or Right.
+   *
+   * @param {Move} move - direction in which to move to
+   *
+   * @event onkeydown - 'w', 's', 'a', 'd', 'up', 'down', 'left', 'right'
+   */
   public move(move: Move): void {
     if (this.disabled) {
       return;
@@ -39,15 +63,48 @@ export class Agent {
     }
     this.render();
     this.measure();
-    this.score();
+    this.checkResult();
   }
 
+  /**
+   * Inform the current tile that it has been measured and should render
+   * said measurement in color.
+   */
   public measure(): Measurement {
     this.mGame.getTile(this.x, this.y).measured = true;
     return this.mGame.getTile(this.x, this.y).measurement;
   }
 
-  public score(): void {
+  /**
+   * Resets the agent to the starting position (1, 1), returns to default color.
+   */
+  public reset(): void {
+    this.mX = 1;
+    this.mY = 1;
+    this.render();
+    this.ux.finish();
+    this.ux.fill("#f06");
+    this.ux.radius(10);
+    this.disabled = false;
+  }
+
+  /**
+   * Animates the movement of the agent from the old position to the current
+   * coordinates using the given (x,y).
+   */
+  public render(): void {
+    this.ux.finish();
+    const BLOCK_SIZE = this.mGame.UX_SIZE / this.mGame.GRID_SIZE;
+    this.ux.animate().center(BLOCK_SIZE * this.mX - BLOCK_SIZE / 2,
+      this.mGame.UX_SIZE - BLOCK_SIZE * this.mY + BLOCK_SIZE / 2);
+    this.console();
+  }
+
+  /**
+   * Checks the game has terminated. If yes, then invalidates future moves and
+   * displays a banner saying that Wumpus / Gold / Pit was met.
+   */
+  private checkResult(): void {
     const tile = this.mGame.getTile(this.mX, this.mY);
     if (tile.hasWumpus) {
       // Add text and a Rectangle behind it
@@ -100,24 +157,9 @@ export class Agent {
     }
   }
 
-  public reset(): void {
-    this.mX = 1;
-    this.mY = 1;
-    this.render();
-    this.ux.finish();
-    this.ux.fill("#f06");
-    this.ux.radius(10);
-    this.disabled = false;
-  }
-
-  public render(): void {
-    this.ux.finish();
-    const BLOCK_SIZE = this.mGame.UX_SIZE / this.mGame.GRID_SIZE;
-    this.ux.animate().center(BLOCK_SIZE * this.mX - BLOCK_SIZE / 2,
-      this.mGame.UX_SIZE - BLOCK_SIZE * this.mY + BLOCK_SIZE / 2);
-    this.console();
-  }
-
+  /**
+   * Prints out the current measurement to the Agent Console.
+   */
   private console(): void {
     const pos = this.mGame.getTile(this.mX, this.mY);
     if (pos.hasGold) {

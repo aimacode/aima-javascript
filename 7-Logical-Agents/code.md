@@ -2,15 +2,46 @@
 
 ## Structure of the Code
 
-* **Grid**: The Game grid, this is the class that runs the whole game.
-    * agent
+* **GameGrid**: The Game grid, this is the class that runs the whole game.
+    * constructor()
     * getTile(i: number, j: number)
+    * getNeighbors(tile: GameTile)
+    * sensorUpdate()
+    * reset()
+    * render()
+    * agent
+    * modelFilter
+    * tiles
+    * canvas
     * GRID_SIZE
     * UX_SIZE
     * ELEMENT
-* **Agent**: This is a simple UserAgent that responds to the user and explores the game.
-* **Tile**: One Tile in the gird that may have a pit, wumpus, or a pile of gold.
-* **GodAgent**: The Agent that can view the status of all the positions.
+* **UserAgent**: This is a simple UserAgent that responds to the user and explores the game.
+    * constructor(game: GameGrid)
+    * x (get)
+    * y (get)
+    * move(move: Move)
+    * measure()
+    * render()
+* **GameTile**: One GameTile in the gird that may have a pit, wumpus, or a pile of gold.
+    * constructor(x: number, y: number, blockSize: number = 100)
+    * x: number (get)
+    * y: number (get)
+    * canvas: SVG (set)
+    * hasWumpus: boolean (get-set)
+    * hasPit: boolean (get-set)
+    * hasGold: boolean (get-set)
+    * hasBreeze: boolean (get-set)
+    * hasStench: boolean (get-set)
+    * measurement: (get-set)
+    * measured: boolean (get-set)
+* **GodSight**: The UserAgent that can view the status of all the positions.
+    * constructor(game: GameGrid)
+    * render()
+    * hide()
+* **ModelFiltering**: Thinking of all possible futures and evaluating which moves are safe.
+    * constructor(game: GameGrid)
+    * render()
 
 ## Possible Errors
 

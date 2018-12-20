@@ -1,6 +1,15 @@
 {
   "files": [
-    "grid.ts"
+    "AndExpression.ts",
+    "OrExpression.ts",
+    "NotExpression.ts",
+    "AtomicExpression.ts",
+    "GameGrid.ts",
+    "GameTile.ts",
+    "UserAgent.ts",
+    "GodSight.ts",
+    "ModelFiltering.ts",
+    "main.ts"
   ],
   "compilerOptions": {
     "target": "es5",                          /* Specify ECMAScript target version: 'ES5'. */

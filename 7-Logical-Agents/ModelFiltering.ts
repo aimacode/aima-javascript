@@ -1,11 +1,11 @@
-import { Grid } from "./grid";
+import { GameGrid } from "./GameGrid";
 
 declare var SVG: any;
 
-export class Filtering {
+export class ModelFiltering {
 
   protected canvas: any[] = [];
-  protected game: Grid;
+  protected game: GameGrid;
   private canvasParent: any;
   private readonly ELEMENT = "drawing-models";
   private readonly UX_SIZE = 250;
@@ -13,10 +13,11 @@ export class Filtering {
   /**
    * Generates a new analysis space, makes 8 boards, and 2 text-outputs
    * and stores them as nested SVG in this.canvas[].
+   * @constructor
    *
-   * @param game
+   * @param {GameGrid} game - game object that we are analyzing
    *
-   * @notes
+   * @remarks
    *
    * The space on the X-axis of canvas is allotted as follows:
    *  1.00 * UX_SIZE * 4: Models for Each possible move
@@ -35,7 +36,7 @@ export class Filtering {
    *  =======================================================
    *  TOTAL: 2.80 * UX_SIZE on the Y Axis
    */
-  constructor(game: Grid) {
+  constructor(game: GameGrid) {
     this.game = game;
     // Initializing the 8 nested SVG canvases for each future move
     this.canvasParent = SVG(this.ELEMENT).size(this.UX_SIZE * 4.04, this.UX_SIZE * 2.77);

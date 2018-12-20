@@ -1,15 +1,21 @@
-import { Grid } from "./grid";
-import { Tile } from "./tile";
+import { GameGrid } from "./GameGrid";
+import { GameTile } from "./GameTile";
 
 export class GodSight {
   private readonly canvas: any;
   private readonly CENTERS: number[] = [];
   private readonly BLOCK_SIZE: number;
   private readonly GRID_SIZE: number;
-  private tiles: Tile[][] = [];
+  private tiles: GameTile[][] = [];
   private displayed: boolean = false;
 
-  constructor(game: Grid) {
+  /**
+   * Copies the relevant data from the game to variables in the object
+   * @constructor
+   *
+   * @param {GameGrid} game - The game which is being annotated
+   */
+  constructor(game: GameGrid) {
     this.canvas = game.canvas.nested();
     this.BLOCK_SIZE = game.UX_SIZE / game.GRID_SIZE;
     this.GRID_SIZE = game.GRID_SIZE;
@@ -19,6 +25,9 @@ export class GodSight {
     }
   }
 
+  /**
+   * Renders all the labels for Gold, Pit, Wumpus, Breeze and Stench.
+   */
   public render(): void {
     if (this.displayed) {
       return;
@@ -70,6 +79,9 @@ export class GodSight {
     this.displayed = true;
   }
 
+  /**
+   * Delete all labels rendered by this module on the canvas
+   */
   public hide(): void {
     this.canvas.clear();
     this.displayed = false;

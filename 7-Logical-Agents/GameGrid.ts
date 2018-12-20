@@ -1,34 +1,49 @@
-import { Agent, Move } from "./agent";
-import { Measurement, Tile } from "./tile";
-import { Filtering } from "./filtering";
+import { GameTile, Measurement } from "./GameTile";
+import { GodSight } from "./GodSight";
+import { ModelFiltering } from "./ModelFiltering";
+import { UserAgent } from "./UserAgent";
 
-declare var $: any;
 declare var SVG: any;
 
-export class Grid {
+export class GameGrid {
 
   public readonly GRID_SIZE: number = 4;
   public readonly UX_SIZE: number = 600;
   public readonly ELEMENT: string = "drawing";
   public canvas: any;
-  public agent: Agent;
-  public modelFilter: Filtering;
-  public tiles: Tile[][] = [];
+  public agent: UserAgent;
+  public modelFilter: ModelFiltering;
+  public tiles: GameTile[][] = [];
+  public godSight: GodSight;
 
+  /**
+   * Generates and assigns portions of the canvas to each of the tiles.
+   * Initializes the UserAgent and the ModelFiltering.
+   * @constructor
+   */
   constructor() {
     for (let i = 0; i < this.GRID_SIZE; i++) {
       this.tiles[i] = [];
       for (let j = 0; j < this.GRID_SIZE; j++) {
-        this.tiles[i][j] = new Tile(i + 1, this.GRID_SIZE - j,
+        this.tiles[i][j] = new GameTile(i + 1, this.GRID_SIZE - j,
           this.UX_SIZE / this.GRID_SIZE);
       }
     }
     this.render();
-    this.agent = new Agent(this);
-    this.modelFilter = new Filtering(this);
+    this.agent = new UserAgent(this);
+    this.modelFilter = new ModelFiltering(this);
+    this.godSight = new GodSight(this);
   }
 
-  public getTile(i: number, j: number): Tile {
+  /**
+   * Gets the tile at index (i,j) on the game grid.
+   *
+   * @param {number} i - x-coordinate to tile queried
+   * @param {number} j - y-coordinate to tile queried
+   *
+   * @returns {GameTile} - Tile at location (i,j)
+   */
+  public getTile(i: number, j: number): GameTile {
     i = i - 1;
     j = this.GRID_SIZE - j;
     if (i < 0 || j < 0 || i >= this.GRID_SIZE || j >= this.GRID_SIZE) {
@@ -37,8 +52,15 @@ export class Grid {
     return this.tiles[i][j];
   }
 
-  public getNeighbors(tile: Tile): Tile[] {
-    const result: Tile[] = [];
+  /**
+   * Get tiles that are directly adjacent to the tile given
+   *
+   * @param {GameTile} tile - tile whose neighbors we are searching for
+   *
+   * @returns {GameTile[]} - list of at most 4 tiles that are adjacent to tile
+   */
+  public getNeighbors(tile: GameTile): GameTile[] {
+    const result: GameTile[] = [];
     if (tile.x > 1) {
         result.push(this.getTile(tile.x - 1, tile.y));
     }
@@ -54,6 +76,10 @@ export class Grid {
     return result;
   }
 
+  /**
+   * Computes the stenches and breezes in all tiles based on where pits and
+   * wumpus are present.
+   */
   public sensorUpdate() {
     // Loop over all tiles
     for (let i = 0; i < this.GRID_SIZE; i++) {
@@ -74,6 +100,9 @@ export class Grid {
     }
   }
 
+  /**
+   * Resets all the tiles, the agent, and the modelFiltering.
+   */
   public reset(): void {
     for (let i = 0; i < this.GRID_SIZE; i++) {
       for (let j = 0; j < this.GRID_SIZE; j++) {
@@ -85,6 +114,9 @@ export class Grid {
     this.modelFilter.render();
   }
 
+  /**
+   * Distributes the canvas space to all the tiles and renders all of them.
+   */
   public render() {
     this.canvas = SVG(this.ELEMENT).size(this.UX_SIZE, this.UX_SIZE);
     const BLOCK_SIZE: number = this.UX_SIZE / this.GRID_SIZE;
