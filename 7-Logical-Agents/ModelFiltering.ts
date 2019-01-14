@@ -8,7 +8,7 @@ export class ModelFiltering {
   protected game: GameGrid;
   private canvasParent: any;
   private readonly ELEMENT = "drawing-models";
-  private readonly UX_SIZE = 250;
+  private readonly UX_SIZE = 450;
 
   /**
    * Generates a new analysis space, makes 8 boards, and 2 text-outputs
@@ -20,51 +20,61 @@ export class ModelFiltering {
    * @remarks
    *
    * The space on the X-axis of canvas is allotted as follows:
-   *  1.00 * UX_SIZE * 4: Models for Each possible move
-   *  0.01 * UX_SIZE * 4: separator space
+   *  1.00 * UX_SIZE * 2: Models for Each possible move
+   *  0.01 * UX_SIZE * 2: separator space
    *  =======================================================
-   *  TOTAL: 4.04 * UX_SIZE on the Y Axis
+   *  TOTAL: 2.02 * UX_SIZE on the X Axis
    *
    * The space on the Y-axis of canvas is allotted as follows:
    *  0.25 * UX_SIZE: Banner of what move it is
-   *  1.00 * UX_SIZE: Models for Wumpus
-   *  0.01 * UX_SIZE: separator space
+   *  1.00 * UX_SIZE: Models for Left Move
+   *  0.01 * UX_SIZE: Separator space
+   *  0.25 * UX_SIZE: Conclusions for the move
+
    *  0.25 * UX_SIZE: Banner of what move it is
-   *  1.00 * UX_SIZE: Models for Pit
-   *  0.04 * UX_SIZE: separator space
+   *  1.00 * UX_SIZE: Models for Right Move
+   *  0.01 * UX_SIZE: Separator space
+   *  0.25 * UX_SIZE: Conclusions for the move
+
+   *  0.25 * UX_SIZE: Banner of what move it is
+   *  1.00 * UX_SIZE: Models for Up Move
+   *  0.01 * UX_SIZE: Separator space
+   *  0.25 * UX_SIZE: Conclusions for the move
+
+   *  0.25 * UX_SIZE: Banner of what move it is
+   *  1.00 * UX_SIZE: Models for Down Move
+   *  0.01 * UX_SIZE: Separator space
    *  0.25 * UX_SIZE: Conclusions for the move
    *  =======================================================
-   *  TOTAL: 2.80 * UX_SIZE on the Y Axis
+   *  TOTAL: 6.04 * UX_SIZE on the Y Axis
    */
   constructor(game: GameGrid) {
     this.game = game;
     // Initializing the 8 nested SVG canvases for each future move
-    this.canvasParent = SVG(this.ELEMENT).size(this.UX_SIZE * 4.04, this.UX_SIZE * 2.77);
+    this.canvasParent = SVG(this.ELEMENT).size(this.UX_SIZE * 2.02, this.UX_SIZE * 6.04);
     const moveTexts = ["Right", "Up", "Left", "Down"];
     for (let i = 0; i < 4; i++) {
-      // Generate the Banner for Wumpus
-      this.canvasParent.rect(this.UX_SIZE, this.UX_SIZE * 0.25)
-        .center((i * 1.01 + 0.5) * this.UX_SIZE, 0.125 * this.UX_SIZE)
-        .fill({ color: "#000000" });
-      this.canvasParent.text("Move " + moveTexts[i] + ", Check Wumpus")
-        .center((i * 1.01 + 0.5) * this.UX_SIZE, 0.125 * this.UX_SIZE)
-        .font({ fill: "#ffffff" });
+      // Banners at for Wumpus
+      this.canvasParent.rect(this.UX_SIZE, 0.25 * this.UX_SIZE)
+        .center(0.5 * this.UX_SIZE, (1.51 * i + 0.125) * this.UX_SIZE)
+      this.canvasParent.text("Checking Wumpus on the " + moveTexts[i])
+        .center(0.5 * this.UX_SIZE, (1.51 * i + 0.125) * this.UX_SIZE)
+        .font({ weight: "bold", fill: "white" });
       // Generate Models for Wumpus
       this.canvas[i] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE);
-      this.canvas[i].center((i * 1.01 + 0.5) * this.UX_SIZE, 0.75 * this.UX_SIZE);
-      // Generate the Banner for Pits
-      this.canvasParent.rect(this.UX_SIZE, this.UX_SIZE * 0.25)
-        .center((i * 1.01 + 0.5) * this.UX_SIZE, 1.385 * this.UX_SIZE)
-        .fill({ color: "#000000" });
-      this.canvasParent.text("Move " + moveTexts[i] + ", Check Pit")
-        .center((i * 1.01 + 0.5) * this.UX_SIZE, 1.385 * this.UX_SIZE)
-        .font({ fill: "#ffffff" });
+      this.canvas[i].center(0.50 * this.UX_SIZE, (1.51 * i + 0.75) * this.UX_SIZE);
+      // Banners at for Wumpus
+      this.canvasParent.rect(this.UX_SIZE, 0.25 * this.UX_SIZE)
+        .center(1.51 * this.UX_SIZE, (1.51 * i + 0.125) * this.UX_SIZE)
+      this.canvasParent.text("Checking Wumpus on the " + moveTexts[i])
+        .center(1.51 * this.UX_SIZE, (1.51 * i + 0.125) * this.UX_SIZE)
+        .font({ weight: "bold", fill: "white" });
       // Generate Models for Pits
       this.canvas[i + 4] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE);
-      this.canvas[i + 4].center((i * 1.01 + 0.5) * this.UX_SIZE, 2.01 * this.UX_SIZE);
-      // Generate the Results
-      this.canvas[i + 8] = this.canvasParent.nested().size(this.UX_SIZE, this.UX_SIZE * 0.25);
-      this.canvas[i + 8].center((i * 1.01 + 0.5) * this.UX_SIZE, 2.675 * this.UX_SIZE);
+      this.canvas[i + 4].center(1.51 * this.UX_SIZE, (1.51 * i + 0.75) * this.UX_SIZE);
+      // Results
+      this.canvas[i + 8] = this.canvasParent.nested().size(2 * this.UX_SIZE, 0.25 * this.UX_SIZE);
+      this.canvas[i + 8].center(1.0 * this.UX_SIZE, (1.51 * i + 1.375) * this.UX_SIZE);
     }
     this.render();
   }
@@ -122,7 +132,7 @@ export class ModelFiltering {
         for (let j = 1; j <= 4; j++) {
           // Generate the tile
           const r = this.canvas[x]
-            .rect((0.25) * this.UX_SIZE, (0.25) * this.UX_SIZE )
+            .rect((0.245) * this.UX_SIZE, (0.245) * this.UX_SIZE )
             .center((i - 0.5) * this.UX_SIZE / 4, (4.5 - j) * this.UX_SIZE / 4);
           const s = this.canvas[x]
             .rect((0.15) * this.UX_SIZE, (0.15) * this.UX_SIZE )
@@ -191,16 +201,16 @@ export class ModelFiltering {
     for (let i = 0; i < 4; i++) {
       this.canvas[i + 8].clear();
       if (valid[i] || valid[i + 4]) {
-        this.canvas[i + 8].rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+        this.canvas[i + 8].rect(this.UX_SIZE * 2.01, this.UX_SIZE * 0.20)
           .fill({ color: "#ff7b69" });
         this.canvas[i + 8].text("We ain't doing this.")
-          .center(this.UX_SIZE * 0.5, this.UX_SIZE * 0.125)
+          .center(this.UX_SIZE * 1.05, this.UX_SIZE * 0.10)
           .font({ weight: "bold" });
       } else {
-        this.canvas[i + 8].rect(this.UX_SIZE, this.UX_SIZE * 0.25)
+        this.canvas[i + 8].rect(this.UX_SIZE * 2.01, this.UX_SIZE * 0.20)
           .fill({ color: "#89ff4f" });
         this.canvas[i + 8].text("This is Safe, Good to Go.")
-          .center(this.UX_SIZE * 0.5, this.UX_SIZE * 0.125)
+          .center(this.UX_SIZE * 1.05, this.UX_SIZE * 0.10)
           .font({ weight: "bold" });
       }
     }

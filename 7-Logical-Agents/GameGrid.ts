@@ -1,5 +1,4 @@
 import { GameTile, Measurement } from "./GameTile";
-import { GodSight } from "./GodSight";
 import { ModelFiltering } from "./ModelFiltering";
 import { UserAgent } from "./UserAgent";
 
@@ -14,7 +13,14 @@ export class GameGrid {
   public agent: UserAgent;
   public modelFilter: ModelFiltering;
   public tiles: GameTile[][] = [];
-  public godSight: GodSight;
+  private godSight: boolean;
+
+  set godsight(godSight: boolean) {
+    this.godSight = godSight;
+    console.log("GodSight: " + godSight);
+    this.render();
+    this.agent.render();
+  }
 
   /**
    * Generates and assigns portions of the canvas to each of the tiles.
@@ -22,6 +28,7 @@ export class GameGrid {
    * @constructor
    */
   constructor() {
+    this.canvas = SVG(this.ELEMENT).size(this.UX_SIZE, this.UX_SIZE);
     for (let i = 0; i < this.GRID_SIZE; i++) {
       this.tiles[i] = [];
       for (let j = 0; j < this.GRID_SIZE; j++) {
@@ -31,8 +38,8 @@ export class GameGrid {
     }
     this.render();
     this.agent = new UserAgent(this);
+    this.godSight = false;
     this.modelFilter = new ModelFiltering(this);
-    this.godSight = new GodSight(this);
   }
 
   /**
@@ -118,13 +125,12 @@ export class GameGrid {
    * Distributes the canvas space to all the tiles and renders all of them.
    */
   public render() {
-    this.canvas = SVG(this.ELEMENT).size(this.UX_SIZE, this.UX_SIZE);
     const BLOCK_SIZE: number = this.UX_SIZE / this.GRID_SIZE;
     for (let i = 0; i < this.GRID_SIZE; i++) {
       for (let j = 0; j < this.GRID_SIZE; j++) {
         this.tiles[i][j].canvas = this.canvas.nested()
           .attr({ x: BLOCK_SIZE * i, y: BLOCK_SIZE * j });
-        this.tiles[i][j].render();
+        this.tiles[i][j].render(this.godSight);
       }
     }
   }

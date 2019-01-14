@@ -1,6 +1,8 @@
 import { GameGrid } from "./GameGrid";
 import { Measurement } from "./GameTile";
 
+declare var $: any;
+
 export class UserAgent {
 
   protected mX: number;
@@ -97,6 +99,7 @@ export class UserAgent {
     const BLOCK_SIZE = this.mGame.UX_SIZE / this.mGame.GRID_SIZE;
     this.ux.animate().center(BLOCK_SIZE * this.mX - BLOCK_SIZE / 2,
       this.mGame.UX_SIZE - BLOCK_SIZE * this.mY + BLOCK_SIZE / 2);
+    this.ux.front();
     this.console();
   }
 

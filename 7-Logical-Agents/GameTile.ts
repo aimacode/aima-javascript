@@ -209,7 +209,7 @@ export class GameTile {
    * Tile is displayed as two squares on behind the other.
    * Outer rim shows the color denoting the measurement.
    */
-  public render(): void {
+  public render(forceVisibility: boolean = false): void {
     const rOut = this.mCanvas.rect(this.BLOCK_SIZE * 0.98, this.BLOCK_SIZE * 0.98);
     const rInn = this.mCanvas.rect(this.BLOCK_SIZE * 0.75, this.BLOCK_SIZE * 0.75);
     if (this.mMeasured) {
@@ -220,6 +220,44 @@ export class GameTile {
     rInn.fill({ color: "#ddd" });
     rOut.center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
     rInn.center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
+    
+    if (this.mMeasured || forceVisibility) {
+      // Rendering the Icons
+      if (this.hasWumpus) {
+        this.mCanvas.image('img/wumpus.png',
+          this.BLOCK_SIZE * 0.6, this.BLOCK_SIZE * 0.6)
+          .center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
+      }
+      else if (this.hasPit) {
+        this.mCanvas.image('img/pit.png',
+          this.BLOCK_SIZE * 0.6, this.BLOCK_SIZE * 0.6)
+          .center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
+      }
+      else {
+        if (this.hasGold) {
+          this.mCanvas.image('img/gold.png',
+            this.BLOCK_SIZE * 0.6, this.BLOCK_SIZE * 0.2)
+            .center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2);
+        }
+        if (this.hasBreeze) {
+          this.mCanvas.image('img/breeze.png',
+            this.BLOCK_SIZE * 0.6, this.BLOCK_SIZE * 0.2)
+            .center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2 + this.BLOCK_SIZE * 0.25);
+        }
+        if (this.hasStench) {
+          this.mCanvas.image('img/stench.png',
+            this.BLOCK_SIZE * 0.6, this.BLOCK_SIZE * 0.2)
+            .center(this.BLOCK_SIZE / 2, this.BLOCK_SIZE / 2 - this.BLOCK_SIZE * 0.25);
+        }
+      }
+    }
+  }
+
+  /**
+   * Resets the tile to stop showing its measurement.
+   */
+  public reset(): void {
+    this.measured = false;
   }
 }
 
