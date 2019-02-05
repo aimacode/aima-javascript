@@ -33,9 +33,10 @@ class World {
 
 // Rules are defined in code
 function reflexVacuumAgent(world) {
-    if (world.floors[world.location].dirty) { return 'SUCK'; }
+    if (world.floors[world.location].dirty) { return 'SUCK'; }                                                                
     else if (world.location == 0)           { return 'RIGHT'; }
     else if (world.location == 1)           { return 'LEFT'; }
+    return action;
 }
 
 // Rules are defined in data, in a table indexed by [location][dirty]
