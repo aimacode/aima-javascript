@@ -1,5 +1,5 @@
 
-// ESLint Config -- http://eslint.org/docs/user-guide/configuring
+// ESLint Config -- https://eslint.org/docs/user-guide/configuring
 
 /* eslint-env browser */
 /* global DefaultGraph */

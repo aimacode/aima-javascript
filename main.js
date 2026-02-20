@@ -19,12 +19,12 @@
         body.insertBefore(header, body.firstChild);
         var footer = document.createElement('footer');
         footer.setAttribute('class', 'text-center');
-        footer.innerHTML = '<img src="http://aima.cs.berkeley.edu/aima_logo.png">';
+        footer.innerHTML = '<img src="https://aima.cs.berkeley.edu/aima_logo.png">';
         body.append(footer);
 
         if (document.location.protocol === 'file:') {
             // file: urls don't allow ajax calls needed to load the header, so load from main site instead
-            $('header').load("http://aimacode.github.io/aima-javascript/header.html");
+            $('header').load("https://aimacode.github.io/aima-javascript/header.html");
         } else {
             $('header').load("../header.html");
         }

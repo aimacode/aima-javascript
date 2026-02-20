@@ -1,1 +1,2 @@
-See [the wiki](https://github.com/aimacode/aima-javascript/wiki/How-to-Contribute).
+This project has not been active since 2019.
+
